@@ -9,92 +9,116 @@ Hvis du styrer repoet aktivt, så læs også `.guides/project_control.md`.
 
 ## 1. How to run
 
+**Med UI (anbefalet):**
 ```bash
 pip install requests
-ollama serve
+python app.py
+# → åbn http://localhost:7842
+```
+
+**CLI kun:**
+```bash
+pip install requests
 python main.py
 ```
 
-Kræver [Ollama](https://ollama.com) installeret og en model pullet, f.eks.:
+Kræver [Ollama](https://ollama.com) installeret og en model pullet:
 ```bash
 ollama pull gemma3:4b
 ```
 
 ---
 
-## 2. How to change topic
+## 2. How to change topic and agents
 
-Åbn `config.py` og skift `TOPIC`:
+Åbn `http://localhost:7842` — alt konfigureres i UI:
+- Emne og antal runder
+- Identitet, sprog og svarlængde per agent
+- Model per agent
+- Projekt (eget mapperum med memory og log)
 
-```python
-TOPIC = "Dit emne her"
-```
+For CLI: åbn `config.py` og skift `TOPIC`, `ROUNDS`, `AGENT_A["model"]` etc.
 
 ---
 
-## 3. How to swap model
+## 3. How to add an identity
 
-Åbn `config.py` og skift `model` under `AGENT_A` eller `AGENT_B`:
+Opret en ny fil i `identities/`:
 
-```python
-AGENT_A = {
-    "name": "Skeptikeren",
-    "model": "mistral:7b",   # ← skift her
-    "dir": "agent_a"
-}
+```markdown
+---
+name: Mit Navn
+language: dansk
+length: medium
+---
+
+# Mit Navn
+
+[Beskriv personligheden...]
+
+Tal altid i første person.
+Slut altid dit svar med: [MEMORY]: <din vigtigste pointe fra denne runde>
 ```
 
-Modellen skal være tilgængelig via den valgte backend.
+Brug `identities/template.md` som udgangspunkt.
+Filen dukker automatisk op i identity-dropdowns ved næste sideopdatering.
 
 ---
 
 ## 4. How to switch backend
 
-Åbn `config.py` og skift `BACKEND`:
+Vælg backend i UI-dropdownen (Ollama / LM Studio / Claude API).
 
+For CLI: åbn `config.py` og skift `BACKEND`:
 ```python
 BACKEND = "ollama"      # lokal Ollama (default)
 BACKEND = "lmstudio"   # lokal LM Studio
 BACKEND = "claude"     # Anthropic Claude API
 ```
 
-For Claude-backend: sæt miljøvariablen `ANTHROPIC_API_KEY` og skift model til f.eks. `"claude-sonnet-4-6"`.
+For Claude-backend: sæt miljøvariablen `ANTHROPIC_API_KEY`.
 
 ---
 
-## 5. Memory format
+## 5. Projects
 
-Hver agent gemmer løbende pointer i `agent_x/memory.md` med tags:
+Hvert projekt har sit eget mapperum under `projects/`:
 
-| Tag | Betydning |
-|-----|-----------|
-| `[FACT]` | Faktuel observation fra samtalen |
-| `[WHY]` | Agentens begrundelse eller motivation |
-| `[STANCE]` | Agentens overordnede holdning |
-
-Eksempel:
 ```
-[FACT] AI erstatter allerede lavkvalifikationsjobs.
-[WHY] Jeg er skeptisk fordi historisk disruption rammer skævt.
-[STANCE] Neutral teknologi — kontekst bestemmer konsekvens.
+projects/mit-projekt/
+    agent_a/memory.md
+    agent_b/memory.md
+    shared/conversation.md
+    settings.json
 ```
 
-Memory re-injiceres i hvert prompt (budgetbegrænset til `MAX_MEMORY_LINES`).
+Opret nye projekter med **＋**-knappen i UI. Settings gemmes automatisk ved hvert run og restores ved projektwitch.
+
+`projects/` er gitignored — runtime-data ryger ikke i repoet.
 
 ---
 
-## 6. File overview
+## 6. Memory format
+
+Agenter gemmer pointer løbende i `agent_x/memory.md` via `[MEMORY]:`-tagget i svarene.
+
+Memory re-injiceres i hvert prompt (budgetbegrænset til `MAX_MEMORY_LINES` i `config.py`).
+
+---
+
+## 7. File overview
 
 | Fil | Formål |
 |-----|--------|
-| `config.py` | Al konfiguration — topic, agenter, backend, budgets |
-| `model.py` | Model-adapter til Ollama, LM Studio og Claude API |
-| `memory.py` | Læs, skriv, udtræk og konvergens-check på memory |
-| `prompts.py` | Bygger strukturerede system-prompts og user-messages |
-| `main.py` | Orchestrator og hoved-loop |
-| `agent_a/identity.md` | Skeptikerens persona (re-injiceres hver runde) |
-| `agent_b/identity.md` | Optimistens persona (re-injiceres hver runde) |
-| `agent_a/memory.md` | Skeptikerens akkumulerede hukommelse |
-| `agent_b/memory.md` | Optimistens akkumulerede hukommelse |
-| `shared/conversation.md` | Fuld samtale-log med timestamps |
-| `shared/run_config.md` | Hvad der faktisk kørte (gemmes ved hvert run) |
+| `app.py` | Web-server og SSE-streaming (port 7842) |
+| `main.py` | Samtale-orchestrator — `run_conversation(session_cfg)` |
+| `config.py` | Statiske defaults til CLI-kørsel |
+| `model.py` | Model-adapter: Ollama, LM Studio, Claude API |
+| `prompts.py` | Prompt-builder: identity + instruktioner + memory |
+| `memory.py` | Memory-IO: load, append, extract, konvergens-check |
+| `identities.py` | Parser og lister identity-filer fra `identities/` |
+| `projects.py` | Projekt-management: opret, list, load/save settings |
+| `identities/*.md` | Persona-filer med frontmatter |
+| `identities/template.md` | Skabelon til nye identiteter |
+| `ui/index.html` | Enkeltfils frontend |
+| `projects/<navn>/` | Runtime-data per projekt (gitignored) |

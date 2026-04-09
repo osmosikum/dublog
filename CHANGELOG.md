@@ -3,6 +3,12 @@
 Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer `[Unreleased]` og afsluttes med `Sign-off: Claude` eller `Sign-off: Codex`.
 
 ## [Unreleased]
+### Docs
+- Gennemgået og synket hele dokumentlaget: CLAUDE.md, README.md, .gitignore og git-tracking.
+
+Sign-off: Claude
+
+## [baseline] — governance og git-setup
 ### Added
 - `AGENTS.md` som parallel arbejdsfil for Codex og andre kodeagenter.
 - `ROADMAP.md` som aktiv milestone-fil for naeste arbejde.

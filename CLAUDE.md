@@ -33,24 +33,25 @@ Den skal afspejle den nuvaerende sandhed og den naermeste retning, uden at laase
 ## Aktuel struktur
 
 ```text
-multi-agent-sandbox/
-|-- app.py
-|-- main.py
-|-- config.py
-|-- model.py
-|-- prompts.py
-|-- memory.py
-|-- identities.py
-|-- projects.py
+dublog/
+|-- app.py               # web-server og SSE-streaming (port 7842)
+|-- main.py              # samtale-orchestrator, run_conversation(session_cfg)
+|-- config.py            # statiske defaults til CLI-koersel
+|-- model.py             # model-adapter: Ollama, LM Studio, Claude API
+|-- prompts.py           # prompt-builder: identity + instruktioner + memory
+|-- memory.py            # memory-IO: load, append, extract, konvergens
+|-- identities.py        # parser og lister identity-filer
+|-- projects.py          # projekt-management: opret, list, settings
 |-- CLAUDE.md
 |-- AGENTS.md
 |-- ROADMAP.md
 |-- FUTURE_PATCHES.md
 |-- CHANGELOG.md
 |-- README.md
-|-- identities/
+|-- identities/          # persona-filer med frontmatter (name, language, length)
+|   |-- template.md
 |   `-- *.md
-|-- projects/
+|-- projects/            # runtime-data, gitignored
 |   `-- <project>/
 |       |-- settings.json
 |       |-- agent_a/
@@ -60,7 +61,7 @@ multi-agent-sandbox/
 |       `-- shared/
 |           `-- conversation.md
 `-- ui/
-    `-- index.html
+    `-- index.html       # enkeltfils frontend
 ```
 
 ## Arbejdsregler for Claude Code

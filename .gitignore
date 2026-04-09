@@ -22,5 +22,5 @@ Thumbs.db
 # Runtime data produced by this app
 projects/
 shared/
-agent_a/memory.md
-agent_b/memory.md
+agent_a/
+agent_b/
