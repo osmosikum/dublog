@@ -38,8 +38,9 @@ def check_convergence(memory_a: str, memory_b: str, threshold: float = 0.4) -> b
     return len(words_a & words_b) / min(len(words_a), len(words_b)) >= threshold
 
 
-def log_conversation(speaker: str, content: str, round_num: int, project_dir) -> None:
-    path = Path(project_dir) / "shared" / "conversation.md"
+def log_conversation(speaker: str, content: str, round_num: int, session_dir) -> None:
+    """Write a conversation turn to the session's conversation.md."""
+    path = Path(session_dir) / "conversation.md"
     timestamp = datetime.now().strftime("%H:%M:%S")
     with open(path, "a", encoding="utf-8") as f:
         f.write(f"\n---\n**Runde {round_num} | {speaker}** _{timestamp}_\n\n{content}\n")

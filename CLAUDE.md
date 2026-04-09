@@ -16,8 +16,9 @@ Den skal afspejle den nuvaerende sandhed og den naermeste retning, uden at laase
 - `main.py` koerer samtaler ud fra en `session_cfg`, men runtime er endnu ikke fuldt session-isoleret.
 - `projects.py` haandterer projektmapper og `settings.json`.
 - `identities.py` loader persona-filer fra `identities/`.
-- Memory og samtale-log ligger i dag paa projektniveau under `projects/<project>/`.
-- `app.py` har stadig global runtime-state (`run_queue`, `run_lock`, `is_running`), og det er et kendt naeste arkitekturtrin.
+- Memory ligger paa projektniveau under `projects/<project>/agent_x/memory.md` og deles paa tvaers af sessioner.
+- Samtale-log ligger per session under `projects/<project>/sessions/<session_id>/conversation.md`.
+- `app.py` har global runtime-state (`run_queue`, `run_lock`, `stop_event`, `is_running`) — et kendt naeste arkitekturtrin er at flytte dette til `sessions.py`.
 - Der findes endnu ikke dedikerede moduler som `sessions.py`, `telemetry.py` eller `validators.py`.
 
 ## Dokumenternes roller

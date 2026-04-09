@@ -9,14 +9,14 @@ from urllib.parse import urlparse, parse_qs
 
 import requests as req_lib
 
-# Ensure CWD is always the project root regardless of invocation directory
 os.chdir(Path(__file__).parent)
 
 PORT = 7842
 
-run_queue: queue.Queue = queue.Queue()
-run_lock  = threading.Lock()
-is_running = False
+run_queue:  queue.Queue    = queue.Queue()
+run_lock:   threading.Lock = threading.Lock()
+stop_event: threading.Event = threading.Event()
+is_running: bool = False
 
 
 # ── Model discovery ───────────────────────────────────────────────────────────
@@ -43,8 +43,6 @@ def fetch_lmstudio_models() -> tuple[list[str], str]:
         return [], str(e)
 
 
-# ── Output helper ─────────────────────────────────────────────────────────────
-
 def make_output_fn(q: queue.Queue):
     def fn(msg: str):
         for line in str(msg).split("\n"):
@@ -57,27 +55,27 @@ def make_output_fn(q: queue.Queue):
 class Handler(BaseHTTPRequestHandler):
 
     def log_message(self, fmt, *args):
-        pass  # silence default request logging
-
-    # ── Routing ──
+        pass
 
     def do_GET(self):
-        parsed = urlparse(self.path)
-        path   = parsed.path
-        self._qp = parse_qs(parsed.query)  # query params available to all handlers
+        parsed    = urlparse(self.path)
+        path      = parsed.path
+        self._qp  = parse_qs(parsed.query)
 
         routes = {
-            "/":                    lambda: self._serve_file("ui/index.html", "text/html; charset=utf-8"),
-            "/index.html":          lambda: self._serve_file("ui/index.html", "text/html; charset=utf-8"),
-            "/api/models":          self._get_models,
-            "/api/config":          self._get_config,
-            "/api/stream":          self._stream,
-            "/api/status":          self._get_status,
-            "/api/projects":        self._get_projects,
+            "/":                     lambda: self._serve_file("ui/index.html", "text/html; charset=utf-8"),
+            "/index.html":           lambda: self._serve_file("ui/index.html", "text/html; charset=utf-8"),
+            "/api/models":           self._get_models,
+            "/api/config":           self._get_config,
+            "/api/stream":           self._stream,
+            "/api/status":           self._get_status,
+            "/api/projects":         self._get_projects,
             "/api/project/settings": self._get_project_settings,
-            "/api/identities":      self._get_identities,
-            "/api/memory/a":        lambda: self._get_memory("agent_a"),
-            "/api/memory/b":        lambda: self._get_memory("agent_b"),
+            "/api/sessions":         self._get_sessions,
+            "/api/session/log":      self._get_session_log,
+            "/api/identities":       self._get_identities,
+            "/api/memory/a":         lambda: self._get_memory("agent_a"),
+            "/api/memory/b":         lambda: self._get_memory("agent_b"),
         }
         handler = routes.get(path)
         if handler:
@@ -89,8 +87,11 @@ class Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         routes = {
             "/api/run":              self._start_run,
+            "/api/stop":             self._stop_run,
             "/api/projects":         self._create_project,
             "/api/project/settings": self._save_project_settings,
+            "/api/delete/project":   self._delete_project,
+            "/api/delete/session":   self._delete_session,
         }
         handler = routes.get(path)
         if handler:
@@ -145,6 +146,23 @@ class Handler(BaseHTTPRequestHandler):
         from projects import load_settings
         self._json(load_settings(project))
 
+    def _get_sessions(self):
+        project = self._qp.get("project", ["default"])[0]
+        from projects import list_sessions
+        self._json(list_sessions(project))
+
+    def _get_session_log(self):
+        project    = self._qp.get("project",  ["default"])[0]
+        session_id = self._qp.get("session",  [""])[0]
+        from projects import get_session_log
+        text = get_session_log(project, session_id)
+        body = text.encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
     def _get_identities(self):
         from identities import list_identities
         self._json(list_identities())
@@ -161,7 +179,6 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _stream(self):
-        """Server-Sent Events — streams output lines to the browser."""
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Cache-Control", "no-cache")
@@ -175,12 +192,10 @@ class Handler(BaseHTTPRequestHandler):
                     self.wfile.write(b": ping\n\n")
                     self.wfile.flush()
                     continue
-
                 if msg is None:
                     self.wfile.write(b"data: [DONE]\n\n")
                     self.wfile.flush()
                     break
-
                 encoded = msg.replace("\\", "\\\\")
                 self.wfile.write(f"data: {encoded}\n\n".encode("utf-8"))
                 self.wfile.flush()
@@ -203,37 +218,34 @@ class Handler(BaseHTTPRequestHandler):
                 return
             is_running = True
 
-        # Clear leftover messages from previous run
+        # Reset stop signal and clear leftover output
+        stop_event.clear()
         while not run_queue.empty():
             try:
                 run_queue.get_nowait()
             except queue.Empty:
                 break
 
-        # Build session_cfg from request body
         session_cfg = {
-            "topic":      body.get("topic", ""),
-            "rounds":     body.get("rounds", 6),
-            "name_a":     body.get("name_a", "Agent A"),
-            "model_a":    body.get("model_a", ""),
+            "topic":      body.get("topic",      ""),
+            "rounds":     body.get("rounds",     6),
+            "name_a":     body.get("name_a",     "Agent A"),
+            "model_a":    body.get("model_a",    ""),
             "identity_a": body.get("identity_a", "skeptikeren"),
             "language_a": body.get("language_a", "dansk"),
-            "length_a":   body.get("length_a", "medium"),
-            "name_b":     body.get("name_b", "Agent B"),
-            "model_b":    body.get("model_b", ""),
+            "length_a":   body.get("length_a",   "medium"),
+            "name_b":     body.get("name_b",     "Agent B"),
+            "model_b":    body.get("model_b",    ""),
             "identity_b": body.get("identity_b", "optimisten"),
             "language_b": body.get("language_b", "dansk"),
-            "length_b":   body.get("length_b", "medium"),
+            "length_b":   body.get("length_b",   "medium"),
         }
         project = body.get("project", "default")
 
-        # Also update BACKEND in config so model.py uses the right backend
         import config as cfg
         cfg.BACKEND = body.get("backend", cfg.BACKEND)
 
-        # Save settings to project so they're restored on next load
-        from projects import save_settings, create_project, sanitize_name
-        project = sanitize_name(project) if project != "default" else project
+        from projects import save_settings
         save_settings(project, {**session_cfg, "backend": body.get("backend", cfg.BACKEND)})
 
         def run():
@@ -244,6 +256,7 @@ class Handler(BaseHTTPRequestHandler):
                     output_fn=make_output_fn(run_queue),
                     project=project,
                     session_cfg=session_cfg,
+                    stop_event=stop_event,
                 )
             except Exception as e:
                 run_queue.put(f"[FEJL] {e}")
@@ -253,6 +266,10 @@ class Handler(BaseHTTPRequestHandler):
 
         threading.Thread(target=run, daemon=True).start()
         self._json({"status": "started"})
+
+    def _stop_run(self):
+        stop_event.set()
+        self._json({"status": "stopping"})
 
     def _create_project(self):
         body = self._read_body()
@@ -266,13 +283,32 @@ class Handler(BaseHTTPRequestHandler):
 
     def _save_project_settings(self):
         body = self._read_body()
-        project = body.get("project", "default")
+        project  = body.get("project",  "default")
         settings = body.get("settings", {})
         from projects import save_settings
         save_settings(project, settings)
         self._json({"status": "saved"})
 
-    # ── Helpers ──
+    def _delete_project(self):
+        body    = self._read_body()
+        project = body.get("project", "")
+        if not project or project == "default":
+            self._json({"error": "Kan ikke slette default-projektet"})
+            return
+        from projects import delete_project
+        delete_project(project)
+        self._json({"status": "deleted"})
+
+    def _delete_session(self):
+        body       = self._read_body()
+        project    = body.get("project",  "")
+        session_id = body.get("session",  "")
+        if not project or not session_id:
+            self._json({"error": "Mangler project eller session"})
+            return
+        from projects import delete_session
+        delete_session(project, session_id)
+        self._json({"status": "deleted"})
 
     def _json(self, data):
         body = json.dumps(data, ensure_ascii=False).encode("utf-8")
@@ -284,11 +320,8 @@ class Handler(BaseHTTPRequestHandler):
 
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
-    """Each request gets its own thread — required for SSE + concurrent GETs."""
     daemon_threads = True
 
-
-# ── Entry point ───────────────────────────────────────────────────────────────
 
 def main():
     from projects import ensure_default
