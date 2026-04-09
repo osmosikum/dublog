@@ -1,4 +1,5 @@
 import config
+import threading
 from pathlib import Path
 from datetime import datetime
 
@@ -9,30 +10,41 @@ from memory import (
 )
 from prompts import build_system_prompt, build_user_message
 from identities import load_identity
-from projects import ensure_default, create_project
+from projects import ensure_default, create_session
 
 
 # ── Directory setup ───────────────────────────────────────────────────────────
 
-def setup_dirs(project_dir: Path, topic: str, project: str) -> None:
+def setup_dirs(project_dir: Path, session_dir: Path, topic: str, project: str, session_id: str) -> None:
+    # Project-level memory (persists across sessions)
     (project_dir / "agent_a").mkdir(parents=True, exist_ok=True)
     (project_dir / "agent_b").mkdir(parents=True, exist_ok=True)
-    (project_dir / "shared").mkdir(parents=True, exist_ok=True)
-
     for subdir in ("agent_a", "agent_b"):
         mem = project_dir / subdir / "memory.md"
         if not mem.exists():
             mem.write_text("", encoding="utf-8")
 
-    conv = project_dir / "shared" / "conversation.md"
+    # Session-level log (fresh per run)
+    session_dir.mkdir(parents=True, exist_ok=True)
+
+    conv = session_dir / "conversation.md"
     if not conv.exists():
         conv.write_text(
             f"# Samtale\n\n"
             f"**Emne:** {topic}\n"
             f"**Projekt:** {project}\n"
+            f"**Session:** {session_id}\n"
             f"**Startet:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
             encoding="utf-8",
         )
+
+    run_cfg = session_dir / "run_config.md"
+    with open(run_cfg, "w", encoding="utf-8") as f:
+        f.write("# Run Config\n\n")
+        f.write(f"**Dato:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"**Projekt:** {project}\n")
+        f.write(f"**Session:** {session_id}\n")
+        f.write(f"**Emne:** {topic}\n")
 
 
 # ── Single agent turn ─────────────────────────────────────────────────────────
@@ -62,22 +74,24 @@ def run_agent(
         total_rounds=total_rounds,
         max_turns=config.MAX_HISTORY_TURNS,
     )
-
     response = call_model(model, system_prompt, messages)
-
     memory_entry = extract_memory_tag(response)
     if memory_entry:
         append_memory(agent_dir, memory_entry)
-
     clean = response.split("[MEMORY]:")[0].strip()
     return clean if clean else response
 
 
 # ── Orchestrator ──────────────────────────────────────────────────────────────
 
-def run_conversation(output_fn=print, project: str = "default", session_cfg: dict | None = None):
+def run_conversation(
+    output_fn=print,
+    project: str = "default",
+    session_cfg: dict | None = None,
+    stop_event: threading.Event | None = None,
+):
     """
-    Run a full conversation.
+    Run a full conversation, creating a new session under the project.
 
     session_cfg keys (all optional — fall back to config.py defaults):
         topic, rounds,
@@ -100,17 +114,19 @@ def run_conversation(output_fn=print, project: str = "default", session_cfg: dic
     language_b = session_cfg.get("language_b", config.LANGUAGE_B)
     length_b   = session_cfg.get("length_b",   config.LENGTH_B)
 
-    project_dir  = Path("projects") / project
-    agent_a_dir  = project_dir / "agent_a"
-    agent_b_dir  = project_dir / "agent_b"
+    project_dir = Path("projects") / project
+    session_id, session_dir = create_session(project)
+
+    agent_a_dir = project_dir / "agent_a"
+    agent_b_dir = project_dir / "agent_b"
 
     output_fn(f"\n>>> Multi-Agent Sandbox starter")
-    output_fn(f">>> Projekt:  {project}")
+    output_fn(f">>> Projekt:  {project}  |  Session: {session_id}")
     output_fn(f">>> Emne:     {topic}")
     output_fn(f">>> Runder:   {rounds}")
-    output_fn(f">>> {name_a} [{model_a} / {identity_a}]  vs  {name_b} [{model_b} / {identity_b}]\n")
+    output_fn(f">>> {name_a} [{model_a}]  vs  {name_b} [{model_b}]\n")
 
-    setup_dirs(project_dir, topic, project)
+    setup_dirs(project_dir, session_dir, topic, project, session_id)
 
     history_a: list[dict] = []
     history_b: list[dict] = []
@@ -119,6 +135,11 @@ def run_conversation(output_fn=print, project: str = "default", session_cfg: dic
     streak = 0
 
     for round_num in range(1, rounds + 1):
+        # Check for stop signal before starting each round
+        if stop_event and stop_event.is_set():
+            output_fn(f"\n>>> Samtale stoppet af bruger efter runde {round_num - 1}.")
+            break
+
         output_fn(f"\n>>> Runde {round_num}/{rounds} begynder...")
 
         # ── Agent A ──
@@ -131,11 +152,16 @@ def run_conversation(output_fn=print, project: str = "default", session_cfg: dic
         output_fn(f"  Runde {round_num} — {name_a}")
         output_fn(f"{'='*60}")
         output_fn(response_a)
-        log_conversation(name_a, response_a, round_num, project_dir)
+        log_conversation(name_a, response_a, round_num, session_dir)
 
         history_a.append({"role": "assistant", "content": response_a})
         history_b.append({"role": "user",      "content": f"{name_a} sagde: {response_a}"})
         last_a = response_a
+
+        # Check again between agents
+        if stop_event and stop_event.is_set():
+            output_fn(f"\n>>> Samtale stoppet af bruger.")
+            break
 
         # ── Agent B ──
         response_b = run_agent(
@@ -147,7 +173,7 @@ def run_conversation(output_fn=print, project: str = "default", session_cfg: dic
         output_fn(f"  Runde {round_num} — {name_b}")
         output_fn(f"{'='*60}")
         output_fn(response_b)
-        log_conversation(name_b, response_b, round_num, project_dir)
+        log_conversation(name_b, response_b, round_num, session_dir)
 
         history_b.append({"role": "assistant", "content": response_b})
         history_a.append({"role": "user",      "content": f"{name_b} sagde: {response_b}"})
@@ -167,9 +193,10 @@ def run_conversation(output_fn=print, project: str = "default", session_cfg: dic
                 streak = 0
 
     output_fn(f"\n{'='*60}")
-    output_fn(f"  Samtale afsluttet")
-    output_fn(f"  Log: projects/{project}/shared/conversation.md")
+    output_fn(f"  Samtale afsluttet  |  Session: {session_id}")
     output_fn(f"{'='*60}\n")
+    # Send session_id back so UI can update the session list
+    output_fn(f"__SESSION_ID__:{session_id}")
 
 
 # ── CLI entry point ───────────────────────────────────────────────────────────

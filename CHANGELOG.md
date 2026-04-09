@@ -3,8 +3,29 @@
 Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer `[Unreleased]` og afsluttes med `Sign-off: Claude` eller `Sign-off: Codex`.
 
 ## [Unreleased]
+### Added
+- Stop-knap: kør-knappen skifter til rød "⏹ Stop" under kørsel og sender stop-signal til serveren
+- Session-system: hver samtale-kørsel opretter en unik session (`YYYYMMDD-HHMMSS`) under projektet
+- Session-selector i UI: vis og skift mellem tidligere sessioner, klik for at genlæse log
+- Slet-knap per session og slet-knap per projekt (med confirm-dialog)
+- `/api/stop` — POST-endpoint der sætter `stop_event` og afbryder kørende samtale rent
+- `/api/sessions` — GET-endpoint der lister sessioner for et projekt (nyeste først)
+- `/api/session/log` — GET-endpoint der returnerer `conversation.md` for en given session
+- `/api/delete/project` og `/api/delete/session` — POST-endpoints til sletning
+
+### Changed
+- Disk-layout: samtale-log flyttes fra `projects/{proj}/shared/` til `projects/{proj}/sessions/{id}/`
+- Memory forbliver på projektniveau (`agent_a/memory.md`, `agent_b/memory.md`) — deles på tværs af sessioner
+- `projects.py` udvidet med: `create_session`, `list_sessions`, `delete_session`, `delete_project`, `get_session_log`, `new_session_id`
+- `main.py`: `run_conversation` accepterer nu `stop_event` og opretter session automatisk
+- `memory.py`: `log_conversation` tager `session_dir` i stedet for `project_dir`
+- Legacy v1-mapper (`agent_a/`, `agent_b/`, `shared/` i rodmappen) slettet fra disk
+- `.gitignore` dækker nu `agent_a/` og `agent_b/` mappeniveau (ikke kun enkeltfiler)
+
 ### Docs
-- Gennemgået og synket hele dokumentlaget: CLAUDE.md, README.md, .gitignore og git-tracking.
+- `CLAUDE.md` strukturtræ opdateret til at matche nuværende kodebase
+- `README.md` omskrevet til at dokumentere UI, `identities/`, `projects/` og `app.py`
+- `CHANGELOG.md` ryddet: baseline-sektionen har eget navn
 
 Sign-off: Claude
 

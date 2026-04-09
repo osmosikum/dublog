@@ -8,24 +8,27 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #0d1117;
-      --surface:  #161b22;
-      --surface2: #1c2128;
-      --border:   #30363d;
-      --text:     #e6edf3;
-      --muted:    #8b949e;
-      --blue:     #58a6ff;
-      --green:    #3fb950;
-      --orange:   #d29922;
-      --red:      #f85149;
+      --bg:      #0d1117;
+      --surface: #161b22;
+      --surf2:   #1c2128;
+      --border:  #30363d;
+      --text:    #e6edf3;
+      --muted:   #8b949e;
+      --blue:    #58a6ff;
+      --green:   #3fb950;
+      --orange:  #d29922;
+      --red:     #f85149;
     }
 
-    html, body { height: 100%; background: var(--bg); color: var(--text);
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      font-size: 13px; }
+      font-size: 13px;
+    }
 
     /* ── Layout ── */
-
     .app { display: flex; flex-direction: column; height: 100vh; }
 
     .topbar {
@@ -35,15 +38,14 @@
       flex-shrink: 0;
     }
     .topbar-title { font-weight: 600; font-size: 14px; }
-    .topbar-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
-    .topbar-dot.running { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+    .dot.running { background: var(--green); box-shadow: 0 0 6px var(--green); }
     .topbar-status { font-size: 12px; color: var(--muted); }
     .topbar-status.running { color: var(--green); }
 
     .body { display: flex; flex: 1; overflow: hidden; }
 
     /* ── Sidebar ── */
-
     .sidebar {
       width: 278px; min-width: 278px;
       background: var(--surface); border-right: 1px solid var(--border);
@@ -51,45 +53,43 @@
       overflow-y: auto; padding: 12px 11px; gap: 14px;
     }
 
-    /* ── Project bar ── */
-
-    .project-bar {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 7px; padding: 5px 8px;
-    }
-    .project-bar select {
-      flex: 1; background: transparent; border: none;
-      color: var(--text); font-size: 12px; font-weight: 600;
-      outline: none; cursor: pointer;
-    }
-    .project-bar select option { background: var(--surface); }
-    .project-new-btn {
-      background: none; border: none; color: var(--muted);
-      font-size: 16px; line-height: 1; cursor: pointer; padding: 0 2px;
-      transition: color 0.15s;
-    }
-    .project-new-btn:hover { color: var(--green); }
-
-    /* ── Sections ── */
-
-    .section { display: flex; flex-direction: column; gap: 5px; }
-
     .section-label {
       font-size: 10px; font-weight: 700; letter-spacing: 0.7px;
       text-transform: uppercase; color: var(--muted);
       padding-bottom: 4px; border-bottom: 1px solid var(--border);
       display: flex; align-items: center;
     }
-
-    .refresh-link {
+    .label-action {
       margin-left: auto; font-size: 11px; color: var(--muted);
       background: none; border: none; cursor: pointer; padding: 0;
       text-transform: none; letter-spacing: 0; font-weight: 400;
       transition: color 0.15s;
     }
-    .refresh-link:hover { color: var(--blue); }
+    .label-action:hover { color: var(--blue); }
+    .label-action.danger:hover { color: var(--red); }
 
+    /* ── Context bar (project + session) ── */
+    .ctx-row {
+      display: flex; align-items: center; gap: 5px;
+      background: var(--surf2); border: 1px solid var(--border);
+      border-radius: 7px; padding: 5px 8px;
+    }
+    .ctx-row select {
+      flex: 1; background: transparent; border: none;
+      color: var(--text); font-size: 12px; font-weight: 600;
+      outline: none; cursor: pointer; min-width: 0;
+    }
+    .ctx-row select option { background: var(--surface); }
+    .ctx-btn {
+      background: none; border: none; cursor: pointer; padding: 2px 3px;
+      font-size: 14px; line-height: 1; color: var(--muted);
+      transition: color 0.15s; flex-shrink: 0;
+    }
+    .ctx-btn:hover { color: var(--text); }
+    .ctx-btn.add:hover { color: var(--green); }
+    .ctx-btn.del:hover { color: var(--red); }
+
+    /* ── Form elements ── */
     label { font-size: 11px; color: var(--muted); margin-top: 3px; display: block; }
 
     input[type="text"], select, textarea {
@@ -108,48 +108,49 @@
     .rounds-num { font-size: 13px; font-weight: 600; color: var(--blue); min-width: 20px; text-align: center; }
 
     /* ── Agent cards ── */
-
     .agent-card {
       background: var(--bg); border: 1px solid var(--border);
       border-radius: 8px; padding: 10px;
       display: flex; flex-direction: column; gap: 5px;
     }
     .agent-card-header { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
-    .agent-pip { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .pip { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .pip-a { background: var(--blue); }
     .pip-b { background: var(--green); }
-    .agent-name-display { font-size: 12px; font-weight: 600; }
+    .agent-name-lbl { font-size: 12px; font-weight: 600; }
     .color-a { color: var(--blue); }
     .color-b { color: var(--green); }
 
-    /* language + length side by side */
     .row2 { display: flex; gap: 6px; }
     .row2 > div { flex: 1; min-width: 0; }
 
     /* ── Buttons ── */
-
     .btn {
       width: 100%; padding: 7px 12px; border-radius: 6px; border: none;
       font-size: 13px; font-weight: 600; cursor: pointer;
-      transition: opacity 0.15s;
+      transition: opacity 0.15s, background 0.15s, color 0.15s;
     }
     .btn:hover:not(:disabled) { opacity: 0.85; }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-run { background: var(--green); color: #0d1117; }
-    .btn-clear { background: transparent; border: 1px solid var(--border); color: var(--muted); margin-top: 4px; }
+
+    .btn-run  { background: var(--green); color: #0d1117; }
+    .btn-stop { background: var(--red);   color: #fff; }
+    .btn-clear {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); margin-top: 4px;
+    }
     .btn-clear:hover:not(:disabled) { color: var(--text); border-color: var(--muted); }
 
     /* ── Console ── */
-
     .console-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
     .console {
       flex: 1; padding: 14px 18px; overflow-y: auto;
-      font-family: 'Consolas', 'Cascadia Code', 'Fira Code', monospace;
+      font-family: 'Consolas', 'Cascadia Code', monospace;
       font-size: 13px; line-height: 1.65;
     }
 
-    .console-line { white-space: pre-wrap; word-break: break-word; }
+    .line { white-space: pre-wrap; word-break: break-word; }
     .l-empty  { height: 6px; }
     .l-sep    { color: #21262d; user-select: none; }
     .l-head   { color: var(--blue); font-weight: 700; }
@@ -158,18 +159,21 @@
     .l-conv   { color: var(--orange); }
     .l-error  { color: var(--red); }
     .l-done   { color: var(--green); font-weight: 700; }
+    .l-log    { color: var(--muted); font-style: italic; }
 
     .empty-hint { color: var(--muted); text-align: center; margin-top: 60px; line-height: 2; }
     .empty-hint strong { color: var(--text); }
 
     /* ── Memory bar ── */
-
     .memory-bar {
       border-top: 1px solid var(--border); background: var(--surface);
       padding: 8px 16px; display: flex; gap: 24px; flex-shrink: 0;
     }
     .mem-col { flex: 1; min-width: 0; }
-    .mem-title { font-size: 10px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 4px; }
+    .mem-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
+      text-transform: uppercase; margin-bottom: 4px;
+    }
     .mem-a { color: var(--blue); }
     .mem-b { color: var(--green); }
     .mem-content {
@@ -183,31 +187,41 @@
 <body>
 <div class="app">
 
-  <!-- top bar -->
   <div class="topbar">
-    <div class="topbar-dot" id="status-dot"></div>
+    <div class="dot" id="status-dot"></div>
     <span class="topbar-title">Multi-Agent Sandbox</span>
     <span class="topbar-status" id="status-text">Klar</span>
   </div>
 
   <div class="body">
-
-    <!-- sidebar -->
     <aside class="sidebar">
 
-      <!-- Project selector -->
+      <!-- Project -->
       <div>
         <div class="section-label">Projekt</div>
-        <div class="project-bar">
-          <select id="project-select" onchange="onProjectChange()">
-            <option value="default">default</option>
+        <div class="ctx-row">
+          <select id="project-select" onchange="onProjectChange()"></select>
+          <button class="ctx-btn add" onclick="newProject()" title="Nyt projekt">＋</button>
+          <button class="ctx-btn del" onclick="deleteProject()" title="Slet projekt">🗑</button>
+        </div>
+      </div>
+
+      <!-- Session -->
+      <div>
+        <div class="section-label">
+          Session
+          <button class="label-action" onclick="loadSessions(currentProject)">↻</button>
+        </div>
+        <div class="ctx-row">
+          <select id="session-select" onchange="onSessionChange()">
+            <option value="new">● Ny session</option>
           </select>
-          <button class="project-new-btn" onclick="newProject()" title="Nyt projekt">＋</button>
+          <button class="ctx-btn del" id="session-del-btn" onclick="deleteSession()" title="Slet session" disabled>🗑</button>
         </div>
       </div>
 
       <!-- Backend -->
-      <div class="section">
+      <div>
         <div class="section-label">Backend</div>
         <select id="backend">
           <option value="ollama">Ollama</option>
@@ -217,7 +231,7 @@
       </div>
 
       <!-- Conversation -->
-      <div class="section">
+      <div>
         <div class="section-label">Samtale</div>
         <label>Emne</label>
         <textarea id="topic" rows="3"></textarea>
@@ -229,38 +243,30 @@
       </div>
 
       <!-- Agents -->
-      <div class="section">
+      <div>
         <div class="section-label">
           Agenter
-          <button class="refresh-link" onclick="loadModels()">↻ modeller</button>
+          <button class="label-action" onclick="loadModels()">↻ modeller</button>
         </div>
 
-        <!-- Agent A -->
         <div class="agent-card">
           <div class="agent-card-header">
-            <div class="agent-pip pip-a"></div>
-            <span class="agent-name-display color-a" id="display-name-a">Agent A</span>
+            <div class="pip pip-a"></div>
+            <span class="agent-name-lbl color-a" id="display-name-a">Agent A</span>
           </div>
           <label>Navn</label>
           <input type="text" id="name-a"
             oninput="document.getElementById('display-name-a').textContent=this.value||'Agent A'">
           <label>Identitet</label>
-          <select id="identity-a" onchange="onIdentityChange('a')">
-            <option value="">Indlæser…</option>
-          </select>
+          <select id="identity-a" onchange="onIdentityChange('a')"></select>
           <div class="row2">
-            <div>
-              <label>Sprog</label>
+            <div><label>Sprog</label>
               <select id="language-a">
-                <option value="dansk">Dansk</option>
-                <option value="engelsk">Engelsk</option>
-                <option value="norsk">Norsk</option>
-                <option value="svensk">Svensk</option>
-                <option value="tysk">Tysk</option>
+                <option value="dansk">Dansk</option><option value="engelsk">Engelsk</option>
+                <option value="norsk">Norsk</option><option value="svensk">Svensk</option>
               </select>
             </div>
-            <div>
-              <label>Længde</label>
+            <div><label>Længde</label>
               <select id="length-a">
                 <option value="kort">Kort</option>
                 <option value="medium" selected>Medium</option>
@@ -272,32 +278,24 @@
           <select id="model-a"><option value="">Indlæser…</option></select>
         </div>
 
-        <!-- Agent B -->
-        <div class="agent-card">
+        <div class="agent-card" style="margin-top:8px">
           <div class="agent-card-header">
-            <div class="agent-pip pip-b"></div>
-            <span class="agent-name-display color-b" id="display-name-b">Agent B</span>
+            <div class="pip pip-b"></div>
+            <span class="agent-name-lbl color-b" id="display-name-b">Agent B</span>
           </div>
           <label>Navn</label>
           <input type="text" id="name-b"
             oninput="document.getElementById('display-name-b').textContent=this.value||'Agent B'">
           <label>Identitet</label>
-          <select id="identity-b" onchange="onIdentityChange('b')">
-            <option value="">Indlæser…</option>
-          </select>
+          <select id="identity-b" onchange="onIdentityChange('b')"></select>
           <div class="row2">
-            <div>
-              <label>Sprog</label>
+            <div><label>Sprog</label>
               <select id="language-b">
-                <option value="dansk">Dansk</option>
-                <option value="engelsk">Engelsk</option>
-                <option value="norsk">Norsk</option>
-                <option value="svensk">Svensk</option>
-                <option value="tysk">Tysk</option>
+                <option value="dansk">Dansk</option><option value="engelsk">Engelsk</option>
+                <option value="norsk">Norsk</option><option value="svensk">Svensk</option>
               </select>
             </div>
-            <div>
-              <label>Længde</label>
+            <div><label>Længde</label>
               <select id="length-b">
                 <option value="kort">Kort</option>
                 <option value="medium" selected>Medium</option>
@@ -311,22 +309,21 @@
       </div>
 
       <!-- Actions -->
-      <div class="section">
-        <button class="btn btn-run" id="run-btn" onclick="startRun()">▶ Kør samtale</button>
+      <div>
+        <button class="btn btn-run" id="run-btn" onclick="handleRunStop()">▶ Kør samtale</button>
         <button class="btn btn-clear" onclick="clearConsole()">Ryd output</button>
       </div>
 
     </aside>
 
-    <!-- output + memory -->
+    <!-- Console + memory -->
     <div class="console-wrap">
       <div class="console" id="console">
         <div class="empty-hint" id="empty-hint">
           Vælg projekt og agenter — tryk <strong>Kør samtale</strong>.<br>
-          Output streames live herinde.
+          Klik en tidligere session for at genläse dens log.
         </div>
       </div>
-
       <div class="memory-bar">
         <div class="mem-col">
           <div class="mem-title mem-a" id="mem-title-a">Agent A — Hukommelse</div>
@@ -338,78 +335,70 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
   // ── State ──────────────────────────────────────────────────────────────────
-  let running         = false;
-  let currentProject  = "default";
-  let identityData    = [];
-  let savedModelA     = "";
-  let savedModelB     = "";
+  let running        = false;
+  let currentProject = "default";
+  let identityData   = [];
+  let savedModelA    = "";
+  let savedModelB    = "";
   let memPollInterval = null;
+  let latestSessionId = null; // set when a run completes
 
   // ── Boot ───────────────────────────────────────────────────────────────────
   async function init() {
     await Promise.all([loadProjects(), loadIdentities()]);
     await loadProjectSettings(currentProject);
     await loadModels();
+    await loadSessions(currentProject);
   }
 
   // ── Projects ───────────────────────────────────────────────────────────────
   async function loadProjects() {
-    try {
-      const r = await fetch("/api/projects");
-      const list = await r.json();
-      const sel = document.getElementById("project-select");
-      sel.innerHTML = "";
-      list.forEach(p => sel.add(new Option(p, p)));
-      if (list.includes(currentProject)) sel.value = currentProject;
-      else if (list.length) { currentProject = list[0]; sel.value = currentProject; }
-    } catch (e) { console.warn("loadProjects:", e); }
+    const r    = await fetch("/api/projects");
+    const list = await r.json();
+    const sel  = document.getElementById("project-select");
+    sel.innerHTML = "";
+    list.forEach(p => sel.add(new Option(p, p)));
+    if (list.includes(currentProject)) sel.value = currentProject;
+    else if (list.length) { currentProject = list[0]; sel.value = currentProject; }
   }
 
   async function onProjectChange() {
     currentProject = document.getElementById("project-select").value;
-    await loadProjectSettings(currentProject);
+    clearConsole();
+    await Promise.all([
+      loadProjectSettings(currentProject),
+      loadSessions(currentProject),
+    ]);
     pollMemory();
   }
 
   async function loadProjectSettings(project) {
     try {
-      const r = await fetch(`/api/project/settings?project=${encodeURIComponent(project)}`);
+      const r = await fetch(`/api/project/settings?project=${enc(project)}`);
       const s = await r.json();
-
-      document.getElementById("topic").value         = s.topic  ?? "";
-      document.getElementById("rounds-range").value  = s.rounds ?? 6;
+      document.getElementById("topic").value            = s.topic  ?? "";
+      document.getElementById("rounds-range").value     = s.rounds ?? 6;
       document.getElementById("rounds-val").textContent = s.rounds ?? 6;
-      document.getElementById("backend").value        = s.backend ?? "ollama";
-
-      // Agent names
+      document.getElementById("backend").value          = s.backend ?? "ollama";
       const na = s.name_a ?? "Agent A";
       const nb = s.name_b ?? "Agent B";
       document.getElementById("name-a").value = na;
       document.getElementById("name-b").value = nb;
       document.getElementById("display-name-a").textContent = na;
       document.getElementById("display-name-b").textContent = nb;
-
-      // Identity dropdowns
       if (s.identity_a) document.getElementById("identity-a").value = s.identity_a;
       if (s.identity_b) document.getElementById("identity-b").value = s.identity_b;
-
-      // Language + length
       document.getElementById("language-a").value = s.language_a ?? "dansk";
       document.getElementById("language-b").value = s.language_b ?? "dansk";
       document.getElementById("length-a").value   = s.length_a   ?? "medium";
       document.getElementById("length-b").value   = s.length_b   ?? "medium";
-
-      // Memory titles
       document.getElementById("mem-title-a").textContent = `${na} — Hukommelse`;
       document.getElementById("mem-title-b").textContent = `${nb} — Hukommelse`;
-
-      // Store model preferences — applied after models load
       savedModelA = s.model_a ?? "";
       savedModelB = s.model_b ?? "";
     } catch (e) { console.warn("loadProjectSettings:", e); }
@@ -417,51 +406,115 @@
 
   async function newProject() {
     const name = prompt("Navn på nyt projekt:");
-    if (!name || !name.trim()) return;
-    try {
-      const r = await fetch("/api/projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim() })
-      });
-      const res = await r.json();
-      if (res.error) { alert(res.error); return; }
-      await loadProjects();
-      document.getElementById("project-select").value = res.slug;
-      currentProject = res.slug;
-      await loadProjectSettings(currentProject);
-      pollMemory();
-    } catch (e) { alert("Fejl: " + e); }
+    if (!name?.trim()) return;
+    const r   = await fetch("/api/projects", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name.trim() })
+    });
+    const res = await r.json();
+    if (res.error) { alert(res.error); return; }
+    await loadProjects();
+    document.getElementById("project-select").value = res.slug;
+    currentProject = res.slug;
+    await loadProjectSettings(currentProject);
+    await loadSessions(currentProject);
+    pollMemory();
+  }
+
+  async function deleteProject() {
+    if (currentProject === "default") { alert("Default-projektet kan ikke slettes."); return; }
+    if (!confirm(`Slet projektet "${currentProject}" og ALT dets data?`)) return;
+    await fetch("/api/delete/project", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project: currentProject })
+    });
+    currentProject = "default";
+    await loadProjects();
+    document.getElementById("project-select").value = "default";
+    await onProjectChange();
+  }
+
+  // ── Sessions ───────────────────────────────────────────────────────────────
+  async function loadSessions(project) {
+    const r       = await fetch(`/api/sessions?project=${enc(project)}`);
+    const list    = await r.json();
+    const sel     = document.getElementById("session-select");
+    const delBtn  = document.getElementById("session-del-btn");
+
+    sel.innerHTML = "<option value='new'>● Ny session</option>";
+    list.forEach(id => {
+      const label = formatSessionId(id);
+      sel.add(new Option(label, id));
+    });
+
+    // If a run just completed, select it
+    if (latestSessionId && list.includes(latestSessionId)) {
+      sel.value = latestSessionId;
+      latestSessionId = null;
+    }
+
+    delBtn.disabled = (sel.value === "new");
+  }
+
+  function formatSessionId(id) {
+    // "20260408-215430" → "2026-04-08  21:54"
+    const m = id.match(/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/);
+    if (!m) return id;
+    return `${m[1]}-${m[2]}-${m[3]}  ${m[4]}:${m[5]}`;
+  }
+
+  async function onSessionChange() {
+    const sel    = document.getElementById("session-select");
+    const id     = sel.value;
+    const delBtn = document.getElementById("session-del-btn");
+    delBtn.disabled = (id === "new");
+
+    if (id === "new") {
+      clearConsole();
+      return;
+    }
+    // Load past session log into console
+    const r    = await fetch(`/api/session/log?project=${enc(currentProject)}&session=${enc(id)}`);
+    const text = await r.text();
+    clearConsole();
+    if (!text.trim()) { appendLine("(tom session)", "l-muted"); return; }
+    appendLine(`— Session ${formatSessionId(id)} —`, "l-meta");
+    text.split("\n").forEach(line => appendLine(line, "l-log"));
+  }
+
+  async function deleteSession() {
+    const sel = document.getElementById("session-select");
+    const id  = sel.value;
+    if (id === "new") return;
+    if (!confirm(`Slet session "${formatSessionId(id)}"?`)) return;
+    await fetch("/api/delete/session", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project: currentProject, session: id })
+    });
+    clearConsole();
+    await loadSessions(currentProject);
   }
 
   // ── Identities ─────────────────────────────────────────────────────────────
   async function loadIdentities() {
-    try {
-      const r = await fetch("/api/identities");
-      identityData = await r.json();
-      ["a", "b"].forEach(agent => {
-        const sel = document.getElementById(`identity-${agent}`);
-        sel.innerHTML = "";
-        identityData.forEach(i => sel.add(new Option(i.name, i.slug)));
-      });
-      // Apply saved selections after populating
-      const sa = document.getElementById("identity-a");
-      const sb = document.getElementById("identity-b");
-      // Will be set by loadProjectSettings which runs after
-    } catch (e) { console.warn("loadIdentities:", e); }
+    const r = await fetch("/api/identities");
+    identityData = await r.json();
+    ["a", "b"].forEach(ag => {
+      const sel = document.getElementById(`identity-${ag}`);
+      sel.innerHTML = "";
+      identityData.forEach(i => sel.add(new Option(i.name, i.slug)));
+    });
   }
 
-  function onIdentityChange(agent) {
-    const slug  = document.getElementById(`identity-${agent}`).value;
+  function onIdentityChange(ag) {
+    const slug  = document.getElementById(`identity-${ag}`).value;
     const ident = identityData.find(i => i.slug === slug);
     if (!ident) return;
-    // Auto-fill name with identity's display name
-    const nameEl = document.getElementById(`name-${agent}`);
+    const nameEl = document.getElementById(`name-${ag}`);
     nameEl.value = ident.name;
-    document.getElementById(`display-name-${agent}`).textContent = ident.name;
-    // Apply language + length defaults from identity
-    document.getElementById(`language-${agent}`).value = ident.language || "dansk";
-    document.getElementById(`length-${agent}`).value   = ident.length   || "medium";
+    document.getElementById(`display-name-${ag}`).textContent = ident.name;
+    document.getElementById(`language-${ag}`).value = ident.language || "dansk";
+    document.getElementById(`length-${ag}`).value   = ident.length   || "medium";
   }
 
   // ── Models ─────────────────────────────────────────────────────────────────
@@ -476,14 +529,11 @@
       const data = await r.json();
       const models = backend === "lmstudio" ? data.lmstudio : data.ollama;
       const err    = backend === "lmstudio" ? data.lmstudio_error : data.ollama_error;
-
       selA.innerHTML = "";
       selB.innerHTML = "";
-
-      if (!models || models.length === 0) {
-        const msg = "⚠ " + (err || "Ingen modeller fundet");
-        selA.add(new Option(msg, ""));
-        selB.add(new Option(msg, ""));
+      if (!models?.length) {
+        const msg = "⚠ " + (err || "Ingen modeller");
+        selA.add(new Option(msg, "")); selB.add(new Option(msg, ""));
       } else {
         models.forEach(m => { selA.add(new Option(m, m)); selB.add(new Option(m, m)); });
         if (savedModelA && models.includes(savedModelA)) selA.value = savedModelA;
@@ -495,10 +545,18 @@
     }
   }
 
-  // ── Run control ─────────────────────────────────────────────────────────────
-  async function startRun() {
-    if (running) return;
+  // ── Run / Stop ─────────────────────────────────────────────────────────────
+  function handleRunStop() {
+    if (running) stopRun();
+    else         startRun();
+  }
 
+  async function stopRun() {
+    await fetch("/api/stop", { method: "POST" });
+    // Button stays red/disabled until the stream sends [DONE]
+  }
+
+  async function startRun() {
     const payload = {
       project:    currentProject,
       topic:      document.getElementById("topic").value.trim(),
@@ -520,17 +578,18 @@
     if (!payload.model_a) { appendLine("[FEJL] Vælg en model til Agent A.", "l-error"); return; }
     if (!payload.model_b) { appendLine("[FEJL] Vælg en model til Agent B.", "l-error"); return; }
 
+    // Reset to "Ny session" so we're ready for the new run's output
+    document.getElementById("session-select").value = "new";
+    document.getElementById("session-del-btn").disabled = true;
     clearConsole();
     setRunning(true);
 
-    // Update memory titles
     document.getElementById("mem-title-a").textContent = (payload.name_a || "Agent A") + " — Hukommelse";
     document.getElementById("mem-title-b").textContent = (payload.name_b || "Agent B") + " — Hukommelse";
 
     try {
-      const r = await fetch("/api/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const r      = await fetch("/api/run", {
+        method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
       const result = await r.json();
@@ -539,15 +598,24 @@
       appendLine("[FEJL] Kunne ikke nå serveren: " + e, "l-error"); setRunning(false); return;
     }
 
-    // SSE stream
     const es = new EventSource("/api/stream");
     es.onmessage = e => {
-      if (e.data === "[DONE]") { es.close(); setRunning(false); pollMemory(); return; }
+      if (e.data === "[DONE]") {
+        es.close();
+        setRunning(false);
+        pollMemory();
+        loadSessions(currentProject); // refresh session list
+        return;
+      }
+      // Capture the session_id signal from main.py
+      if (e.data.startsWith("__SESSION_ID__:")) {
+        latestSessionId = e.data.split(":")[1];
+        return; // don't display this line
+      }
       appendLine(e.data);
     };
     es.onerror = () => { es.close(); setRunning(false); };
 
-    // Poll memory while running
     clearInterval(memPollInterval);
     memPollInterval = setInterval(pollMemory, 4000);
   }
@@ -557,9 +625,16 @@
     const btn = document.getElementById("run-btn");
     const dot = document.getElementById("status-dot");
     const txt = document.getElementById("status-text");
-    btn.disabled    = state;
-    btn.textContent = state ? "⏳ Kører…" : "▶ Kør samtale";
-    dot.className   = "topbar-dot" + (state ? " running" : "");
+    if (state) {
+      btn.textContent = "⏹ Stop";
+      btn.className   = "btn btn-stop";
+      btn.disabled    = false;
+    } else {
+      btn.textContent = "▶ Kør samtale";
+      btn.className   = "btn btn-run";
+      btn.disabled    = false;
+    }
+    dot.className   = "dot" + (state ? " running" : "");
     txt.textContent = state ? "Kører…" : "Klar";
     txt.className   = "topbar-status" + (state ? " running" : "");
     if (!state) { clearInterval(memPollInterval); memPollInterval = null; }
@@ -571,7 +646,7 @@
     const hint = document.getElementById("empty-hint");
     if (hint) hint.remove();
     const div = document.createElement("div");
-    div.className  = "console-line " + (forceClass || classifyLine(text));
+    div.className   = "line " + (forceClass || classifyLine(text));
     div.textContent = text;
     con.appendChild(div);
     con.scrollTop = con.scrollHeight;
@@ -581,7 +656,7 @@
     if (!t || !t.trim())              return "l-empty";
     if (/^={3,}/.test(t))            return "l-sep";
     if (/^\s+Runde \d+\s+—/.test(t)) return "l-head";
-    if (/^\s+(Samtale afsluttet|Log:)/.test(t)) return "l-done";
+    if (/^\s+(Samtale afsluttet|Session:)/.test(t)) return "l-done";
     if (t.startsWith(">>>"))         return "l-meta";
     if (/\[Konvergens|Konvergens nået/.test(t)) return "l-conv";
     if (/\[FEJL\]/.test(t))          return "l-error";
@@ -590,25 +665,23 @@
 
   function clearConsole() {
     document.getElementById("console").innerHTML =
-      '<div class="empty-hint" id="empty-hint">Vælg projekt og agenter — tryk <strong>Kør samtale</strong>.<br>Output streames live herinde.</div>';
+      '<div class="empty-hint" id="empty-hint">Vælg projekt og agenter — tryk <strong>Kør samtale</strong>.<br>Klik en tidligere session for at genlæse dens log.</div>';
   }
 
-  // ── Memory panel ───────────────────────────────────────────────────────────
+  // ── Memory ─────────────────────────────────────────────────────────────────
   async function pollMemory() {
-    try {
-      const p = encodeURIComponent(currentProject);
-      const [ra, rb] = await Promise.all([
-        fetch(`/api/memory/a?project=${p}`).then(r => r.ok ? r.text() : null),
-        fetch(`/api/memory/b?project=${p}`).then(r => r.ok ? r.text() : null),
-      ]);
-      setMemPanel("mem-a", ra);
-      setMemPanel("mem-b", rb);
-    } catch (_) {}
+    const p = enc(currentProject);
+    const [ra, rb] = await Promise.all([
+      fetch(`/api/memory/a?project=${p}`).then(r => r.ok ? r.text() : null),
+      fetch(`/api/memory/b?project=${p}`).then(r => r.ok ? r.text() : null),
+    ]).catch(() => [null, null]);
+    setMemPanel("mem-a", ra);
+    setMemPanel("mem-b", rb);
   }
 
   function setMemPanel(id, text) {
     const el = document.getElementById(id);
-    if (!text || !text.trim()) {
+    if (!text?.trim()) {
       el.textContent = "(ingen entries endnu)"; el.classList.add("mem-empty");
     } else {
       el.textContent = text.trim(); el.classList.remove("mem-empty");
@@ -616,7 +689,9 @@
     }
   }
 
-  // ── Listeners ──────────────────────────────────────────────────────────────
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  const enc = s => encodeURIComponent(s);
+
   document.getElementById("rounds-range").addEventListener("input", function () {
     document.getElementById("rounds-val").textContent = this.value;
   });
