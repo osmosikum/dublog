@@ -4,11 +4,14 @@ Convention: every session that changes code, structure or working docs updates `
 
 ## [Unreleased]
 ### Added
+- `telemetry.py`: `record_call` appends one JSONL entry per agent call to `session_dir/telemetry.jsonl`; `load_telemetry` reads entries back as a list of dicts; fields: `round`, `agent`, `model`, `prompt_chars`, `memory_lines`, `history_turns`, `output_chars`, `duration_s`, `timestamp`
+- `/api/telemetry` GET endpoint: returns telemetry entries for a given project + session
+- Debug panel in `ui/index.html`: collapsible bar below the console; polls `/api/telemetry` every 4 s during a run and after completion; shows a compact per-call metrics table
 - `sessions.py`: `Session` and `SessionManager` — runtime session lifecycle with per-session `queue`, `stop_event` and `state` (`running` / `done` / `error`); process-level `session_manager` singleton
 
 ### Changed
-- `app.py`: global `run_queue`, `run_lock`, `stop_event` and `is_running` removed; all runtime state now lives in the active `Session` object from `session_manager`; SSE stream, stop endpoint and status endpoint read from the session rather than globals; session is created in `app.py` before the thread starts and passed into `run_conversation`
-- `main.py`: `run_conversation` accepts optional `session_id` and `session_dir`; if provided (web-run flow) it uses them directly; if absent (CLI flow) it creates a new session as before
+- `app.py`: global `run_queue`, `run_lock`, `stop_event` and `is_running` removed; all runtime state now lives in the active `Session` object from `session_manager`; SSE stream, stop endpoint and status endpoint read from the session rather than globals; session is created in `app.py` before the thread starts and passed into `run_conversation`; `/api/run` response now includes `session_id`
+- `main.py`: `run_conversation` accepts optional `session_id` and `session_dir`; `run_agent` gains `agent_name` and `session_dir` params, times the model call and records all metrics via `telemetry.record_call`; if provided (web-run flow) it uses them directly; if absent (CLI flow) it creates a new session as before
 - `identities/examples/*.md`: all six example identities translated to English; frontmatter `language` and `length` values updated to canonical English forms (`danish`, `short` etc.)
 - `identities/template.md`: translated to English
 - `model.py`: unknown backend error message translated to English
@@ -21,10 +24,10 @@ Convention: every session that changes code, structure or working docs updates `
 - `projects.py`: `DEFAULT_SETTINGS` topic and language defaults translated to English; empty-name fallback changed from `"projekt"` to `"project"`
 
 ### Docs
-- `ROADMAP.md`: Milestone 1 session and runtime tasks marked `done`; Milestone 0.5 docs task marked `done`; fully translated to English
-- `CLAUDE.md`: structure tree updated with `sessions.py`
+- `ROADMAP.md`: Milestone 2 all tasks marked `done`; Milestone 1 session and runtime tasks marked `done`; Milestone 0.5 docs task marked `done`; fully translated to English
+- `CLAUDE.md`: structure tree updated with `sessions.py` and `telemetry.py`; Current Truth updated
+- `FUTURE_PATCHES.md`: output drift visualisation parked as deferred telemetry track
 - `README.md` fully translated to English
-- `FUTURE_PATCHES.md` fully translated to English
 - `.guides/project_control.md` fully translated to English
 - `.guides/english_migration_scope.md` fully translated to English
 - `identities/README.md` fully translated to English

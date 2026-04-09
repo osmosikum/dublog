@@ -21,7 +21,8 @@ It must reflect the current truth and the nearest direction without locking the 
 - `sessions.py` holds the `SessionManager` singleton with the active session's `queue`, `stop_event` and `state`; `app.py` no longer holds global runtime state for these.
 - Existing `settings.json` files may still contain legacy Danish values; `normalization.py` handles read-compatibility transparently.
 - The user may still write free-form input to the agent in Danish or any other chosen language; that is content, not engine state.
-- Dedicated modules such as `telemetry.py` and `validators.py` do not exist yet.
+- `telemetry.py` records per-call metrics to `session_dir/telemetry.jsonl`; the debug panel in `ui/index.html` polls `/api/telemetry` live during runs.
+- Dedicated modules such as `validators.py` do not exist yet.
 
 ## Document Roles
 
@@ -40,6 +41,7 @@ dublog/
 |-- app.py               # web server and SSE streaming (port 7842)
 |-- main.py              # conversation orchestrator, run_conversation(session_cfg)
 |-- sessions.py          # SessionManager: runtime lifecycle (queue, stop_event, state)
+|-- telemetry.py         # per-call metrics: record_call → telemetry.jsonl, load_telemetry
 |-- config.py            # static defaults for CLI runs
 |-- model.py             # model adapter: Ollama, LM Studio, Claude API
 |-- prompts.py           # prompt builder: identity + instructions + memory

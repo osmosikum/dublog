@@ -39,6 +39,10 @@ Content here is deliberately not active roadmap work yet.
   - Status: deferred
   - Why later: useful for local models, but not necessary to get the base right
 
+- [ ] [TELEMETRY] Output drift visualisation across rounds
+  - Status: deferred
+  - Why later: `output_chars` is already recorded per call; trending it (is agent B getting shorter each round?) needs multi-round comparison and a small chart or trend indicator in the debug panel — good idea but a separate UI track
+
 - [ ] [SUMMARY] Third agent or moderator for post-summary
   - Status: deferred
   - Why later: the persona layer is not the main track before runtime and observability are cleaner

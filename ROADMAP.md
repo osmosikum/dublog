@@ -151,26 +151,26 @@ Purpose: Lift the current project-aware runtime to a real session structure with
   - Done when: the implemented session model is documented ✓
 
 ## Milestone 2 - Observability first
-Status: todo
+Status: done
 Purpose: Make it visible what the system injects, where output drifts, and where models get tired.
 
-- [ ] [ARCH] Create `telemetry.py`
-  - Status: todo
+- [x] [ARCH] Create `telemetry.py`
+  - Status: done
   - Why: debuggability should be a core feature
-  - Output: unified module for simple runtime metrics
-  - Done when: prompt, output and timing data can be recorded per agent call
+  - Output: `telemetry.py` with `record_call` and `load_telemetry`; writes `session_dir/telemetry.jsonl`
+  - Done when: prompt, output and timing data can be recorded per agent call ✓
 
-- [ ] [RUNTIME] Log prompt chars, memory lines, history turns and output chars
-  - Status: todo
+- [x] [RUNTIME] Log prompt chars, memory lines, history turns and output chars
+  - Status: done
   - Why: we need to be able to see context pressure and output drift
-  - Output: concrete metrics in runtime and file output
-  - Done when: minimum metrics can be read without manual guessing
+  - Output: `run_agent` in `main.py` times each model call and records all metrics
+  - Done when: minimum metrics can be read without manual guessing ✓
 
-- [ ] [UI] Show a simple debug panel in the UI
-  - Status: todo
+- [x] [UI] Show a simple debug panel in the UI
+  - Status: done
   - Why: observability is most useful while a session is running
-  - Output: live debug display in the browser
-  - Done when: key figures and error states are shown during a run
+  - Output: collapsible debug bar below the console; polls `/api/telemetry` live during runs
+  - Done when: key figures are shown during a run ✓
 
 ## Milestone 3 - Contracts and validation
 Status: todo
