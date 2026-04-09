@@ -17,6 +17,7 @@ from normalization import normalize_session_cfg
 from projects import create_session, ensure_default
 from prompts import build_system_prompt, build_user_message
 from telemetry import record_call
+from validators import record_validation, validate_memory_entry, validate_response
 
 
 def setup_dirs(project_dir: Path, session_dir: Path, topic: str, project: str, session_id: str) -> None:
@@ -104,6 +105,28 @@ def run_agent(
         append_memory(agent_dir, memory_entry)
     clean = response.split("[MEMORY]:")[0].strip()
     return clean if clean else response
+
+
+def _validate_and_echo(
+    response: str,
+    agent_name: str,
+    language: str,
+    length: str,
+    round_num: int,
+    session_dir: Path,
+    output_fn,
+) -> None:
+    """Run all validation checks, record to validation.jsonl, echo failures."""
+    results = validate_response(response, language, length)
+    memory_entry = extract_memory_tag(response)
+    if memory_entry:
+        results += validate_memory_entry(memory_entry)
+    record_validation(session_dir, round_num, agent_name, results)
+    for r in results:
+        if not r.passed and r.level == "error":
+            output_fn(f">>> [VALIDATION ERROR] {agent_name} — {r.message}")
+        elif not r.passed and r.level == "warning":
+            output_fn(f">>> [VALIDATION WARN]  {agent_name} — {r.message}")
 
 
 def run_conversation(
@@ -205,6 +228,8 @@ def run_conversation(
         output_fn(f"{'=' * 60}")
         output_fn(response_a)
         log_conversation(name_a, response_a, round_num, session_dir)
+        _validate_and_echo(response_a, name_a, language_a, length_a,
+                           round_num, session_dir, output_fn)
 
         history_a.append({"role": "assistant", "content": response_a})
         history_b.append({"role": "user", "content": f"{name_a} said: {response_a}"})
@@ -234,6 +259,8 @@ def run_conversation(
         output_fn(f"{'=' * 60}")
         output_fn(response_b)
         log_conversation(name_b, response_b, round_num, session_dir)
+        _validate_and_echo(response_b, name_b, language_b, length_b,
+                           round_num, session_dir, output_fn)
 
         history_b.append({"role": "assistant", "content": response_b})
         history_a.append({"role": "user", "content": f"{name_b} said: {response_b}"})

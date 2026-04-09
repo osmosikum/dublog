@@ -4,6 +4,7 @@ Convention: every session that changes code, structure or working docs updates `
 
 ## [Unreleased]
 ### Added
+- `validators.py`: `ValidationResult` dataclass; composable `check_*` functions for response emptiness, `[MEMORY]` tag, heuristic length (sentence-count ranges per preset) and heuristic language (marker-word scoring); `validate_response`, `validate_memory_entry` (primary extension point for MS4+ memory work), `validate_identity`; `record_validation` → `session_dir/validation.jsonl`; `load_validation`
 - `telemetry.py`: `record_call` appends one JSONL entry per agent call to `session_dir/telemetry.jsonl`; `load_telemetry` reads entries back as a list of dicts; fields: `round`, `agent`, `model`, `prompt_chars`, `memory_lines`, `history_turns`, `output_chars`, `duration_s`, `timestamp`
 - `/api/telemetry` GET endpoint: returns telemetry entries for a given project + session
 - Debug panel in `ui/index.html`: collapsible bar below the console; polls `/api/telemetry` every 4 s during a run and after completion; shows a compact per-call metrics table
@@ -11,7 +12,7 @@ Convention: every session that changes code, structure or working docs updates `
 
 ### Changed
 - `app.py`: global `run_queue`, `run_lock`, `stop_event` and `is_running` removed; all runtime state now lives in the active `Session` object from `session_manager`; SSE stream, stop endpoint and status endpoint read from the session rather than globals; session is created in `app.py` before the thread starts and passed into `run_conversation`; `/api/run` response now includes `session_id`
-- `main.py`: `run_conversation` accepts optional `session_id` and `session_dir`; `run_agent` gains `agent_name` and `session_dir` params, times the model call and records all metrics via `telemetry.record_call`; if provided (web-run flow) it uses them directly; if absent (CLI flow) it creates a new session as before
+- `main.py`: `run_conversation` accepts optional `session_id` and `session_dir`; `run_agent` gains `agent_name` and `session_dir` params, times the model call and records all metrics via `telemetry.record_call`; `_validate_and_echo` helper runs all checks after each agent call, records to `validation.jsonl` and echoes failures to the run output; if provided (web-run flow) it uses them directly; if absent (CLI flow) it creates a new session as before
 - `identities/examples/*.md`: all six example identities translated to English; frontmatter `language` and `length` values updated to canonical English forms (`danish`, `short` etc.)
 - `identities/template.md`: translated to English
 - `model.py`: unknown backend error message translated to English
@@ -24,8 +25,9 @@ Convention: every session that changes code, structure or working docs updates `
 - `projects.py`: `DEFAULT_SETTINGS` topic and language defaults translated to English; empty-name fallback changed from `"projekt"` to `"project"`
 
 ### Docs
-- `ROADMAP.md`: Milestone 2 all tasks marked `done`; Milestone 1 session and runtime tasks marked `done`; Milestone 0.5 docs task marked `done`; fully translated to English
-- `CLAUDE.md`: structure tree updated with `sessions.py` and `telemetry.py`; Current Truth updated
+- `ROADMAP.md`: Milestone 3 all tasks marked `done`; Milestone 2 all tasks marked `done`; Milestone 1 session and runtime tasks marked `done`; Milestone 0.5 docs task marked `done`; fully translated to English
+- `CLAUDE.md`: structure tree updated with `sessions.py`, `telemetry.py`, `normalization.py` and `validators.py`; Current Truth updated for all three milestones
+- `FUTURE_PATCHES.md`: stronger language detection, memory entry quality check and validation UI panel parked as deferred tracks
 - `FUTURE_PATCHES.md`: output drift visualisation parked as deferred telemetry track
 - `README.md` fully translated to English
 - `.guides/project_control.md` fully translated to English

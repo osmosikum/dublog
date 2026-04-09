@@ -173,26 +173,26 @@ Purpose: Make it visible what the system injects, where output drifts, and where
   - Done when: key figures are shown during a run ✓
 
 ## Milestone 3 - Contracts and validation
-Status: todo
+Status: done
 Purpose: Make language, length and memory output into enforceable contracts instead of soft labels.
 
-- [ ] [VALIDATION] Create `validators.py`
-  - Status: todo
+- [x] [VALIDATION] Create `validators.py`
+  - Status: done
   - Why: output and identity data must be checkable systematically
-  - Output: dedicated validation module
-  - Done when: empty responses, missing `[MEMORY]` and identity errors can be detected
+  - Output: `validators.py` with `ValidationResult` dataclass, composable check functions, `validate_response`, `validate_memory_entry`, `validate_identity`, `record_validation`, `load_validation`
+  - Done when: empty responses, missing `[MEMORY]` and identity errors can be detected ✓
 
-- [ ] [VALIDATION] Introduce heuristic language check
-  - Status: todo
+- [x] [VALIDATION] Introduce heuristic language check
+  - Status: done
   - Why: local models easily drift between languages
-  - Output: simple language detection and deviation marking
-  - Done when: the system can flag probable language slips
+  - Output: `check_language` scores all languages by marker-word frequency; flags when expected language scores significantly below apparent language
+  - Done when: the system can flag probable language slips ✓
 
-- [ ] [VALIDATION] Translate `kort/medium/lang` to explicit runtime limits
-  - Status: todo
+- [x] [VALIDATION] Translate `kort/medium/lang` to explicit runtime limits
+  - Status: done
   - Why: length choices should be measurable afterwards
-  - Output: clear preset-to-contract mapping
-  - Done when: length checks can be compared with actual output
+  - Output: `_LENGTH_RANGES` in `validators.py` maps `short/medium/long` to sentence-count bounds; `check_length` flags clear violations
+  - Done when: length checks can be compared with actual output ✓
 
 ## Milestone 4 - Memory flow and promotion
 Status: todo

@@ -22,7 +22,7 @@ It must reflect the current truth and the nearest direction without locking the 
 - Existing `settings.json` files may still contain legacy Danish values; `normalization.py` handles read-compatibility transparently.
 - The user may still write free-form input to the agent in Danish or any other chosen language; that is content, not engine state.
 - `telemetry.py` records per-call metrics to `session_dir/telemetry.jsonl`; the debug panel in `ui/index.html` polls `/api/telemetry` live during runs.
-- Dedicated modules such as `validators.py` do not exist yet.
+- `validators.py` runs contract checks (empty response, `[MEMORY]` tag, heuristic language, heuristic length, memory entry length) after each agent call; results go to `session_dir/validation.jsonl` and failures echo to the run output. `validate_memory_entry()` is the designated extension point for Milestone 4+ memory work.
 
 ## Document Roles
 
@@ -42,6 +42,8 @@ dublog/
 |-- main.py              # conversation orchestrator, run_conversation(session_cfg)
 |-- sessions.py          # SessionManager: runtime lifecycle (queue, stop_event, state)
 |-- telemetry.py         # per-call metrics: record_call → telemetry.jsonl, load_telemetry
+|-- normalization.py     # read-compatibility for legacy Danish enum values
+|-- validators.py        # contract checks: response, memory entry, identity; → validation.jsonl
 |-- config.py            # static defaults for CLI runs
 |-- model.py             # model adapter: Ollama, LM Studio, Claude API
 |-- prompts.py           # prompt builder: identity + instructions + memory
