@@ -32,6 +32,8 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - `CHANGELOG.md` ryddet: baseline-sektionen har eget navn
 - `ROADMAP.md` markerer nu den minimale agent-workflow baseline som afsluttet
 - `FUTURE_PATCHES.md` parkerer agent-ledger, diff gate, normalizer-spor og context isolation som senere workflow-forbedringer
+- `.guides/english_migration_scope.md` afgraenser English-migrationen i engine, compatibility og content-zoner, saa persisted data ikke blandes med tekstoprydning
+- `ROADMAP.md`, `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` beskriver nu English-pass som et compatibility-spor og retter session-docs til den faktiske kodebase
 
 Sign-off: Codex
 

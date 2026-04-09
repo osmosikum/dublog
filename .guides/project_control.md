@@ -64,6 +64,17 @@ Tracked identity-filer i repoet boer kun vaere:
 - `identities/examples/*.md`
 - dokumentation i `identities/`
 
+## Regel for English migration
+
+Sprogrydning i dette repo maa ikke behandles som ren tekstudskiftning.
+
+- engine-tekst og operative docs kan oversaettes direkte
+- persisted runtime-values maa ikke omdoebes uden compatibility
+- `projects/**`, memory og session-logs maa ikke masseoversaettes
+- example identities og template er content-spor og skal afgoeres eksplicit
+
+Den konkrete afgraensning ligger i `.guides/english_migration_scope.md`.
+
 ## Daglig arbejdsrytme
 
 Brug denne rytme som standard:

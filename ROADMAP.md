@@ -81,12 +81,46 @@ Formaal: Goere dokumentlaget til projektets nuvaerende operative sandhed uden at
   - Output: smartere `.gitignore`, identity-struktur med `examples/` og `custom/`, opdaterede docs
   - Done naar: runtime-data og lokale identities ignoreres, mens repoet stadig shipper templates og eksempler
 
+## Milestone 0.5 - English migration boundary
+Status: doing
+Formaal: Goere det klart hvad der kan oversaettes direkte, og hvad der foerst kraever compatibility, saa ingen eksisterende runtime-data gaar tabt.
+
+- [x] [ARCH] Definere English migration boundary og no-data-loss-regler
+  - Status: done
+  - Hvorfor: sprogrydning maa ikke blande UI-tekst, persisted state og content sammen
+  - Output: `.guides/english_migration_scope.md`
+  - Done naar: engine, persisted values og content er skilt i tydelige migrationszoner
+
+- [ ] [COMPAT] Indfoere normalisering for language, length og legacy identity-slugs
+  - Status: todo
+  - Hvorfor: gamle projekter bruger stadig danske enum-vaerdier og i nogle tilfalde udgaaede identity-slugs
+  - Output: kompatibilitetslag foer canonical engelske values indfoeres
+  - Done naar: gamle `settings.json` kan laeses korrekt samtidig med at nye engelske vaerdier accepteres
+
+- [ ] [UI] Oversaette engine-UI til engelsk uden at bryde persisted values
+  - Status: todo
+  - Hvorfor: labels og fejltekster kan skifte foer dataformatet goer det
+  - Output: engelske labels, knapper og beskeder i appen
+  - Done naar: UI er engelsk, men gamle settings loader stadig korrekt
+
+- [ ] [DOCS] Oversaette engine-docs og kommentarer til engelsk
+  - Status: todo
+  - Hvorfor: operative docs og engine-kommentarer boer pege samme vej som UI og defaults
+  - Output: engelske repo-docs og engelske engine-kommentarer
+  - Done naar: projektets operative engine-lag er engelsk uden at content tvinges med
+
+- [ ] [CONTENT] Beslutte separat strategi for example identities og template
+  - Status: todo
+  - Hvorfor: repo-shippet indhold er content, ikke bare engine-tekst
+  - Output: bevidst beslutning om examples/template skal forblive danske, blive engelske eller eksistere i begge versioner
+  - Done naar: content-sporet er afgjort eksplicit i stedet for at ride med engine-migrationen
+
 ## Milestone 1 - Session-aware base
-Status: todo
+Status: doing
 Formaal: Loefte den nuvaerende projekt-aware runtime til en reel session-struktur uden at omskrive hele appen paa en gang.
 
-- [ ] [ARCH] Definere disk-layout for `projects/<project>/sessions/<session_id>/`
-  - Status: todo
+- [x] [ARCH] Definere disk-layout for `projects/<project>/sessions/<session_id>/`
+  - Status: done
   - Hvorfor: session-data skal skilles fra projektets langlivede data
   - Output: dokumenteret maallayout og mappeoprettelse
   - Done naar:

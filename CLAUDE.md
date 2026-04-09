@@ -19,6 +19,7 @@ Den skal afspejle den nuvaerende sandhed og den naermeste retning, uden at laase
 - Memory ligger paa projektniveau under `projects/<project>/agent_x/memory.md` og deles paa tvaers af sessioner.
 - Samtale-log ligger per session under `projects/<project>/sessions/<session_id>/conversation.md`.
 - `app.py` har global runtime-state (`run_queue`, `run_lock`, `stop_event`, `is_running`) — et kendt naeste arkitekturtrin er at flytte dette til `sessions.py`.
+- Engine-laget er stadig blandet dansk/engelsk, og eksisterende `settings.json` bruger danske values som kraever compatibility foer en fuld English-pass.
 - Der findes endnu ikke dedikerede moduler som `sessions.py`, `telemetry.py` eller `validators.py`.
 
 ## Dokumenternes roller

@@ -11,12 +11,13 @@ Maalet er, at agentarbejde i repoet foelger den samme sandhed, den samme roadmap
 
 ## Projektets aktuelle tilstand
 
-- Repoet er projekt-aware, men endnu ikke fuldt session-isoleret.
+- Repoet er projekt-aware med sessionmapper til samtalelogs, men endnu ikke fuldt session-isoleret i runtime-state.
 - `app.py` koerer UI, status og SSE-streaming.
 - `main.py` driver samtalen med per-run `session_cfg`.
 - `projects.py` opretter og persisterer projektdata under `projects/`.
 - `identities/` indeholder persona-filer med simpel frontmatter.
-- Samtalelog og memory er i dag knyttet til projektmapper, ikke til dedikerede session-mapper.
+- Samtalelog ligger per session under `projects/<project>/sessions/<session_id>/`, mens memory stadig ligger paa projektniveau.
+- Engine-laget er stadig blandet dansk/engelsk, og eksisterende `settings.json` bruger danske values som kraever compatibility foer en fuld English-pass.
 - Fremtidige moduler som `sessions.py`, `telemetry.py` og `validators.py` er planlagte, ikke implementerede.
 
 ## Hvilke docs der styrer hvad
