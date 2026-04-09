@@ -116,7 +116,7 @@ Purpose: Make it clear what can be translated directly and what requires compati
   - Done when: the content track is resolved explicitly instead of riding along with the engine migration
 
 ## Milestone 1 - Session-aware base
-Status: doing
+Status: done
 Purpose: Lift the current project-aware runtime to a real session structure without rewriting the whole app at once.
 
 - [x] [ARCH] Define disk layout for `projects/<project>/sessions/<session_id>/`
@@ -128,27 +128,27 @@ Purpose: Lift the current project-aware runtime to a real session structure with
     - transcript, debug and metadata can live in the session
     - project data can be preserved without being tied to a single run
 
-- [ ] [ARCH] Create `sessions.py` with first `SessionManager`
-  - Status: todo
+- [x] [ARCH] Create `sessions.py` with first `SessionManager`
+  - Status: done
   - Why: runtime state must not only live as global variables in `app.py`
-  - Output: `sessions.py` plus integration in the web-run flow
+  - Output: `sessions.py` with `Session` and `SessionManager`; integrated in web-run flow
   - Done when:
-    - sessions can be created and marked as running/done/error
-    - session paths can be read collectively from the manager
+    - sessions can be created and marked as running/done/error ✓
+    - session paths can be read collectively from the manager ✓
 
-- [ ] [RUNTIME] Move output and status from global queue to session-bound structure
-  - Status: todo
+- [x] [RUNTIME] Move output and status from global queue to session-bound structure
+  - Status: done
   - Why: current `run_queue` and `is_running` are too coarse for the next phase
-  - Output: session-aware output/status flow
+  - Output: SSE, stop and status endpoints all read from the active Session
   - Done when:
-    - output is bound to a session
-    - status can be read without global truth alone
+    - output is bound to a session ✓
+    - status can be read without global truth alone ✓
 
-- [ ] [DOCS] Sync docs when session structure exists
-  - Status: todo
+- [x] [DOCS] Sync docs when session structure exists
+  - Status: done
   - Why: docs must not write session architecture as true before it is built
-  - Output: updated working docs and possibly README notes
-  - Done when: the implemented session model is documented
+  - Output: CLAUDE.md structure tree updated; CHANGELOG updated
+  - Done when: the implemented session model is documented ✓
 
 ## Milestone 2 - Observability first
 Status: todo
