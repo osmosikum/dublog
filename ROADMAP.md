@@ -57,11 +57,23 @@ Formaal: Goere dokumentlaget til projektets nuvaerende operative sandhed uden at
   - Output: `origin` sat og `main` tracket mod `origin/main`
   - Done naar: den lokale baseline-commit findes paa remote, og `main` tracker `origin/main`
 
+- [x] [OPS] Saette global git-default til `main`
+  - Status: done
+  - Hvorfor: nye repos skal ikke falde tilbage til `master`
+  - Output: `init.defaultBranch=main` i brugerens git-config
+  - Done naar: nye lokale repos oprettes med `main` som default branch
+
 - [x] [DOCS] Oprette brugerens projektstyringsguide
   - Status: done
   - Hvorfor: styring af repo, branches, changelog og agents skal vaere samlet et sted
   - Output: `.guides/project_control.md`
   - Done naar: projektets git- og docs-rytme kan foelges uden at laese den lange referenceguide foerst
+
+- [x] [DOCS] Etablere minimal agent-workflow baseline
+  - Status: done
+  - Hvorfor: multi-agent arbejde skal vaere styret uden at blive overdesignet
+  - Output: `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` beskriver roller og single-writer baseline
+  - Done naar: `AGENTS.md` er global sandhed, og det er tydeligt hvem der skriver kode i en multi-agent session
 
 ## Milestone 1 - Session-aware base
 Status: todo

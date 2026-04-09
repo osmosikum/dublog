@@ -27,6 +27,21 @@ Hvis to dokumenter siger noget forskelligt, skal de bringes i sync med det samme
 - Dokumentation koerer altid sammen med aendringer, ikke bagefter.
 - `CHANGELOG.md` opdateres ved hver reel kode-, struktur- eller docs-aendring.
 
+## Multi-agent baseline
+
+Hvis du bruger flere agenter samme dag, saa hold det simpelt:
+
+- kun en writer ad gangen paa runtime-kode
+- vaer eksplicit om hvem der er builder, reviewer og scribe
+- lad ikke to agenter skrive i samme runtime-spor samtidig
+- hvis workflow-reglerne aendrer sig, saa opdater `AGENTS.md`, `CLAUDE.md` og changelog i samme session
+
+Praktisk standard lige nu:
+
+- Claude Code = orchestrator, review og docs
+- Codex = builder og refactor
+- du = scope, prioritet, release og kill switch
+
 ## Hvad skal ikke i Git?
 
 Dette repo skal tracke kildekode, docs og konfigurationsbeslutninger.

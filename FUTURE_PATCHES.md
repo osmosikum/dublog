@@ -51,6 +51,22 @@ Indhold her er bevidst ikke aktivt roadmap-arbejde endnu.
   - Status: deferred
   - Hvorfor senere: validation og telemetry boer lande foer teststrategien udvides
 
+- [ ] [OPS] Agent Ledger for model, task, varighed og filer aendret
+  - Status: deferred
+  - Hvorfor senere: godt til cost/traceability, men ikke kritisk foer runtime og docs er mere stabile
+
+- [ ] [WORKFLOW] Diff gate med eksplicit reviewer-pass foer merge
+  - Status: deferred
+  - Hvorfor senere: god disciplin, men boer bygge paa en enklere review-rytme foerst
+
+- [ ] [WORKFLOW] GEMINI.md og normalizer-pipeline for research/import
+  - Status: deferred
+  - Hvorfor senere: nyttigt til lange inputspor, men ikke noedvendigt for dagens kerneflow
+
+- [ ] [WORKFLOW] Strammere context isolation per agent
+  - Status: deferred
+  - Hvorfor senere: vigtigt paa sigt, men boer indfoeres sammen med mere moden delegation
+
 ## Aabne designspoergsmaal
 
 1. Skal foerste stabile version kun koere en session ad gangen, eller skal fler-session support med tidligt?

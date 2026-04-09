@@ -21,12 +21,29 @@ Maalet er, at agentarbejde i repoet foelger den samme sandhed, den samme roadmap
 
 ## Hvilke docs der styrer hvad
 
+- `AGENTS.md` er den globale agent-sandhed for repoet.
 - `CLAUDE.md` og `AGENTS.md` skal pege samme vej. Hvis de divergerer, saa synk dem i samme session.
 - `.guides/project_control.md` er brugerens operative guide og maa ikke modsige agentdocs.
 - `ROADMAP.md` er den aktive arbejdsliste.
 - `FUTURE_PATCHES.md` er den bevidste parkeringsplads.
 - `CHANGELOG.md` er den faktiske historik.
 - `README.md` er til brugeren, ikke til intern projektsandhed alene.
+
+## Minimal agent-workflow baseline
+
+Disse regler gaelder nu:
+
+- Single Writer Rule: kun en agent maa skrive runtime-kode ad gangen.
+- Rolleadskillelse: builder, reviewer og scribe maa ikke vaere samme ansvar i samme arbejdspas.
+- Canonical truth > model output: struktur, filer og validatorer vinder over AI-tekst.
+- Repo = engine, brugerdata = content: kode, templates og docs tracks; `projects/` og runtime-data goer ikke.
+
+## Aktuel rollefordeling
+
+- Human: scope, prioritet, release og stop.
+- Claude Code: orkestrering, review og docs som standard.
+- Codex: builder/refactor som standard.
+- Andre agenter eller modeller: bruges kun med et afgraenset ansvar, fx review, normalisering eller test.
 
 ## Arbejdsregler for kodeagenter
 
@@ -39,6 +56,7 @@ Maalet er, at agentarbejde i repoet foelger den samme sandhed, den samme roadmap
 7. Hvis en opgave ikke kan afsluttes, saa marker den som `blocked` eller `deferred` i stedet for at efterlade uklar status.
 8. Hvis du indfoerer en ny regel for arbejdsflowet, skal den afspejles baade i relevant agentdoc og i changeloggen.
 9. Behandl dokumentation som en fast del af leverancen, ikke som oprydning til sidst.
+10. Hvis flere agenter bruges i samme session, skal det vaere eksplicit hvem der er writer.
 
 ## Changelog-regel
 

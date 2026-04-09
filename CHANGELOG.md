@@ -21,13 +21,16 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - `memory.py`: `log_conversation` tager `session_dir` i stedet for `project_dir`
 - Legacy v1-mapper (`agent_a/`, `agent_b/`, `shared/` i rodmappen) slettet fra disk
 - `.gitignore` dækker nu `agent_a/` og `agent_b/` mappeniveau (ikke kun enkeltfiler)
+- `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` bruger nu en minimal agent-workflow baseline med single-writer-regel og klar rollefordeling
 
 ### Docs
 - `CLAUDE.md` strukturtræ opdateret til at matche nuværende kodebase
 - `README.md` omskrevet til at dokumentere UI, `identities/`, `projects/` og `app.py`
 - `CHANGELOG.md` ryddet: baseline-sektionen har eget navn
+- `ROADMAP.md` markerer nu den minimale agent-workflow baseline som afsluttet
+- `FUTURE_PATCHES.md` parkerer agent-ledger, diff gate, normalizer-spor og context isolation som senere workflow-forbedringer
 
-Sign-off: Claude
+Sign-off: Codex
 
 ## [baseline] — governance og git-setup
 ### Added
@@ -48,6 +51,7 @@ Sign-off: Claude
 ### Docs
 - Dokumentlaget skelner nu mellem nuvaerende sandhed, aktiv roadmap og parkerede fremtidsideer, saa repoet ikke laases fast for tidligt.
 - `.guides/project_control.md` og `ROADMAP.md` afspejler nu at git-setup og foerste push faktisk er gennemfoert.
+- `ROADMAP.md` markerer nu hele git-sporet som afsluttet, inklusive global default branch paa `main`.
 
 Sign-off: Codex
 

@@ -24,8 +24,8 @@ Den skal afspejle den nuvaerende sandhed og den naermeste retning, uden at laase
 ## Dokumenternes roller
 
 - `README.md`: brugerrettet introduktion og koersel.
-- `CLAUDE.md`: Claude-specifik arbejdsfil.
-- `AGENTS.md`: parallel arbejdsfil for Codex og andre kodeagenter.
+- `AGENTS.md`: global agent-sandhed for repoet.
+- `CLAUDE.md`: Claude-specifik arbejdsfil der supplerer `AGENTS.md`.
 - `.guides/project_control.md`: brugerens operative guide til git og projektstyring.
 - `ROADMAP.md`: aktive milestones og konkrete naeste opgaver.
 - `FUTURE_PATCHES.md`: bevidst parkerede ideer og senere patches.
@@ -78,6 +78,17 @@ dublog/
 9. Skriv usikre antagelser tydeligt.
 10. Faerdig > perfekt, men aldrig paa bekostning af strukturel sandhed.
 11. Antag at dokumentation er always-on: relevante docs opdateres i samme session som aendringen.
+
+## Claude-rolle i multi-agent mode
+
+Som standard er Claude Code:
+
+- orchestrator
+- reviewer
+- scribe
+
+Claude maa godt lave mindre glue-aendringer, men hvis et stoerre runtime-spor kan delegeres rent, saa boer Builder-rollen holdes separat.
+Hvis flere agenter bruges samtidigt, gaelder Single Writer Rule fra `AGENTS.md`.
 
 ## Changelog-kontrakt
 
