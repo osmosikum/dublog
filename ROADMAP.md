@@ -75,6 +75,12 @@ Formaal: Goere dokumentlaget til projektets nuvaerende operative sandhed uden at
   - Output: `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` beskriver roller og single-writer baseline
   - Done naar: `AGENTS.md` er global sandhed, og det er tydeligt hvem der skriver kode i en multi-agent session
 
+- [x] [OPS] Auditere `.gitignore` og engine/content-graense
+  - Status: done
+  - Hvorfor: variable filer skal ud af repoet, mens templates og eksempler forbliver tracked
+  - Output: smartere `.gitignore`, identity-struktur med `examples/` og `custom/`, opdaterede docs
+  - Done naar: runtime-data og lokale identities ignoreres, mens repoet stadig shipper templates og eksempler
+
 ## Milestone 1 - Session-aware base
 Status: todo
 Formaal: Loefte den nuvaerende projekt-aware runtime til en reel session-struktur uden at omskrive hele appen paa en gang.

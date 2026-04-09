@@ -1,16 +1,16 @@
 """
 Identities — load and list persona files from the identities/ folder.
 
-File format (identities/{slug}.md):
-    ---
-    name: Skeptikeren
-    language: dansk
-    length: medium
-    ---
+Tracked structure:
+    identities/
+        template.md
+        examples/*.md
+        custom/.gitkeep
 
-    # Skeptikeren
-
-    Identity body here...
+Runtime support:
+    - repo-shipped examples in identities/examples/
+    - local custom identities in identities/custom/ (gitignored)
+    - legacy root-level identities in identities/ (except template/docs files)
 
 Fields:
     name     — Display name shown in UI
@@ -21,11 +21,46 @@ Fields:
 from pathlib import Path
 
 _IDENTITIES_DIR = Path("identities")
+_EXAMPLES_DIR = _IDENTITIES_DIR / "examples"
+_CUSTOM_DIR = _IDENTITIES_DIR / "custom"
+_SKIP_FILENAMES = {"template.md", "README.md", "AGENTS.md"}
 
 _DEFAULTS = {
     "language": "dansk",
     "length": "medium",
 }
+
+
+def _identity_paths() -> dict[str, Path]:
+    """
+    Resolve available identity files by slug.
+
+    Precedence:
+        1. repo examples
+        2. legacy root-level identities
+        3. local custom identities
+
+    Later entries win on slug collisions, so local custom files can override
+    shipped examples without changing loader code.
+    """
+    paths: dict[str, Path] = {}
+
+    if _EXAMPLES_DIR.exists():
+        for path in sorted(_EXAMPLES_DIR.glob("*.md")):
+            if path.name not in _SKIP_FILENAMES:
+                paths[path.stem] = path
+
+    if _IDENTITIES_DIR.exists():
+        for path in sorted(_IDENTITIES_DIR.glob("*.md")):
+            if path.name not in _SKIP_FILENAMES:
+                paths[path.stem] = path
+
+    if _CUSTOM_DIR.exists():
+        for path in sorted(_CUSTOM_DIR.rglob("*.md")):
+            if path.name not in _SKIP_FILENAMES:
+                paths[path.stem] = path
+
+    return paths
 
 
 def load_identity(slug: str) -> dict:
@@ -34,10 +69,10 @@ def load_identity(slug: str) -> dict:
     Returns dict with keys: slug, name, language, length, content.
     Falls back gracefully if file is missing.
     """
-    path = _IDENTITIES_DIR / f"{slug}.md"
+    path = _identity_paths().get(slug)
     name_fallback = slug.replace("-", " ").title()
 
-    if not path.exists():
+    if path is None or not path.exists():
         return {
             "slug": slug,
             "name": name_fallback,
@@ -80,11 +115,9 @@ def list_identities() -> list[dict]:
     Return a sorted list of identity metadata dicts (no content body).
     Each entry: {slug, name, language, length}
     """
-    if not _IDENTITIES_DIR.exists():
-        return []
     result = []
-    for p in sorted(_IDENTITIES_DIR.glob("*.md")):
-        ident = load_identity(p.stem)
+    for slug in sorted(_identity_paths()):
+        ident = load_identity(slug)
         result.append({
             "slug":     ident["slug"],
             "name":     ident["name"],

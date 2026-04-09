@@ -43,7 +43,7 @@ For CLI: åbn `config.py` og skift `TOPIC`, `ROUNDS`, `AGENT_A["model"]` etc.
 
 ## 3. How to add an identity
 
-Opret en ny fil i `identities/`:
+Nye identiteter boer normalt ligge i `identities/custom/`:
 
 ```markdown
 ---
@@ -61,6 +61,13 @@ Slut altid dit svar med: [MEMORY]: <din vigtigste pointe fra denne runde>
 ```
 
 Brug `identities/template.md` som udgangspunkt.
+
+Identity-struktur:
+
+- `identities/template.md` — tracked skabelon
+- `identities/examples/*.md` — tracked eksempel-identiteter
+- `identities/custom/*.md` — lokale identiteter, gitignored men automatisk loadet
+
 Filen dukker automatisk op i identity-dropdowns ved næste sideopdatering.
 
 ---
@@ -88,8 +95,11 @@ Hvert projekt har sit eget mapperum under `projects/`:
 projects/mit-projekt/
     agent_a/memory.md
     agent_b/memory.md
-    shared/conversation.md
     settings.json
+    sessions/
+        20260409-123456/
+            conversation.md
+            run_config.md
 ```
 
 Opret nye projekter med **＋**-knappen i UI. Settings gemmes automatisk ved hvert run og restores ved projektwitch.
@@ -100,7 +110,7 @@ Opret nye projekter med **＋**-knappen i UI. Settings gemmes automatisk ved hve
 
 ## 6. Memory format
 
-Agenter gemmer pointer løbende i `agent_x/memory.md` via `[MEMORY]:`-tagget i svarene.
+Agenter gemmer pointer løbende i `projects/<projekt>/agent_x/memory.md` via `[MEMORY]:`-tagget i svarene.
 
 Memory re-injiceres i hvert prompt (budgetbegrænset til `MAX_MEMORY_LINES` i `config.py`).
 
@@ -118,7 +128,9 @@ Memory re-injiceres i hvert prompt (budgetbegrænset til `MAX_MEMORY_LINES` i `c
 | `memory.py` | Memory-IO: load, append, extract, konvergens-check |
 | `identities.py` | Parser og lister identity-filer fra `identities/` |
 | `projects.py` | Projekt-management: opret, list, load/save settings |
-| `identities/*.md` | Persona-filer med frontmatter |
+| `identities/README.md` | Forklarer forskellen på template, examples og custom |
+| `identities/examples/*.md` | Repo-shippede eksempel-identiteter |
+| `identities/custom/*.md` | Lokale identiteter (gitignored) |
 | `identities/template.md` | Skabelon til nye identiteter |
 | `ui/index.html` | Enkeltfils frontend |
 | `projects/<navn>/` | Runtime-data per projekt (gitignored) |

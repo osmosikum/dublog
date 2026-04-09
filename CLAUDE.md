@@ -49,9 +49,13 @@ dublog/
 |-- FUTURE_PATCHES.md
 |-- CHANGELOG.md
 |-- README.md
-|-- identities/          # persona-filer med frontmatter (name, language, length)
+|-- identities/          # templates, examples og lokale custom identities
+|   |-- README.md
 |   |-- template.md
-|   `-- *.md
+|   |-- examples/
+|   |   `-- *.md
+|   `-- custom/
+|       `-- *.md         # lokale identities, gitignored
 |-- projects/            # runtime-data, gitignored
 |   `-- <project>/
 |       |-- settings.json
@@ -59,8 +63,10 @@ dublog/
 |       |   `-- memory.md
 |       |-- agent_b/
 |       |   `-- memory.md
-|       `-- shared/
-|           `-- conversation.md
+|       `-- sessions/
+|           `-- <session_id>/
+|               |-- conversation.md
+|               `-- run_config.md
 `-- ui/
     `-- index.html       # enkeltfils frontend
 ```

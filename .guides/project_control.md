@@ -50,11 +50,19 @@ Det skal ikke tracke loebende runtime-output.
 Ignorerede ting i dette repo:
 
 - `projects/` - projektdata, memory, settings og samtalelogs fra koersel
+- `identities/custom/` - lokale identities, som appen loader men repoet ikke skal tracke
+- root-level brugeridentities i `identities/` - ignoreres som standard; brug `custom/`
 - `shared/` - legacy runtime-logs i repo-roden
 - `agent_a/memory.md` og `agent_b/memory.md` - legacy runtime-memory
 - `__pycache__/`, virtuelle miljoeer og editor-stoej
 
 Hvis du vil gemme et vigtigt output, skal det eksporteres bevidst til en dokumenteret fil, ikke bare ende i runtime-mapperne.
+
+Tracked identity-filer i repoet boer kun vaere:
+
+- `identities/template.md`
+- `identities/examples/*.md`
+- dokumentation i `identities/`
 
 ## Daglig arbejdsrytme
 

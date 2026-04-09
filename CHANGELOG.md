@@ -12,6 +12,7 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - `/api/sessions` — GET-endpoint der lister sessioner for et projekt (nyeste først)
 - `/api/session/log` — GET-endpoint der returnerer `conversation.md` for en given session
 - `/api/delete/project` og `/api/delete/session` — POST-endpoints til sletning
+- `identities/README.md` og `identities/custom/.gitkeep` som skiller tracked examples fra lokale identities
 
 ### Changed
 - Disk-layout: samtale-log flyttes fra `projects/{proj}/shared/` til `projects/{proj}/sessions/{id}/`
@@ -22,10 +23,12 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - Legacy v1-mapper (`agent_a/`, `agent_b/`, `shared/` i rodmappen) slettet fra disk
 - `.gitignore` dækker nu `agent_a/` og `agent_b/` mappeniveau (ikke kun enkeltfiler)
 - `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` bruger nu en minimal agent-workflow baseline med single-writer-regel og klar rollefordeling
+- `.gitignore` skelner nu mellem engine og content, saa lokale identities og runtime-data ignoreres som standard
+- `identities.py` loader nu repo-eksempler, lokale custom identities og root-level legacy identities uden at vise template-filer i UI
 
 ### Docs
 - `CLAUDE.md` strukturtræ opdateret til at matche nuværende kodebase
-- `README.md` omskrevet til at dokumentere UI, `identities/`, `projects/` og `app.py`
+- `README.md` dokumenterer nu `identities/examples/`, `identities/custom/` og korrekt session-layout under `projects/`
 - `CHANGELOG.md` ryddet: baseline-sektionen har eget navn
 - `ROADMAP.md` markerer nu den minimale agent-workflow baseline som afsluttet
 - `FUTURE_PATCHES.md` parkerer agent-ledger, diff gate, normalizer-spor og context isolation som senere workflow-forbedringer

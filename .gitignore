@@ -1,6 +1,8 @@
 # Python
 __pycache__/
 *.py[cod]
+.coverage
+htmlcov/
 
 # Virtual environments and tool caches
 .venv/
@@ -8,6 +10,9 @@ venv/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+build/
+dist/
+*.egg-info/
 
 # Local environment files
 .env
@@ -19,8 +24,20 @@ venv/
 .DS_Store
 Thumbs.db
 
-# Runtime data produced by this app
+# Runtime data and local user state
 projects/
+sessions/
+user_content/
 shared/
 agent_a/
 agent_b/
+
+# Identity content: keep repo-shipped template/examples, ignore local identities
+identities/*
+!identities/README.md
+!identities/template.md
+!identities/examples/
+!identities/examples/**
+!identities/custom/
+identities/custom/**
+!identities/custom/.gitkeep
