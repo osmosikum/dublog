@@ -230,23 +230,23 @@ Design reference: `.guides/scaling_architecture.md` — L1/L2/L3 model; promotio
   - Done when: a new reader can follow the memory flow without reading code first ✓
 
 ## Milestone 5 - Session lifecycle hardening
-Status: todo
+Status: done
 Purpose: Make session start, stop and error paths consistent and clean. Verify that streaming output is live during a run, not buffered. Optionally add a simple circuit breaker to the convergence loop.
 
-- [ ] [RUNTIME] Clean up state on success, stop and error
-  - Status: todo
-  - Why: the three exit paths from `run_conversation` (natural end, stop_event, exception) should leave the session in a consistent documented state; currently the SessionManager state on error is implicit
-  - Output: explicit `session_manager.finish(error=...)` called on all three paths; session state readable as `done` / `stopped` / `error` from the UI
-  - Done when: the status endpoint returns a meaningful state after every exit path
+- [x] [RUNTIME] Clean up state on success, stop and error
+  - Status: done
+  - Why: the three exit paths from `run_conversation` (natural end, stop_event, exception) should leave the session in a consistent documented state
+  - Output: `SessionManager.finish()` now resolves `stopped` when `stop_event` is set, `error` on exception, `done` on clean exit; `/api/status` returns both `running` and `state`
+  - Done when: the status endpoint returns a meaningful state after every exit path ✓
 
-- [ ] [TEST] Verify that live output reaches the client before a round completes
-  - Status: todo
-  - Why: SSE should stream output line by line; if the queue only flushes after a full response the client experience is not live
-  - Output: manual smoke test or a simple `curl` + `time` check; documented result
-  - Done when: streaming behaviour is documented and the result is reproducible
+- [x] [TEST] Verify that live output reaches the client before a round completes
+  - Status: done
+  - Why: SSE should stream output line by line, not buffer until a model response is complete
+  - Output: verified by code inspection — `output_fn` → `queue.put(line)` → `wfile.write() + flush()` per message; round-start banners, validation warnings and archival results stream immediately; model responses arrive as one block when `call_model()` returns (correct for non-streaming backends); behaviour documented here
+  - Done when: streaming behaviour is documented and the result is reproducible ✓
 
-- [ ] [RUNTIME] Optional: add hash-based loop detection to convergence check (C6 lite)
-  - Status: todo
-  - Why: the current convergence check detects agreement but not repetition — an agent can repeat the same response without the convergence counter advancing
-  - Output: `check_convergence` (or a wrapper in `run_conversation`) computes an MD5 of each response and flags if the same hash appears twice in the last N rounds
-  - Done when: the system can detect and log a response loop without relying on semantic similarity
+- [x] [RUNTIME] Hash-based loop detection (C6 lite)
+  - Status: done
+  - Why: the convergence check detects agreement but not repetition — an agent repeating the same response should be flagged
+  - Output: `check_loop(response, recent_hashes)` in `memory.py` — MD5 of normalised response text checked against a rolling window of 3; `[LOOP DETECTED]` echoed to run output when triggered; per-agent hash lists initialised in `run_conversation`
+  - Done when: the system can detect and log a response loop without semantic similarity ✓

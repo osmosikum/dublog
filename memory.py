@@ -161,6 +161,31 @@ def archive_session_memory(agent_dir: str, min_words: int = 4) -> int:
     return promoted
 
 
+def check_loop(response: str, recent_hashes: list, window: int = 3) -> bool:
+    """
+    Detect whether a response is a near-exact repeat of a recent one.
+
+    Computes an MD5 hash of the normalised response text and checks it against
+    the last `window` entries in recent_hashes. Appends the new hash before
+    returning so the list grows automatically — callers just pass the same list
+    each round without managing it themselves.
+
+    Returns True (loop detected) when the hash matches any entry in the window.
+
+    Usage in run_conversation:
+        hashes_a: list = []
+        ...
+        if check_loop(response_a, hashes_a):
+            output_fn(">>> [LOOP DETECTED] Agent A repeated a near-identical response.")
+    """
+    import hashlib
+    normalised = " ".join(response.lower().split())
+    h = hashlib.md5(normalised.encode()).hexdigest()
+    detected = h in recent_hashes[-window:]
+    recent_hashes.append(h)
+    return detected
+
+
 def check_convergence(memory_a: str, memory_b: str, threshold: float = 0.4) -> bool:
     """
     Heuristic convergence: flag when the two agents' memories share enough

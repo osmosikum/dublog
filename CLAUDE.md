@@ -27,6 +27,8 @@ It must reflect the current truth and the nearest direction without locking the 
 - The user may still write free-form input to the agent in Danish or any other chosen language; that is content, not engine state.
 - `telemetry.py` records per-call metrics to `session_dir/telemetry.jsonl`; the debug panel in `ui/index.html` polls `/api/telemetry` live during runs.
 - `validators.py` runs contract checks (empty response, `[MEMORY]` tag, heuristic language, heuristic length, memory entry length with layer awareness) after each agent call; results go to `session_dir/validation.jsonl` and failures echo to the run output. `validate_memory_entry(entry, layer)` is the designated extension point for memory work.
+- `SessionManager.finish()` resolves three terminal states: `done` (clean exit), `stopped` (user-initiated), `error` (exception); `/api/status` returns both `running` and `state`.
+- `check_loop()` in `memory.py` detects repeated responses via MD5 hash over a rolling window; flagged as `[LOOP DETECTED]` in run output.
 
 ## Document Roles
 

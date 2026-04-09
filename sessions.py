@@ -50,10 +50,22 @@ class SessionManager:
         return s is not None and s.state == "running"
 
     def finish(self, error: Exception | None = None) -> None:
-        """Mark the current session done or error."""
+        """
+        Mark the current session done, stopped, or error.
+
+        State resolution:
+            error   — an unhandled exception reached the run thread
+            stopped — the run ended because stop_event was set by the user
+            done    — the run completed normally
+        """
         s = self._current
         if s is not None:
-            s.state = "error" if error else "done"
+            if error:
+                s.state = "error"
+            elif s.stop_event.is_set():
+                s.state = "stopped"
+            else:
+                s.state = "done"
 
 
 session_manager = SessionManager()

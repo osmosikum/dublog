@@ -127,7 +127,9 @@ class Handler(BaseHTTPRequestHandler):
         })
 
     def _get_status(self):
-        self._json({"running": session_manager.is_running()})
+        session = session_manager.current()
+        state = session.state if session is not None else "idle"
+        self._json({"running": session_manager.is_running(), "state": state})
 
     def _get_projects(self):
         from projects import ensure_default, list_projects
@@ -167,7 +169,12 @@ class Handler(BaseHTTPRequestHandler):
 
     def _get_memory(self, agent: str):
         project = self._qp.get("project", ["default"])[0]
-        path = Path("projects") / project / agent / "memory.md"
+        base = Path("projects") / project / agent
+        # MS4: primary file is archive.md (L2). Fall back to legacy memory.md
+        # for projects that have not yet been migrated by a first run.
+        path = base / "archive.md"
+        if not path.exists():
+            path = base / "memory.md"
         text = path.read_text(encoding="utf-8").strip() if path.exists() else ""
         body = text.encode("utf-8")
         self.send_response(200)

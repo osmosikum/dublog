@@ -9,6 +9,7 @@ from memory import (
     append_memory,
     archive_session_memory,
     check_convergence,
+    check_loop,
     extract_memory_tag,
     load_memory,
     log_conversation,
@@ -206,6 +207,8 @@ def run_conversation(
     last_a = ""
     last_b = ""
     streak = 0
+    hashes_a: list = []
+    hashes_b: list = []
 
     for round_num in range(1, rounds + 1):
         if stop_event and stop_event.is_set():
@@ -236,6 +239,8 @@ def run_conversation(
         log_conversation(name_a, response_a, round_num, session_dir)
         _validate_and_echo(response_a, name_a, language_a, length_a,
                            round_num, session_dir, output_fn)
+        if check_loop(response_a, hashes_a):
+            output_fn(f">>> [LOOP DETECTED] {name_a} repeated a near-identical response.")
 
         history_a.append({"role": "assistant", "content": response_a})
         history_b.append({"role": "user", "content": f"{name_a} said: {response_a}"})
@@ -267,6 +272,8 @@ def run_conversation(
         log_conversation(name_b, response_b, round_num, session_dir)
         _validate_and_echo(response_b, name_b, language_b, length_b,
                            round_num, session_dir, output_fn)
+        if check_loop(response_b, hashes_b):
+            output_fn(f">>> [LOOP DETECTED] {name_b} repeated a near-identical response.")
 
         history_b.append({"role": "assistant", "content": response_b})
         history_a.append({"role": "user", "content": f"{name_b} said: {response_b}"})

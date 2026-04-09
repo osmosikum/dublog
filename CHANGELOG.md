@@ -3,6 +3,23 @@
 Convention: every session that changes code, structure or working docs updates `[Unreleased]` and ends with `Sign-off: Claude` or `Sign-off: Codex`.
 
 ## [Unreleased]
+### Added
+- `memory.py`: `check_loop(response, recent_hashes, window=3)` — MD5-based loop detection; normalises response text, checks hash against a rolling window, appends hash before returning; callers pass the same list each round and detection is automatic
+- `app.py`: `/api/status` now returns `{"running": bool, "state": str}` — state is `"running"` / `"done"` / `"stopped"` / `"error"` / `"idle"`
+
+### Changed
+- `sessions.py`: `SessionManager.finish()` now resolves three distinct terminal states — `"error"` on exception, `"stopped"` when `stop_event` was set, `"done"` on clean exit
+- `app.py`: `_get_memory` now reads `archive.md` (L2) with fallback to legacy `memory.md` for unmigrated projects
+- `main.py`: `check_loop` imported and called after each agent response; per-agent `hashes_a` / `hashes_b` lists initialised in `run_conversation`; `[LOOP DETECTED]` echoed to run output when triggered
+
+### Docs
+- `ROADMAP.md`: Milestone 5 all tasks marked `done`
+- `CLAUDE.md`: Current Truth updated with MS5 session state model and loop detection
+
+Sign-off: Claude
+
+---
+
 ### Changed
 - L3 memory layer renamed from "codex" to "permanent" everywhere — `codex.md` → `permanent.md` — to avoid naming confusion with the Codex agent tool; updated in `memory.py`, `CLAUDE.md`, `AGENTS.md`, `ROADMAP.md`, `.guides/scaling_architecture.md`
 
