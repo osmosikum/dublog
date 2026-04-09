@@ -33,7 +33,15 @@ Content here is deliberately not active roadmap work yet.
 
 - [ ] [VALIDATION] Stronger language detection than a simple heuristic
   - Status: deferred
-  - Why later: the first version just needs to be able to flag obvious deviations
+  - Why later: the first version just needs to be able to flag obvious deviations; a proper solution would use a lightweight library (langdetect) or an LLM-assisted check
+
+- [ ] [VALIDATION] Memory entry quality check (semantic, not just length)
+  - Status: deferred
+  - Why later: length is a good first proxy; semantic quality (is the entry actually useful?) likely needs an LLM-assisted pass or at least a keyword-density heuristic — good candidate for when memory architecture matures in MS4+
+
+- [ ] [VALIDATION] Validation results visible in UI debug panel
+  - Status: deferred
+  - Why later: failures already echo to console; a table view alongside telemetry makes sense once the debug panel is more established
 
 - [ ] [IDENTITY] Model-specific overrides in identity frontmatter
   - Status: deferred
