@@ -3,6 +3,29 @@
 Convention: every session that changes code, structure or working docs updates `[Unreleased]` and ends with `Sign-off: Claude` or `Sign-off: Codex`.
 
 ## [Unreleased]
+### Changed
+- L3 memory layer renamed from "codex" to "permanent" everywhere — `codex.md` → `permanent.md` — to avoid naming confusion with the Codex agent tool; updated in `memory.py`, `CLAUDE.md`, `AGENTS.md`, `ROADMAP.md`, `.guides/scaling_architecture.md`
+
+### Docs
+- `AGENTS.md`: fully updated to current state — describes MS1–MS4 architecture (SessionManager, telemetry, validators, three-layer memory model, normalization); adds rule 12 pointing agents to `.guides/scaling_architecture.md` before memory/runtime work; removes all stale MS0-era language about planned-but-not-implemented modules
+
+---
+
+### Added
+- `memory.py`: three-layer memory model — `session_memory.md` (L1, session-scoped), `archive.md` (L2, cross-session), `permanent.md` (L3, manual/permanent); `archive_session_memory()` promotes non-trivial (≥ 4 words) non-duplicate L1 entries to L2 and clears L1 at session end; `_migrate_legacy_memory()` auto-renames `memory.md` → `archive.md` on first load for existing projects; `load_memory()` combines L1 + L2 with section headers when both have content; `check_convergence` stop-word list extended with layer header tokens
+- `main.py`: `archive_session_memory()` imported and called after the conversation loop; `setup_dirs` creates `archive.md` for new projects instead of `memory.md`; archival result echoed to run output
+- `validators.py`: `check_memory_entry_length` and `validate_memory_entry` accept optional `layer` param (`"L1"` default, `"L2"` for archive candidates); L2 entries get stricter upper bound (30 words); both layers share minimum (4 words); `_MEMORY_ENTRY_MIN_WORDS` and `_MEMORY_ARCHIVE_MAX_WORDS` constants added
+- `.guides/scaling_architecture.md`: architecture guide distilling the most relevant solus framework patterns for dublog's memory, convergence and infrastructure scaling direction — covers L1/L2/L3 memory model, promotion rules, isolation invariant, convergence upgrade path, infrastructure decision points and a clear "build in this order" table
+
+### Docs
+- `CLAUDE.md`: Current Truth updated with L1/L2/L3 model and layer descriptions; structure tree updated to show per-agent memory files; `.guides/scaling_architecture.md` added to tree
+- `ROADMAP.md`: Milestone 4 all tasks marked `done`; Milestone 4 expanded to five concrete tasks (L1/L2 split, L1→L2 archival on session end, L2→L3 promotion rule, `validate_memory_entry` layer extension, docs sync); Milestone 5 restructured as session lifecycle hardening with three concrete tasks
+- `FUTURE_PATCHES.md`: eleven new deferred tracks added — background harvester, RAG, librarian gate, echo mining, memory decay, SQLite migration, LLM-scored convergence, circuit breaker, budget kill switch, deadlock kill switch, agent drift detection; all with "why later" rationale tied to the solus overkill table
+- `.guides/scaling_architecture.md`: baseline table updated to end-of-MS4 state
+
+Sign-off: Claude
+
+## [Unreleased — MS0–MS3]
 ### Added
 - `validators.py`: `ValidationResult` dataclass; composable `check_*` functions for response emptiness, `[MEMORY]` tag, heuristic length (sentence-count ranges per preset) and heuristic language (marker-word scoring); `validate_response`, `validate_memory_entry` (primary extension point for MS4+ memory work), `validate_identity`; `record_validation` → `session_dir/validation.jsonl`; `load_validation`
 - `telemetry.py`: `record_call` appends one JSONL entry per agent call to `session_dir/telemetry.jsonl`; `load_telemetry` reads entries back as a list of dicts; fields: `round`, `agent`, `model`, `prompt_chars`, `memory_lines`, `history_turns`, `output_chars`, `duration_s`, `timestamp`

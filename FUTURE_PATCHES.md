@@ -79,6 +79,50 @@ Content here is deliberately not active roadmap work yet.
   - Status: deferred
   - Why later: important in the long run, but should be introduced alongside more mature delegation
 
+- [ ] [MEMORY] Background harvester (R2 pattern)
+  - Status: deferred
+  - Why later: explicit `[MEMORY]` tags are sufficient at current session lengths; a background LLM pass that extracts knowledge without agent tagging becomes valuable when sessions grow longer or agents miss too much — must always run fire-and-forget, never on the critical path
+
+- [ ] [MEMORY] RAG / cosine similarity search in memory archive (R3 pattern)
+  - Status: deferred
+  - Why later: loading the full memory.md per call is fine while entries stay below ~200; vector search makes sense after SQLite migration is in place
+
+- [ ] [MEMORY] Librarian gate before archive injection (R1 pattern)
+  - Status: deferred
+  - Why later: only meaningful once RAG exists; the gate prevents injecting irrelevant archive context and saves tokens
+
+- [ ] [MEMORY] Echo mining across sessions (M5 pattern)
+  - Status: deferred
+  - Why later: recurring patterns across sessions become detectable at ~50+ sessions; premature before that
+
+- [ ] [MEMORY] Memory decay with type-aware half-lives (M6 pattern)
+  - Status: deferred
+  - Why later: decay is only meaningful after ~1 month of data; old entries lose weight automatically so outdated facts do not compete with recent ones
+
+- [ ] [MEMORY] SQLite migration for structured storage
+  - Status: deferred
+  - Why later: markdown files are correct at current scale; SQLite becomes necessary when MAX_MEMORY_LINES feels too blunt — enables decay, structured queries, and later embeddings; lock in embedding model before adding vectors (AP7 risk)
+
+- [ ] [RUNTIME] LLM-scored convergence detection (A4 pattern)
+  - Status: deferred
+  - Why later: the current word-overlap heuristic is a correct first approximation; LLM-scored semantic agreement becomes valuable when heuristic produces too many false positives
+
+- [ ] [RUNTIME] Circuit breaker for response loops (C6 pattern)
+  - Status: deferred
+  - Why later: adds hash-based exact loop detection and semantic similarity check on top of the existing convergence rounds counter; good MS5+ candidate
+
+- [ ] [RUNTIME] Budget kill switch (C1 extension)
+  - Status: deferred
+  - Why later: "stop if session exceeds N model calls or costs > threshold" — useful once model costs or local resource limits become a practical concern; the stop_event pattern is already in place so the wiring is simple
+
+- [ ] [RUNTIME] Deadlock kill switch — escalate if agents disagree N times consecutively (C1 pattern)
+  - Status: deferred
+  - Why later: requires tracking consecutive disagreement count per agent pair; useful when debates stall without convergence; a moderator message or human escalation is the natural action
+
+- [ ] [MEMORY] Agent drift detection via embedding baseline (A1 pattern)
+  - Status: deferred
+  - Why later: embeddings add a dependency; useful when an agent's voice drifts measurably from its identity baseline across rounds; augments the current language heuristic with a semantic dimension
+
 ## Open design questions
 
 1. Should the first stable version only run one session at a time, or should multi-session support come in early?

@@ -7,6 +7,7 @@ from pathlib import Path
 from identities import load_identity
 from memory import (
     append_memory,
+    archive_session_memory,
     check_convergence,
     extract_memory_tag,
     load_memory,
@@ -25,9 +26,14 @@ def setup_dirs(project_dir: Path, session_dir: Path, topic: str, project: str, s
     (project_dir / "agent_a").mkdir(parents=True, exist_ok=True)
     (project_dir / "agent_b").mkdir(parents=True, exist_ok=True)
     for subdir in ("agent_a", "agent_b"):
-        mem = project_dir / subdir / "memory.md"
-        if not mem.exists():
-            mem.write_text("", encoding="utf-8")
+        subdir_path = project_dir / subdir
+        archive = subdir_path / "archive.md"
+        legacy  = subdir_path / "memory.md"
+        # New projects get archive.md directly.
+        # Existing projects with memory.md are migrated by _migrate_legacy_memory()
+        # in memory.py on first load — no manual step needed.
+        if not archive.exists() and not legacy.exists():
+            archive.write_text("", encoding="utf-8")
 
     # Session-level files are fresh per run.
     session_dir.mkdir(parents=True, exist_ok=True)
@@ -277,6 +283,16 @@ def run_conversation(
                     break
             else:
                 streak = 0
+
+    # Archive L1 session memory → L2 for both agents before closing the session.
+    promoted_a = archive_session_memory(agent_a_dir)
+    promoted_b = archive_session_memory(agent_b_dir)
+    if promoted_a or promoted_b:
+        output_fn(
+            f"\n>>> Memory archived: "
+            f"{name_a} +{promoted_a} entr{'y' if promoted_a == 1 else 'ies'}, "
+            f"{name_b} +{promoted_b} entr{'y' if promoted_b == 1 else 'ies'} → archive"
+        )
 
     output_fn(f"\n{'=' * 60}")
     output_fn(f"  Conversation finished  |  Session: {session_id}")

@@ -16,13 +16,17 @@ It must reflect the current truth and the nearest direction without locking the 
 - `main.py` runs conversations from a per-run `session_cfg`, but runtime state is not yet fully session-isolated.
 - `projects.py` manages project directories and `settings.json`.
 - `identities.py` loads persona files from `identities/`.
-- Memory lives at the project level under `projects/<project>/agent_x/memory.md` and is shared across sessions.
+- Memory is split into two layers per agent under `projects/<project>/agent_x/`:
+  - `session_memory.md` (L1) — written during a run; cleared and promoted at session end.
+  - `archive.md` (L2) — cross-session knowledge; grows via `archive_session_memory()` on session end.
+  - `permanent.md` (L3) — permanent facts; manual promotion only; not yet read by the engine.
+  - Existing projects with `memory.md` are auto-migrated to `archive.md` on first load.
 - Conversation logs live per session under `projects/<project>/sessions/<session_id>/conversation.md`.
 - `sessions.py` holds the `SessionManager` singleton with the active session's `queue`, `stop_event` and `state`; `app.py` no longer holds global runtime state for these.
 - Existing `settings.json` files may still contain legacy Danish values; `normalization.py` handles read-compatibility transparently.
 - The user may still write free-form input to the agent in Danish or any other chosen language; that is content, not engine state.
 - `telemetry.py` records per-call metrics to `session_dir/telemetry.jsonl`; the debug panel in `ui/index.html` polls `/api/telemetry` live during runs.
-- `validators.py` runs contract checks (empty response, `[MEMORY]` tag, heuristic language, heuristic length, memory entry length) after each agent call; results go to `session_dir/validation.jsonl` and failures echo to the run output. `validate_memory_entry()` is the designated extension point for Milestone 4+ memory work.
+- `validators.py` runs contract checks (empty response, `[MEMORY]` tag, heuristic language, heuristic length, memory entry length with layer awareness) after each agent call; results go to `session_dir/validation.jsonl` and failures echo to the run output. `validate_memory_entry(entry, layer)` is the designated extension point for memory work.
 
 ## Document Roles
 
@@ -63,13 +67,21 @@ dublog/
 |   |   `-- *.md
 |   `-- custom/
 |       `-- *.md         # local identities, gitignored
+|-- .guides/
+|   |-- project_control.md         # operative guide for git and project rhythm
+|   |-- english_migration_scope.md # engine vs content boundary for the English pass
+|   `-- scaling_architecture.md    # memory layers, promotion, convergence and infra target
 |-- projects/            # runtime data, gitignored
 |   `-- <project>/
 |       |-- settings.json
 |       |-- agent_a/
-|       |   `-- memory.md
+|       |   |-- session_memory.md  # L1: written during run, cleared on archive
+|       |   |-- archive.md         # L2: cross-session, grows via promotion
+|       |   `-- permanent.md        # L3: permanent, manual promotion only
 |       |-- agent_b/
-|       |   `-- memory.md
+|       |   |-- session_memory.md
+|       |   |-- archive.md
+|       |   `-- permanent.md
 |       `-- sessions/
 |           `-- <session_id>/
 |               |-- conversation.md
@@ -149,11 +161,17 @@ Sign-off: Claude
 
 ## Next Direction
 
-The active direction lives in `ROADMAP.md`, but the largest tracks are:
+The active direction lives in `ROADMAP.md`. The scaling target is described in `.guides/scaling_architecture.md`.
 
-- real session structure instead of only project-aware runtime
-- observability and debug data as a core feature
-- clearer contracts for language, length, and memory output
-- a sharper split between session memory, project memory, and later promotion
+Active tracks:
+- MS4: split session memory (L1) from project archive (L2); archive on session end; define L2→L3 promotion rule; extend `validate_memory_entry()` for layer context
+- MS5: clean session lifecycle exit paths; verify live streaming; optional circuit breaker for response loops
+
+Architecture direction (not active yet):
+- memory capture will eventually grow from explicit `[MEMORY]` tags to a background harvester
+- retrieval will eventually grow from full-file loading to RAG over SQLite
+- convergence scoring will eventually upgrade from word-overlap to LLM-scored semantic agreement
+
+Each upgrade is gated on the previous layer showing the strain that makes the next layer necessary.
 
 If an idea is not active yet, it should stay in `FUTURE_PATCHES.md` instead of spreading through the document layer.

@@ -194,46 +194,59 @@ Purpose: Make language, length and memory output into enforceable contracts inst
   - Output: `_LENGTH_RANGES` in `validators.py` maps `short/medium/long` to sentence-count bounds; `check_length` flags clear violations
   - Done when: length checks can be compared with actual output ✓
 
-## Milestone 4 - Memory flow and promotion
+## Milestone 4 - Memory layers and promotion
+Status: done
+Purpose: Separate session memory from project memory so the two can evolve independently. Introduce a first explicit promotion rule. Keep storage simple — markdown files, no new dependencies.
+
+Design reference: `.guides/scaling_architecture.md` — L1/L2/L3 model; promotion rule; isolation invariant.
+
+- [x] [MEMORY] Split L1 (session) and L2 (archive) memory per agent
+  - Status: done
+  - Why: current flat `memory.md` mixes working notes and cross-session conclusions; session deletions risk destroying long-term knowledge
+  - Output: `agent_x/session_memory.md` (L1) + `agent_x/archive.md` (L2) replacing the current single file; `memory.py` updated to read/write both; legacy `memory.md` auto-migrated on first load
+  - Done when: a deleted session does not touch the agent's archive; a new session starts with a clean L1 and inherits L2 ✓
+
+- [x] [MEMORY] Archive session memory on session end (L1 → L2 promotion step 0)
+  - Status: done
+  - Why: L1 entries that survive a session should graduate to L2 rather than being discarded or kept cluttered in a single file
+  - Output: `archive_session_memory()` called at the end of `run_conversation`; non-trivial (≥ 4 words), non-duplicate L1 entries appended to L2; L1 cleared
+  - Done when: after each run, L2 grows and L1 is empty ✓
+
+- [x] [MEMORY] Define and document the L2 → L3 promotion rule
+  - Status: done
+  - Why: not everything should become permanent; the first rule must be simple and explicit, not automatic
+  - Output: promotion is manual-only — operator appends to `permanent.md` explicitly; rule documented in `memory.py` module docstring and `.guides/scaling_architecture.md`
+  - Done when: it is clear what triggers promotion and who can do it ✓
+
+- [x] [VALIDATION] Extend `validate_memory_entry()` for L1 vs L2 context
+  - Status: done
+  - Why: validation should know which layer a memory entry is targeting; L2 entries should meet a higher bar than transient L1 notes
+  - Output: `validate_memory_entry(entry, layer="L1")` accepts optional layer hint; `check_memory_entry_length` applies stricter upper bound (30 words) for L2 and shared minimum (4 words) for both layers
+  - Done when: the validator can distinguish session notes from archive candidates ✓
+
+- [x] [DOCS] Update all docs to reflect the new memory model
+  - Status: done
+  - Output: `CLAUDE.md` structure tree updated; `.guides/scaling_architecture.md` baseline section updated; `CHANGELOG.md` updated
+  - Done when: a new reader can follow the memory flow without reading code first ✓
+
+## Milestone 5 - Session lifecycle hardening
 Status: todo
-Purpose: Separate session memory, project memory and later promotion so memory becomes simple and traceable.
+Purpose: Make session start, stop and error paths consistent and clean. Verify that streaming output is live during a run, not buffered. Optionally add a simple circuit breaker to the convergence loop.
 
-- [ ] [MEMORY] Split project memory and session memory physically
+- [ ] [RUNTIME] Clean up state on success, stop and error
   - Status: todo
-  - Why: current structure is too flat for longer runs
-  - Output: separate storage for temporary and long-lived memory
-  - Done when: deleting a session does not destroy the project's long-term memory
+  - Why: the three exit paths from `run_conversation` (natural end, stop_event, exception) should leave the session in a consistent documented state; currently the SessionManager state on error is implicit
+  - Output: explicit `session_manager.finish(error=...)` called on all three paths; session state readable as `done` / `stopped` / `error` from the UI
+  - Done when: the status endpoint returns a meaningful state after every exit path
 
-- [ ] [MEMORY] Define first promotion rule
+- [ ] [TEST] Verify that live output reaches the client before a round completes
   - Status: todo
-  - Why: not everything should automatically become permanent memory
-  - Output: simple promotion strategy
-  - Done when: it is clear what gets promoted and why
+  - Why: SSE should stream output line by line; if the queue only flushes after a full response the client experience is not live
+  - Output: manual smoke test or a simple `curl` + `time` check; documented result
+  - Done when: streaming behaviour is documented and the result is reproducible
 
-- [ ] [DOCS] Describe memory levels and promotion flow
+- [ ] [RUNTIME] Optional: add hash-based loop detection to convergence check (C6 lite)
   - Status: todo
-  - Why: memory architecture must not become semi-magical
-  - Output: updated docs
-  - Done when: a new reader can follow the memory flow without reading code first
-
-## Milestone 5 - Streaming and UI hardening
-Status: todo
-Purpose: Make runs more live and robust without losing the simple base.
-
-- [ ] [UI] Make streaming more session-aware
-  - Status: todo
-  - Why: output should be displayable continuously per run
-  - Output: improved streaming flow
-  - Done when: the client can follow a specific session without global confusion
-
-- [ ] [RUNTIME] Clean up cleanup on success, stop and error
-  - Status: todo
-  - Why: session termination should be clear and robust
-  - Output: more explicit cleanup flow
-  - Done when: state and files are left consistent after all exit paths
-
-- [ ] [TEST] Verify that live output does not require a complete full response first
-  - Status: todo
-  - Why: streaming should feel like streaming
-  - Output: simple verification or smoke test
-  - Done when: streaming behaviour can be documented and reproduced
+  - Why: the current convergence check detects agreement but not repetition — an agent can repeat the same response without the convergence counter advancing
+  - Output: `check_convergence` (or a wrapper in `run_conversation`) computes an MD5 of each response and flags if the same hash appears twice in the last N rounds
+  - Done when: the system can detect and log a response loop without relying on semantic similarity

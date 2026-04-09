@@ -211,34 +211,66 @@ def validate_response(
 
 # ── Memory entry validator ────────────────────────────────────────────────────
 
-# Maximum word count for a single [MEMORY]: entry.
-# Entries should be concise key points, not paragraphs.
-_MEMORY_ENTRY_MAX_WORDS = 35
+# Word-count bounds per memory layer.
+# L1 (session) entries are ephemeral working notes — generous upper bound.
+# L2 (archive) candidates should be tighter: concise, distilled key points.
+# Both layers share a minimum so noise / one-word entries are caught early.
+_MEMORY_ENTRY_MIN_WORDS   =  4   # Below this: too short to be meaningful
+_MEMORY_ENTRY_MAX_WORDS   = 35   # L1 session entries
+_MEMORY_ARCHIVE_MAX_WORDS = 30   # L2 archive candidates (stricter upper bound)
 
 
-def check_memory_entry_length(entry: str) -> ValidationResult:
+def check_memory_entry_length(entry: str, layer: str = "L1") -> ValidationResult:
+    """
+    Check memory entry word count.
+
+    layer: "L1" for entries written during a run (default),
+           "L2" for entries being promoted to the archive.
+
+    L2 entries get a 5-word stricter upper bound. Both layers share the
+    same minimum so noise entries are caught regardless of destination.
+    """
     words = len(entry.split())
-    passed = words <= _MEMORY_ENTRY_MAX_WORDS
+    max_words = _MEMORY_ARCHIVE_MAX_WORDS if layer == "L2" else _MEMORY_ENTRY_MAX_WORDS
+
+    too_long  = words > max_words
+    too_short = words < _MEMORY_ENTRY_MIN_WORDS
+    passed    = not too_long and not too_short
+
+    if too_long:
+        message = (
+            f"Memory entry is {words} words "
+            f"(max {max_words} for {layer})"
+        )
+    elif too_short:
+        message = (
+            f"Memory entry is {words} words — "
+            f"too short to be meaningful (min {_MEMORY_ENTRY_MIN_WORDS})"
+        )
+    else:
+        message = f"Memory entry length OK ({words} words, {layer})"
+
     return ValidationResult(
         check="memory_entry_length",
         passed=passed,
         level="warning",
-        message=(
-            f"Memory entry is {words} words (max {_MEMORY_ENTRY_MAX_WORDS})"
-            if not passed
-            else f"Memory entry length OK ({words} words)"
-        ),
+        message=message,
         value=str(words) if not passed else None,
     )
 
 
-def validate_memory_entry(entry: str) -> list[ValidationResult]:
+def validate_memory_entry(entry: str, layer: str = "L1") -> list[ValidationResult]:
     """
-    Run all memory-entry-level checks. This is the main extension point
-    for Milestone 4+ memory work — add new check_* calls here.
+    Run all memory-entry-level checks.
+
+    layer: "L1" for entries written during a run (default),
+           "L2" for entries being promoted to the archive.
+
+    This is the designated extension point for MS4+ memory work — add new
+    check_* calls here to extend validation for either or both layers.
     """
     return [
-        check_memory_entry_length(entry),
+        check_memory_entry_length(entry, layer),
     ]
 
 
