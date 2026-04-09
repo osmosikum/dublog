@@ -41,3 +41,7 @@ identities/*
 !identities/custom/
 identities/custom/**
 !identities/custom/.gitkeep
+
+# Temporary files for prompts and ideas
+.patrick_temp/
+.patrick_temp/**
