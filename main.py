@@ -1,5 +1,6 @@
 import config
 import threading
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -15,6 +16,7 @@ from model import call_model
 from normalization import normalize_session_cfg
 from projects import create_session, ensure_default
 from prompts import build_system_prompt, build_user_message
+from telemetry import record_call
 
 
 def setup_dirs(project_dir: Path, session_dir: Path, topic: str, project: str, session_id: str) -> None:
@@ -61,6 +63,8 @@ def run_agent(
     identity_slug: str,
     language: str,
     length: str,
+    agent_name: str,
+    session_dir: Path,
 ) -> str:
     ident = load_identity(identity_slug)
     memory = load_memory(agent_dir, config.MAX_MEMORY_LINES)
@@ -74,7 +78,27 @@ def run_agent(
         total_rounds=total_rounds,
         max_turns=config.MAX_HISTORY_TURNS,
     )
+
+    prompt_chars  = len(system_prompt) + sum(len(m.get("content", "")) for m in messages)
+    memory_lines  = len([l for l in memory.splitlines() if l.strip()])
+    history_turns = len(history[-(config.MAX_HISTORY_TURNS * 2):]) // 2
+
+    t0 = time.monotonic()
     response = call_model(model, system_prompt, messages)
+    duration_s = time.monotonic() - t0
+
+    record_call(
+        session_dir=session_dir,
+        round_num=round_num,
+        agent=agent_name,
+        model=model,
+        prompt_chars=prompt_chars,
+        memory_lines=memory_lines,
+        history_turns=history_turns,
+        output_chars=len(response),
+        duration_s=duration_s,
+    )
+
     memory_entry = extract_memory_tag(response)
     if memory_entry:
         append_memory(agent_dir, memory_entry)
@@ -173,6 +197,8 @@ def run_conversation(
             identity_a,
             language_a,
             length_a,
+            agent_name=name_a,
+            session_dir=session_dir,
         )
         output_fn(f"\n{'=' * 60}")
         output_fn(f"  Round {round_num} - {name_a}")
@@ -200,6 +226,8 @@ def run_conversation(
             identity_b,
             language_b,
             length_b,
+            agent_name=name_b,
+            session_dir=session_dir,
         )
         output_fn(f"\n{'=' * 60}")
         output_fn(f"  Round {round_num} - {name_b}")

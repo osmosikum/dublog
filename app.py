@@ -68,6 +68,7 @@ class Handler(BaseHTTPRequestHandler):
             "/api/identities": self._get_identities,
             "/api/memory/a": lambda: self._get_memory("agent_a"),
             "/api/memory/b": lambda: self._get_memory("agent_b"),
+            "/api/telemetry": self._get_telemetry,
         }
         handler = routes.get(path)
         if handler:
@@ -175,6 +176,16 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _get_telemetry(self):
+        project    = self._qp.get("project", ["default"])[0]
+        session_id = self._qp.get("session", [""])[0]
+        if not session_id:
+            self._json([])
+            return
+        from telemetry import load_telemetry
+        session_dir = Path("projects") / project / "sessions" / session_id
+        self._json(load_telemetry(session_dir))
+
     def _stream(self):
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
@@ -263,7 +274,7 @@ class Handler(BaseHTTPRequestHandler):
                 session.queue.put(None)
 
         threading.Thread(target=run, daemon=True).start()
-        self._json({"status": "started"})
+        self._json({"status": "started", "session_id": session_id})
 
     def _stop_run(self):
         session = session_manager.current()

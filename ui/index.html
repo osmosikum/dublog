@@ -182,6 +182,40 @@
       white-space: pre-wrap; word-break: break-word;
     }
     .mem-empty { font-style: italic; opacity: 0.5; }
+
+    /* ── Debug bar ── */
+    .debug-bar {
+      border-top: 1px solid var(--border); background: var(--surface);
+      flex-shrink: 0;
+    }
+    .debug-toggle-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 16px; cursor: pointer; user-select: none;
+    }
+    .debug-toggle-row:hover { background: var(--surf2); }
+    .debug-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .debug-chevron { font-size: 10px; color: var(--muted); margin-left: auto; }
+    .debug-content { padding: 0 16px 8px; overflow-x: auto; }
+    .debug-table {
+      width: 100%; border-collapse: collapse;
+      font-family: 'Consolas', monospace; font-size: 11px;
+    }
+    .debug-table th {
+      text-align: left; color: var(--muted); font-weight: 600;
+      padding: 3px 10px 3px 0; border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .debug-table td {
+      padding: 3px 10px 3px 0; color: var(--text);
+      border-bottom: 1px solid #21262d; white-space: nowrap;
+    }
+    .debug-table tr:last-child td { border-bottom: none; }
+    .td-agent-a { color: var(--blue); }
+    .td-agent-b { color: var(--green); }
+    .td-num { color: var(--muted); }
   </style>
 </head>
 <body>
@@ -316,7 +350,7 @@
 
     </aside>
 
-    <!-- Console + memory -->
+    <!-- Console + debug + memory -->
     <div class="console-wrap">
       <div class="console" id="console">
         <div class="empty-hint" id="empty-hint">
@@ -324,6 +358,27 @@
           Click an earlier session to reload its log.
         </div>
       </div>
+
+      <!-- Debug panel (hidden until telemetry data arrives) -->
+      <div class="debug-bar" id="debug-bar" style="display:none">
+        <div class="debug-toggle-row" onclick="toggleDebug()">
+          <span class="debug-label">Debug</span>
+          <span class="debug-chevron" id="debug-chevron">▲</span>
+        </div>
+        <div class="debug-content" id="debug-content">
+          <table class="debug-table">
+            <thead>
+              <tr>
+                <th>Rnd</th><th>Agent</th><th>Model</th>
+                <th>Prompt</th><th>Mem lines</th><th>Hist turns</th>
+                <th>Output</th><th>Time (s)</th>
+              </tr>
+            </thead>
+            <tbody id="debug-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="memory-bar">
         <div class="mem-col">
           <div class="mem-title mem-a" id="mem-title-a">Agent A — Memory</div>
@@ -340,13 +395,15 @@
 
 <script>
   // ── State ──────────────────────────────────────────────────────────────────
-  let running        = false;
-  let currentProject = "default";
-  let identityData   = [];
-  let savedModelA    = "";
-  let savedModelB    = "";
-  let memPollInterval = null;
-  let latestSessionId = null; // set when a run completes
+  let running          = false;
+  let currentProject   = "default";
+  let identityData     = [];
+  let savedModelA      = "";
+  let savedModelB      = "";
+  let memPollInterval  = null;
+  let latestSessionId  = null;   // set when a run completes (for session selector)
+  let currentSessionId = null;   // set at run start (for live telemetry polling)
+  let debugOpen        = true;
 
   // ── Boot ───────────────────────────────────────────────────────────────────
   async function init() {
@@ -594,6 +651,7 @@
       });
       const result = await r.json();
       if (result.error) { appendLine("[ERROR] " + result.error, "l-error"); setRunning(false); return; }
+      currentSessionId = result.session_id ?? null;
     } catch (e) {
       appendLine("[ERROR] Could not reach the server: " + e, "l-error"); setRunning(false); return;
     }
@@ -604,20 +662,20 @@
         es.close();
         setRunning(false);
         pollMemory();
-        loadSessions(currentProject); // refresh session list
+        pollTelemetry();
+        loadSessions(currentProject);
         return;
       }
-      // Capture the session_id signal from main.py
       if (e.data.startsWith("__SESSION_ID__:")) {
         latestSessionId = e.data.split(":")[1];
-        return; // don't display this line
+        return;
       }
       appendLine(e.data);
     };
     es.onerror = () => { es.close(); setRunning(false); };
 
     clearInterval(memPollInterval);
-    memPollInterval = setInterval(pollMemory, 4000);
+    memPollInterval = setInterval(() => { pollMemory(); pollTelemetry(); }, 4000);
   }
 
   function setRunning(state) {
@@ -666,6 +724,44 @@
   function clearConsole() {
     document.getElementById("console").innerHTML =
       '<div class="empty-hint" id="empty-hint">Choose a project and agents - press <strong>Run conversation</strong>.<br>Click an earlier session to reload its log.</div>';
+    document.getElementById("debug-bar").style.display = "none";
+    document.getElementById("debug-tbody").innerHTML   = "";
+    currentSessionId = null;
+  }
+
+  // ── Telemetry ──────────────────────────────────────────────────────────────
+  async function pollTelemetry() {
+    if (!currentSessionId) return;
+    try {
+      const r    = await fetch(`/api/telemetry?project=${enc(currentProject)}&session=${enc(currentSessionId)}`);
+      const rows = await r.json();
+      if (!rows.length) return;
+      const bar   = document.getElementById("debug-bar");
+      const tbody = document.getElementById("debug-tbody");
+      bar.style.display = "";
+      tbody.innerHTML = "";
+      rows.forEach(row => {
+        const tr  = document.createElement("tr");
+        const ag  = row.agent ?? "";
+        const cls = (ag === document.getElementById("name-a").value) ? "td-agent-a" : "td-agent-b";
+        tr.innerHTML = `
+          <td class="td-num">${row.round}</td>
+          <td class="${cls}">${ag}</td>
+          <td class="td-num">${row.model ?? ""}</td>
+          <td>${row.prompt_chars?.toLocaleString() ?? "–"}</td>
+          <td>${row.memory_lines ?? "–"}</td>
+          <td>${row.history_turns ?? "–"}</td>
+          <td>${row.output_chars?.toLocaleString() ?? "–"}</td>
+          <td>${row.duration_s ?? "–"}</td>`;
+        tbody.appendChild(tr);
+      });
+    } catch (e) { /* silently ignore */ }
+  }
+
+  function toggleDebug() {
+    debugOpen = !debugOpen;
+    document.getElementById("debug-content").style.display = debugOpen ? "" : "none";
+    document.getElementById("debug-chevron").textContent   = debugOpen ? "▲" : "▼";
   }
 
   // ── Memory ─────────────────────────────────────────────────────────────────
