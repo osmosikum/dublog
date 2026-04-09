@@ -51,6 +51,12 @@ Formaal: Goere dokumentlaget til projektets nuvaerende operative sandhed uden at
   - Output: `.gitignore` og initialisering paa `main`
   - Done naar: kildekode og docs kan trackes uden at runtime-data fylder status
 
+- [x] [OPS] Konfigurere remote og foerste push
+  - Status: done
+  - Hvorfor: baseline skal ikke kun findes lokalt, men ogsaa kunne synkes til GitHub
+  - Output: `origin` sat og `main` tracket mod `origin/main`
+  - Done naar: den lokale baseline-commit findes paa remote, og `main` tracker `origin/main`
+
 - [x] [DOCS] Oprette brugerens projektstyringsguide
   - Status: done
   - Hvorfor: styring af repo, branches, changelog og agents skal vaere samlet et sted

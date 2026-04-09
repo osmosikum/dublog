@@ -15,9 +15,12 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - Changelog-flowet kraever nu en tydelig agent-sign-off for hver reel sessionopdatering.
 - `CLAUDE.md`, `AGENTS.md`, `README.md` og `ROADMAP.md` er synket med en fast git-baseline og always-on dokumentationsregel.
 - Repoet er initialiseret som git-repository paa den lokale `main`-branch.
+- Global Git default branch er sat til `main` for fremtidige repos.
+- `origin` er sat til `https://github.com/osmosikum/dublog.git`, og baseline-commit er pushet til `origin/main`.
 
 ### Docs
 - Dokumentlaget skelner nu mellem nuvaerende sandhed, aktiv roadmap og parkerede fremtidsideer, saa repoet ikke laases fast for tidligt.
+- `.guides/project_control.md` og `ROADMAP.md` afspejler nu at git-setup og foerste push faktisk er gennemfoert.
 
 Sign-off: Codex
 

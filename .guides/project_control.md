@@ -20,6 +20,8 @@ Hvis to dokumenter siger noget forskelligt, skal de bringes i sync med det samme
 ## Standard for dette repo
 
 - `main` er baseline-branch.
+- `origin` er GitHub-remoten for repoet.
+- lokal `main` tracker `origin/main`.
 - Stoerre arbejde sker i branches, ikke direkte paa `main`.
 - Runtime-data skal ikke i git.
 - Dokumentation koerer altid sammen med aendringer, ikke bagefter.
@@ -99,6 +101,13 @@ Eksempler:
 - skriv ikke fremtidig arkitektur ind i docs som om den allerede findes
 
 ## Git-opsætning for dette repo
+
+Nuværende status:
+
+- repoet er initialiseret lokalt
+- default arbejdsbranch er `main`
+- `origin` peger paa `https://github.com/osmosikum/dublog.git`
+- foerste baseline er allerede pushet, og `main` tracker `origin/main`
 
 Repoet skal initialiseres paa `main`.
 Hvis du senere vil pushe til GitHub:
