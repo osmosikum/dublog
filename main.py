@@ -87,14 +87,20 @@ def run_conversation(
     project: str = "default",
     session_cfg: dict | None = None,
     stop_event: threading.Event | None = None,
+    session_id: str | None = None,
+    session_dir: Path | None = None,
 ):
     """
-    Run a full conversation, creating a new session under the project.
+    Run a full conversation under the given project.
 
     session_cfg keys (all optional - fall back to config.py defaults):
         topic, rounds,
         name_a, model_a, identity_a, language_a, length_a,
         name_b, model_b, identity_b, language_b, length_b
+
+    session_id / session_dir: if provided (web-run flow), the session
+    directory is already created by app.py; otherwise a new one is
+    created here (CLI flow).
     """
     if session_cfg is None:
         session_cfg = {}
@@ -128,7 +134,8 @@ def run_conversation(
     length_b = runtime_cfg["length_b"]
 
     project_dir = Path("projects") / project
-    session_id, session_dir = create_session(project)
+    if session_id is None or session_dir is None:
+        session_id, session_dir = create_session(project)
 
     agent_a_dir = project_dir / "agent_a"
     agent_b_dir = project_dir / "agent_b"

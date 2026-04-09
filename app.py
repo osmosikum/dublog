@@ -9,14 +9,11 @@ from urllib.parse import parse_qs, urlparse
 
 import requests as req_lib
 
+from sessions import session_manager
+
 os.chdir(Path(__file__).parent)
 
 PORT = 7842
-
-run_queue: queue.Queue = queue.Queue()
-run_lock: threading.Lock = threading.Lock()
-stop_event: threading.Event = threading.Event()
-is_running: bool = False
 
 
 def fetch_ollama_models() -> tuple[list[str], str]:
@@ -45,7 +42,6 @@ def make_output_fn(out_queue: queue.Queue):
     def fn(message: str):
         for line in str(message).split("\n"):
             out_queue.put(line)
-
     return fn
 
 
@@ -130,7 +126,7 @@ class Handler(BaseHTTPRequestHandler):
         })
 
     def _get_status(self):
-        self._json({"running": is_running})
+        self._json({"running": session_manager.is_running()})
 
     def _get_projects(self):
         from projects import ensure_default, list_projects
@@ -185,10 +181,15 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-cache")
         self.send_header("Connection", "keep-alive")
         self.end_headers()
+        session = session_manager.current()
+        if session is None:
+            self.wfile.write(b"data: [DONE]\n\n")
+            self.wfile.flush()
+            return
         try:
             while True:
                 try:
-                    message = run_queue.get(timeout=60)
+                    message = session.queue.get(timeout=60)
                 except queue.Empty:
                     self.wfile.write(b": ping\n\n")
                     self.wfile.flush()
@@ -210,69 +211,64 @@ class Handler(BaseHTTPRequestHandler):
         return json.loads(self.rfile.read(length)) if length else {}
 
     def _start_run(self):
-        global is_running
+        if session_manager.is_running():
+            self._json({"error": "A conversation is already running"})
+            return
 
         body = self._read_body()
-        with run_lock:
-            if is_running:
-                self._json({"error": "A conversation is already running"})
-                return
-            is_running = True
-
-        stop_event.clear()
-        while not run_queue.empty():
-            try:
-                run_queue.get_nowait()
-            except queue.Empty:
-                break
 
         session_cfg = {
             "topic": body.get("topic", ""),
             "rounds": body.get("rounds", 6),
             "name_a": body.get("name_a", "Agent A"),
             "model_a": body.get("model_a", ""),
-            "identity_a": body.get("identity_a", "skeptikeren"),
-            "language_a": body.get("language_a", "dansk"),
+            "identity_a": body.get("identity_a", "ent_kasper"),
+            "language_a": body.get("language_a", "danish"),
             "length_a": body.get("length_a", "medium"),
             "name_b": body.get("name_b", "Agent B"),
             "model_b": body.get("model_b", ""),
-            "identity_b": body.get("identity_b", "optimisten"),
-            "language_b": body.get("language_b", "dansk"),
+            "identity_b": body.get("identity_b", "ent_leon"),
+            "language_b": body.get("language_b", "danish"),
             "length_b": body.get("length_b", "medium"),
         }
         project = body.get("project", "default")
 
         import config as cfg
+        from projects import create_session, save_settings
 
         cfg.BACKEND = body.get("backend", cfg.BACKEND)
-
-        from projects import save_settings
-
         save_settings(project, {**session_cfg, "backend": body.get("backend", cfg.BACKEND)})
 
-        def run():
-            global is_running
+        session_id, session_dir = create_session(project)
+        session = session_manager.start(session_id, session_dir)
 
+        def run():
             try:
                 import main
 
                 main.run_conversation(
-                    output_fn=make_output_fn(run_queue),
+                    output_fn=make_output_fn(session.queue),
                     project=project,
                     session_cfg=session_cfg,
-                    stop_event=stop_event,
+                    stop_event=session.stop_event,
+                    session_id=session_id,
+                    session_dir=session_dir,
                 )
             except Exception as exc:
-                run_queue.put(f"[ERROR] {exc}")
+                session.queue.put(f"[ERROR] {exc}")
+                session_manager.finish(error=exc)
+            else:
+                session_manager.finish()
             finally:
-                run_queue.put(None)
-                is_running = False
+                session.queue.put(None)
 
         threading.Thread(target=run, daemon=True).start()
         self._json({"status": "started"})
 
     def _stop_run(self):
-        stop_event.set()
+        session = session_manager.current()
+        if session is not None:
+            session.stop_event.set()
         self._json({"status": "stopping"})
 
     def _create_project(self):

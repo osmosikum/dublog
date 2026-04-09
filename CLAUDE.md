@@ -18,10 +18,10 @@ It must reflect the current truth and the nearest direction without locking the 
 - `identities.py` loads persona files from `identities/`.
 - Memory lives at the project level under `projects/<project>/agent_x/memory.md` and is shared across sessions.
 - Conversation logs live per session under `projects/<project>/sessions/<session_id>/conversation.md`.
-- `app.py` still holds global runtime state (`run_queue`, `run_lock`, `stop_event`, `is_running`); a known next architecture step is moving that into `sessions.py`.
-- The engine layer is still being migrated to English, and existing `settings.json` files still contain Danish values that require compatibility handling.
+- `sessions.py` holds the `SessionManager` singleton with the active session's `queue`, `stop_event` and `state`; `app.py` no longer holds global runtime state for these.
+- Existing `settings.json` files may still contain legacy Danish values; `normalization.py` handles read-compatibility transparently.
 - The user may still write free-form input to the agent in Danish or any other chosen language; that is content, not engine state.
-- Dedicated modules such as `sessions.py`, `telemetry.py`, and `validators.py` do not exist yet.
+- Dedicated modules such as `telemetry.py` and `validators.py` do not exist yet.
 
 ## Document Roles
 
@@ -39,6 +39,7 @@ It must reflect the current truth and the nearest direction without locking the 
 dublog/
 |-- app.py               # web server and SSE streaming (port 7842)
 |-- main.py              # conversation orchestrator, run_conversation(session_cfg)
+|-- sessions.py          # SessionManager: runtime lifecycle (queue, stop_event, state)
 |-- config.py            # static defaults for CLI runs
 |-- model.py             # model adapter: Ollama, LM Studio, Claude API
 |-- prompts.py           # prompt builder: identity + instructions + memory
