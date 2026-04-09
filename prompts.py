@@ -15,16 +15,16 @@ Prompt layer order (fixed):
 from normalization import normalize_language, normalize_length, prompt_language_label
 
 _LENGTH_HINTS = {
-    "short": "Svar kortfattet - maksimalt 3 saetninger.",
-    "medium": "Svar i passende laengde - 4-6 saetninger.",
-    "long": "Svar uddybende og detaljeret - 7-10 saetninger.",
+    "short": "Respond briefly - maximum 3 sentences.",
+    "medium": "Respond at a reasonable length - 4-6 sentences.",
+    "long": "Respond in depth and detail - 7-10 sentences.",
 }
 
 
 def build_system_prompt(
     identity_content: str,
     memory: str,
-    language: str = "dansk",
+    language: str = "danish",
     length: str = "medium",
 ) -> str:
     parts = [identity_content]
@@ -33,17 +33,17 @@ def build_system_prompt(
 
     instructions: list[str] = []
     if normalized_language:
-        instructions.append(f"Svar altid paa {prompt_language_label(normalized_language)}.")
+        instructions.append(f"Always respond in {prompt_language_label(normalized_language)}.")
 
     hint = _LENGTH_HINTS.get(normalized_length)
     if hint:
         instructions.append(hint)
 
     if instructions:
-        parts.append("## Sproglige krav\n" + "\n".join(f"- {item}" for item in instructions))
+        parts.append("## Language requirements\n" + "\n".join(f"- {item}" for item in instructions))
 
     if memory:
-        parts.append(f"## Hvad du husker\n{memory}")
+        parts.append(f"## What you remember\n{memory}")
 
     return "\n\n".join(parts)
 
@@ -61,20 +61,20 @@ def build_user_message(
 
     if other_response:
         task = (
-            f"## Emne\n{topic}\n\n"
-            f"## {other_name} sagde\n{other_response}\n\n"
-            f"## Din opgave\n"
-            f"Runde {round_num} af {total_rounds}. "
-            f"Svar direkte og konkret paa det {other_name} sagde.\n"
-            f"Slut dit svar med: [MEMORY]: <din vigtigste pointe fra denne runde>"
+            f"## Topic\n{topic}\n\n"
+            f"## {other_name} said\n{other_response}\n\n"
+            f"## Your task\n"
+            f"Round {round_num} of {total_rounds}. "
+            f"Respond directly and concretely to what {other_name} said.\n"
+            f"End your answer with: [MEMORY]: <your most important point from this round>"
         )
     else:
         task = (
-            f"## Emne\n{topic}\n\n"
-            f"## Din opgave\n"
-            f"Runde {round_num} af {total_rounds}. "
-            f"Aabn diskussionen med dit perspektiv. Vaer praecis og konkret.\n"
-            f"Slut dit svar med: [MEMORY]: <din vigtigste pointe fra denne runde>"
+            f"## Topic\n{topic}\n\n"
+            f"## Your task\n"
+            f"Round {round_num} of {total_rounds}. "
+            f"Open the discussion with your perspective. Be precise and concrete.\n"
+            f"End your answer with: [MEMORY]: <your most important point from this round>"
         )
 
     return messages + [{"role": "user", "content": task}]

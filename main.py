@@ -174,7 +174,7 @@ def run_conversation(
         log_conversation(name_a, response_a, round_num, session_dir)
 
         history_a.append({"role": "assistant", "content": response_a})
-        history_b.append({"role": "user", "content": f"{name_a} sagde: {response_a}"})
+        history_b.append({"role": "user", "content": f"{name_a} said: {response_a}"})
         last_a = response_a
 
         if stop_event and stop_event.is_set():
@@ -201,7 +201,7 @@ def run_conversation(
         log_conversation(name_b, response_b, round_num, session_dir)
 
         history_b.append({"role": "assistant", "content": response_b})
-        history_a.append({"role": "user", "content": f"{name_b} sagde: {response_b}"})
+        history_a.append({"role": "user", "content": f"{name_b} said: {response_b}"})
         last_b = response_b
 
         if config.CONVERGENCE_CHECK:

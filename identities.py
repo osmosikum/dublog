@@ -14,8 +14,8 @@ Runtime support:
 
 Fields:
     name     — Display name shown in UI
-    language — Default language for responses (e.g. "dansk", "engelsk")
-    length   — Default response length: "kort" | "medium" | "lang"
+    language — Default language for responses (e.g. "danish", "english")
+    length   — Default response length: "short" | "medium" | "long"
 """
 
 from pathlib import Path
@@ -28,7 +28,7 @@ _CUSTOM_DIR = _IDENTITIES_DIR / "custom"
 _SKIP_FILENAMES = {"template.md", "README.md", "AGENTS.md"}
 
 _DEFAULTS = {
-    "language": "dansk",
+    "language": "danish",
     "length": "medium",
 }
 
@@ -84,9 +84,9 @@ def load_identity(slug: str) -> dict:
             **_DEFAULTS,
             "content": (
                 f"# {name_fallback}\n\n"
-                "Du er en agent i en diskussion. Bidrag aktivt med dit perspektiv.\n\n"
-                "Tal altid i første person. Vær konsekvent.\n"
-                "Slut dit svar med: [MEMORY]: <din vigtigste pointe fra denne runde>"
+                "You are an agent in a discussion. Contribute actively with your perspective.\n\n"
+                "Always speak in the first person. Be consistent.\n"
+                "End your answer with: [MEMORY]: <your most important point from this round>"
             ),
         }
 

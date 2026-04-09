@@ -1,76 +1,76 @@
 # English Migration Scope
 
-Denne guide afgraenser hvordan repoet goeres engelsk uden at miste eksisterende data eller skjule breaking changes bag en tekstoprydning.
+This guide defines how the repo is made English without losing existing data or hiding breaking changes behind a text cleanup.
 
-## Formaal
+## Purpose
 
-- goere engine, UI og projektets operative docs engelske
-- undgaa at eksisterende `projects/`-data gaar tabt eller skifter betydning
-- skille tekstoversaettelse fra reel data- og kontraktmigration
+- make the engine, UI and the project's operative docs English
+- avoid existing `projects/` data being lost or changing meaning
+- separate text translation from real data and contract migration
 
-## Sproggraense
+## Language boundary
 
-Dette repo skal foelge denne hovedregel:
+This repo follows this main rule:
 
 - structured system stuff = English
-- human free text = brugerens valgte sprog
+- human free text = the user's chosen language
 
-Det betyder:
+That means:
 
-- UI-labels, docs, kodekommentarer, serverbeskeder, enums og canonical save-format skal vaere engelske
-- chatinput, topics, projekt-navne, lokale notespor og andet fri brugerindhold maa godt forblive paa dansk eller et andet sprog
-- brugerens fritekst maa ikke auto-oversaettes bare for at faa repoet til at se renere ud
-- content-felter maa ikke behandles som systemkontrakter
+- UI labels, docs, code comments, server messages, enums and the canonical save format should be English
+- chat input, topics, project names, local note tracks and other free user content may remain in Danish or another language
+- the user's free text must not be auto-translated just to make the repo look cleaner
+- content fields must not be treated as system contracts
 
-## Zone A - oversaettes direkte
+## Zone A - translate directly
 
-Disse dele er engine eller operative docs og kan oversaettes bevidst:
+These parts are engine or operative docs and can be translated deliberately:
 
-- UI-labels, knaptekster, alerts og tom-state-tekster i `ui/index.html`
-- server- og statusbeskeder i `app.py` og `main.py`
-- prompt-instruktioner, comments og docstrings i `prompts.py`, `memory.py`, `projects.py`, `config.py` og beslægtede engine-filer
-- repo-docs som `README.md`, `CLAUDE.md`, `AGENTS.md`, `ROADMAP.md`, `CHANGELOG.md`, `FUTURE_PATCHES.md` og `.guides/*`
+- UI labels, button text, alerts and empty-state text in `ui/index.html`
+- server and status messages in `app.py` and `main.py`
+- prompt instructions, comments and docstrings in `prompts.py`, `memory.py`, `projects.py`, `config.py` and related engine files
+- repo docs such as `README.md`, `CLAUDE.md`, `AGENTS.md`, `ROADMAP.md`, `CHANGELOG.md`, `FUTURE_PATCHES.md` and `.guides/*`
 
-## Zone B - kraever compatibility foerst
+## Zone B - requires compatibility first
 
-Disse dele ligner tekst, men fungerer reelt som data eller kontrakter:
+These parts look like text but actually function as data or contracts:
 
-- gemte settings-vaerdier i `projects/*/settings.json`
-- default-vaerdier i `config.py` og `projects.py`
-- UI-select values for language og length
-- identity-slugs der allerede er persisteret i gamle projekter
+- saved settings values in `projects/*/settings.json`
+- default values in `config.py` and `projects.py`
+- UI select values for language and length
+- identity slugs already persisted in old projects
 
-Kendte legacy-vaerdier i runtime-data lige nu:
+Known legacy values in runtime data:
 
 - languages: `dansk`, `engelsk`, `norsk`, `svensk`
 - lengths: `kort`, `medium`, `lang`
-- gamle identity-slugs: `skeptikeren`, `optimisten`
+- old identity slugs: `skeptikeren`, `optimisten`
 
-Regel: laes gamle vaerdier, normaliser dem i koden, og skift foerst senere til engelske canonical values naar read-compatibility er landet.
+Rule: read old values, normalise them in code, and only switch to English canonical values later when read-compatibility has landed.
 
-## Zone C - maa ikke auto-oversaettes
+## Zone C - must not be auto-translated
 
-Disse dele er runtimehistorik eller brugerindhold:
+These parts are runtime history or user content:
 
-- `projects/**` som historiske `settings.json`, memory-filer, session-logs og conversation logs
+- `projects/**` such as historical `settings.json`, memory files, session logs and conversation logs
 - `identities/custom/**`
-- tracked eksempelindhold i `identities/examples/**`, indtil vi tager en separat content-pass
-- `identities/template.md`, hvis vi ikke samtidig beslutter hvilken sprogbaseline nye identities skal have
-- fri brugerinput som topics, chatbeskeder, projekt-navne og ad hoc instruktioner
+- tracked example content in `identities/examples/**`, until we take a separate content pass
+- `identities/template.md`, unless we simultaneously decide which language baseline new identities should have
+- free user input such as topics, chat messages, project names and ad hoc instructions
 
-Regel: ingen blind masseoversaettelse af content eller historik.
+Rule: no blind mass-translation of content or history.
 
-## No-data-loss regler
+## No-data-loss rules
 
-- eksisterende `projects/*/settings.json` maa fortsat kunne laeses efter migrationen
-- UI maa gerne blive engelsk foer persisted values bliver engelske
-- hvis write-formatet skifter til engelsk, skal legacy-vaerdier stadig accepteres ved load
-- memory og session-logs maa ikke overskrives eller backfill-oversaettes
-- identity-mening maa ikke aendres utilsigtet som sideeffekt af sprogrydning
+- existing `projects/*/settings.json` must still be readable after the migration
+- the UI may become English before persisted values do
+- if the write format switches to English, legacy values must still be accepted on load
+- memory and session logs must not be overwritten or backfill-translated
+- identity meaning must not change unintentionally as a side effect of the language cleanup
 
-## Konkret compatibility-krav
+## Concrete compatibility requirement
 
-Foer vi skifter canonical engine-vaerdier til engelsk, skal appen kunne mappe mindst:
+Before we switch canonical engine values to English, the app must be able to map at least:
 
 - `dansk` -> `danish`
 - `engelsk` -> `english`
@@ -79,29 +79,29 @@ Foer vi skifter canonical engine-vaerdier til engelsk, skal appen kunne mappe mi
 - `kort` -> `short`
 - `lang` -> `long`
 
-Derudover skal gamle identity-slugs haandteres eksplicit. Enten:
+In addition, old identity slugs must be handled explicitly. Either:
 
-- vi mapper dem til nuvaerende shippede identities
-- eller vi shipper legacy identity-shims
+- we map them to currently shipped identities
+- or we ship legacy identity shims
 
-Uden et af de to spor vil nogle gamle projekter falde tilbage til generisk identity-adfaerd.
+Without one of those two tracks, some old projects will fall back to generic identity behaviour.
 
-## Anbefalet raekkefoelge
+## Recommended order
 
-1. Indfoer normalisering for language, length og legacy identity-slugs.
-2. Oversaet UI-labels og serverbeskeder til engelsk uden at bryde gamle persisted values.
-3. Skift defaults og save-path til engelske canonical values.
-4. Oversaet repo-docs, comments og docstrings.
-5. Tag en separat beslutning om repoets example-identities og template ogsaa skal blive engelske.
+1. Introduce normalisation for language, length and legacy identity slugs.
+2. Translate UI labels and server messages to English without breaking old persisted values.
+3. Switch defaults and save path to English canonical values.
+4. Translate repo docs, comments and docstrings.
+5. Make a separate decision about whether the repo's example identities and template should also become English.
 
-## Ikke en del af denne migration
+## Not part of this migration
 
-- at oversaette gamle conversation logs eller memory-filer
-- at masseopdatere brugerens lokale identities
-- at blande session-arkitektur eller telemetry-arbejde ind i sprogmigrationen
+- translating old conversation logs or memory files
+- mass-updating the user's local identities
+- mixing session architecture or telemetry work into the language migration
 
-## Praktisk tommelfingerregel
+## Practical rule of thumb
 
-Hvis en streng kun er tekst for en laeser, kan den oversaettes.
-Hvis en streng bruges som lagret state, option value, slug eller kontrakt, skal der foerst laves compatibility.
-Hvis en streng kommer fra brugeren som fri tekst, skal den behandles som content og maa beholde brugerens sprog.
+If a string is only text for a reader, it can be translated.
+If a string is used as stored state, option value, slug or contract, compatibility must come first.
+If a string comes from the user as free text, treat it as content and let it keep the user's language.

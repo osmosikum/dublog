@@ -32,10 +32,10 @@ IDENTITY_ALIASES = {
 }
 
 PROMPT_LANGUAGE_LABELS = {
-    "danish": "dansk",
-    "english": "engelsk",
-    "norwegian": "norsk",
-    "swedish": "svensk",
+    "danish": "Danish",
+    "english": "English",
+    "norwegian": "Norwegian",
+    "swedish": "Swedish",
 }
 
 

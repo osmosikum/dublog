@@ -1,120 +1,120 @@
-# Projektstyring for `dublog`
+# Project control for `dublog`
 
-Denne guide er den korte, operative manual for hvordan du styrer dette repo i praksis.
-Den bygger oven paa `.guides/github_superguide.md`, men er skrevet til dette konkrete projekt.
+This guide is the short, operative manual for how you manage this repo in practice.
+It builds on `.guides/github_superguide.md`, but is written for this specific project.
 
-## Hvad er kilden til sandhed?
+## What is the source of truth?
 
-Brug dokumenterne saadan:
+Use the documents like this:
 
-- `README.md`: hvordan projektet koerer og hvad det er.
-- `ROADMAP.md`: aktivt arbejde og naeste tekniske skridt.
-- `CHANGELOG.md`: det der faktisk er blevet aendret.
-- `CLAUDE.md`: arbejdsregler for Claude Code.
-- `AGENTS.md`: arbejdsregler for Codex og andre kodeagenter.
-- `.guides/github_superguide.md`: generel Git-reference og forklaringer.
-- `.guides/project_control.md`: denne fil, dvs. den praktiske driftsguide for repoet.
+- `README.md`: how the project runs and what it is.
+- `ROADMAP.md`: active work and next technical steps.
+- `CHANGELOG.md`: what has actually been changed.
+- `CLAUDE.md`: working rules for Claude Code.
+- `AGENTS.md`: working rules for Codex and other code agents.
+- `.guides/github_superguide.md`: general Git reference and explanations.
+- `.guides/project_control.md`: this file, i.e. the practical operational guide for the repo.
 
-Hvis to dokumenter siger noget forskelligt, skal de bringes i sync med det samme.
+If two documents say different things, they should be brought into sync immediately.
 
-## Standard for dette repo
+## Standard for this repo
 
-- `main` er baseline-branch.
-- `origin` er GitHub-remoten for repoet.
-- lokal `main` tracker `origin/main`.
-- Stoerre arbejde sker i branches, ikke direkte paa `main`.
-- Runtime-data skal ikke i git.
-- Dokumentation koerer altid sammen med aendringer, ikke bagefter.
-- `CHANGELOG.md` opdateres ved hver reel kode-, struktur- eller docs-aendring.
+- `main` is the baseline branch.
+- `origin` is the GitHub remote for the repo.
+- local `main` tracks `origin/main`.
+- Larger work happens in branches, not directly on `main`.
+- Runtime data should not go in git.
+- Documentation always runs alongside changes, not after.
+- `CHANGELOG.md` is updated on every real code, structure or docs change.
 
 ## Multi-agent baseline
 
-Hvis du bruger flere agenter samme dag, saa hold det simpelt:
+If you use multiple agents on the same day, keep it simple:
 
-- kun en writer ad gangen paa runtime-kode
-- vaer eksplicit om hvem der er builder, reviewer og scribe
-- lad ikke to agenter skrive i samme runtime-spor samtidig
-- hvis workflow-reglerne aendrer sig, saa opdater `AGENTS.md`, `CLAUDE.md` og changelog i samme session
+- only one writer at a time on runtime code
+- be explicit about who is builder, reviewer and scribe
+- do not let two agents write in the same runtime track at the same time
+- if workflow rules change, update `AGENTS.md`, `CLAUDE.md` and the changelog in the same session
 
-Praktisk standard lige nu:
+Practical standard right now:
 
-- Claude Code = orchestrator, review og docs
-- Codex = builder og refactor
-- du = scope, prioritet, release og kill switch
+- Claude Code = orchestrator, review and docs
+- Codex = builder and refactor
+- you = scope, priority, release and kill switch
 
-## Hvad skal ikke i Git?
+## What should not go in Git?
 
-Dette repo skal tracke kildekode, docs og konfigurationsbeslutninger.
-Det skal ikke tracke loebende runtime-output.
+This repo should track source code, docs and configuration decisions.
+It should not track ongoing runtime output.
 
-Ignorerede ting i dette repo:
+Ignored things in this repo:
 
-- `projects/` - projektdata, memory, settings og samtalelogs fra koersel
-- `identities/custom/` - lokale identities, som appen loader men repoet ikke skal tracke
-- root-level brugeridentities i `identities/` - ignoreres som standard; brug `custom/`
-- `shared/` - legacy runtime-logs i repo-roden
-- `agent_a/memory.md` og `agent_b/memory.md` - legacy runtime-memory
-- `__pycache__/`, virtuelle miljoeer og editor-stoej
+- `projects/` - project data, memory, settings and conversation logs from runs
+- `identities/custom/` - local identities that the app loads but the repo should not track
+- root-level user identities in `identities/` - ignored by default; use `custom/`
+- `shared/` - legacy runtime logs in the repo root
+- `agent_a/memory.md` and `agent_b/memory.md` - legacy runtime memory
+- `__pycache__/`, virtual environments and editor noise
 
-Hvis du vil gemme et vigtigt output, skal det eksporteres bevidst til en dokumenteret fil, ikke bare ende i runtime-mapperne.
+If you want to save important output, export it deliberately to a documented file, rather than letting it end up in the runtime directories.
 
-Tracked identity-filer i repoet boer kun vaere:
+Tracked identity files in the repo should only be:
 
 - `identities/template.md`
 - `identities/examples/*.md`
-- dokumentation i `identities/`
+- documentation in `identities/`
 
-## Regel for English migration
+## Rule for English migration
 
-Sprogrydning i dette repo maa ikke behandles som ren tekstudskiftning.
+Language cleanup in this repo must not be treated as plain text replacement.
 
-- engine-tekst og operative docs kan oversaettes direkte
-- persisted runtime-values maa ikke omdoebes uden compatibility
-- `projects/**`, memory og session-logs maa ikke masseoversaettes
-- example identities og template er content-spor og skal afgoeres eksplicit
-- brugerens fritekst maa gerne forblive paa dansk eller et andet sprog
-- chatinput, topics og andre frie content-felter maa ikke auto-oversaettes som sideeffekt af English-pass'en
+- engine text and operative docs can be translated directly
+- persisted runtime values must not be renamed without compatibility
+- `projects/**`, memory and session logs must not be mass-translated
+- example identities and template are a content track and must be decided explicitly
+- the user's free text may remain in Danish or another language
+- chat input, topics and other free content fields must not be auto-translated as a side effect of the English pass
 
-Den konkrete afgraensning ligger i `.guides/english_migration_scope.md`.
+The concrete boundary is in `.guides/english_migration_scope.md`.
 
-## Daglig arbejdsrytme
+## Daily working rhythm
 
-Brug denne rytme som standard:
+Use this rhythm as standard:
 
-1. Start med `git status --short --branch`.
-2. Hvis der er en remote, koer `git pull --ff-only` paa den branch du arbejder paa.
-3. Laes `ROADMAP.md` og `CHANGELOG.md` hvis du skal videre paa eksisterende arbejde.
-4. Opret en branch hvis arbejdet er stoerre end en lille docs- eller hotfix-aendring.
-5. Implementer aendringen.
-6. Opdater docs i samme session:
-   - `ROADMAP.md` hvis aktivt arbejde eller status aendrer sig
-   - `CHANGELOG.md` altid ved reel aendring
-   - `CLAUDE.md` eller `AGENTS.md` hvis arbejdsreglerne flytter sig
-7. Review med `git diff`.
-8. Stage og commit i samlede, logiske bidder.
+1. Start with `git status --short --branch`.
+2. If there is a remote, run `git pull --ff-only` on the branch you are working on.
+3. Read `ROADMAP.md` and `CHANGELOG.md` if you are continuing existing work.
+4. Create a branch if the work is larger than a small docs or hotfix change.
+5. Implement the change.
+6. Update docs in the same session:
+   - `ROADMAP.md` if active work or status changes
+   - `CHANGELOG.md` always on a real change
+   - `CLAUDE.md` or `AGENTS.md` if working rules shift
+7. Review with `git diff`.
+8. Stage and commit in coherent, logical chunks.
 
-## Branching-regel
+## Branching rule
 
-Branch hvis mindst en af disse er sand:
+Branch if at least one of these is true:
 
-- aendringen er stoerre end en lille tekstrettelse
-- du eksperimenterer
-- du kan bryde noget undervejs
-- du vil arbejde i flere spor samtidig
+- the change is larger than a small text correction
+- you are experimenting
+- you could break something along the way
+- you want to work in multiple tracks at the same time
 
-Praktiske branch-navne:
+Practical branch names:
 
 - `feature/session-manager`
 - `fix/sse-cleanup`
 - `docs/git-baseline`
 - `refactor/project-runtime`
 
-Hvis en agent laver branchen, er `codex/...` eller `claude/...` ogsaa fint, men meningen skal stadig vaere tydelig.
+If an agent creates the branch, `codex/...` or `claude/...` is also fine, but the intent should still be clear.
 
-## Commit-standard
+## Commit standard
 
-Hold commits smaae nok til at give mening hver for sig.
-Brug gerne en enkel conventional-commit-stil:
+Keep commits small enough to make sense on their own.
+Use a simple conventional-commit style:
 
 - `feat: ...`
 - `fix: ...`
@@ -122,70 +122,70 @@ Brug gerne en enkel conventional-commit-stil:
 - `refactor: ...`
 - `chore: ...`
 
-Eksempler:
+Examples:
 
 - `docs: add project control guide and git baseline`
 - `feat: introduce session manager skeleton`
 - `fix: keep SSE output tied to active session`
 
-## Hvad du aldrig skal goere rutinemæssigt
+## What you should never do routinely
 
-- lav ikke `git reset --hard` som standard-oprydning
-- force-push ikke `main`
-- commit ikke runtime-mapperne bare fordi de er nye
-- lad ikke `ROADMAP.md` og `CHANGELOG.md` blive bagefter koden
-- skriv ikke fremtidig arkitektur ind i docs som om den allerede findes
+- do not use `git reset --hard` as standard cleanup
+- do not force-push `main`
+- do not commit the runtime directories just because they are new
+- do not let `ROADMAP.md` and `CHANGELOG.md` fall behind the code
+- do not write future architecture into docs as if it already exists
 
-## Git-opsætning for dette repo
+## Git setup for this repo
 
-Nuværende status:
+Current status:
 
-- repoet er initialiseret lokalt
-- default arbejdsbranch er `main`
-- `origin` peger paa `https://github.com/osmosikum/dublog.git`
-- foerste baseline er allerede pushet, og `main` tracker `origin/main`
+- the repo is initialised locally
+- default working branch is `main`
+- `origin` points to `https://github.com/osmosikum/dublog.git`
+- the first baseline has already been pushed, and `main` tracks `origin/main`
 
-Repoet skal initialiseres paa `main`.
-Hvis du senere vil pushe til GitHub:
+The repo should be initialised on `main`.
+If you want to push to GitHub later:
 
 ```bash
 git remote add origin <REMOTE_URL>
 git push -u origin main
 ```
 
-Foer commits virker stabilt paa en ny maskine, skal din Git-identitet vaere sat:
+Before commits work stably on a new machine, your Git identity must be set:
 
 ```bash
-git config --global user.name "Dit Navn"
-git config --global user.email "din@email.dk"
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
 ```
 
-Hvis du vil saette global default branch til `main` fremover:
+If you want to set the global default branch to `main` going forward:
 
 ```bash
 git config --global init.defaultBranch main
 ```
 
-## Versions- og release-regel
+## Versioning and release rule
 
-Indtil basen er stabil, er `0.x` et rimeligt versionsspor.
-Naar du vil markere en baseline, brug annotated tags:
+Until the base is stable, `0.x` is a reasonable version track.
+When you want to mark a baseline, use annotated tags:
 
 ```bash
 git tag -a v0.1.0 -m "First baseline"
 git push origin v0.1.0
 ```
 
-Versionsnummeret skal passe med `CHANGELOG.md`.
+The version number should match `CHANGELOG.md`.
 
-## Hvordan Claude og Codex skal bruges
+## How Claude and Codex should be used
 
-Hvis du bruger en kodeagent i dette repo, skal den som minimum:
+If you use a code agent in this repo, it must as a minimum:
 
-- laese relevante styringsdocs foer stoerre arbejde
-- holde docs og kode i sync i samme session
-- opdatere `CHANGELOG.md` ved reelle aendringer
-- holde aktivt arbejde i `ROADMAP.md`
-- lade parkerede ideer blive i `FUTURE_PATCHES.md`
+- read relevant governance docs before larger work
+- keep docs and code in sync in the same session
+- update `CHANGELOG.md` on real changes
+- keep active work in `ROADMAP.md`
+- let parked ideas stay in `FUTURE_PATCHES.md`
 
-Det er ikke valgfrit ekstraarbejde. Det er en del af hvordan projektet styres.
+This is not optional extra work. It is part of how the project is managed.

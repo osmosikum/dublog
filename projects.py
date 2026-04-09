@@ -26,18 +26,18 @@ from normalization import normalize_settings_for_ui
 PROJECTS_DIR = Path("projects")
 
 DEFAULT_SETTINGS: dict = {
-    "topic":      "Er AI en trussel eller en mulighed for samfundet?",
+    "topic":      "Is AI a threat or an opportunity for society?",
     "rounds":     6,
     "backend":    "ollama",
     "name_a":     "Agent A",
     "model_a":    "",
     "identity_a": "ent_viktor",
-    "language_a": "dansk",
+    "language_a": "danish",
     "length_a":   "medium",
     "name_b":     "Agent B",
     "model_b":    "",
     "identity_b": "ent_maya",
-    "language_b": "dansk",
+    "language_b": "danish",
     "length_b":   "medium",
 }
 
@@ -48,7 +48,7 @@ def sanitize_name(name: str) -> str:
     name = name.strip().lower()
     name = re.sub(r"[^\w\-æøåÆØÅ]", "-", name, flags=re.UNICODE)
     name = re.sub(r"-+", "-", name)
-    return name.strip("-") or "projekt"
+    return name.strip("-") or "project"
 
 
 # ── Projects ──────────────────────────────────────────────────────────────────

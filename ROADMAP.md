@@ -1,239 +1,239 @@
-﻿# Roadmap
+# Roadmap
 
-Denne roadmap tracker aktivt arbejde og naeste naturlige skridt.
-Den er bevidst smallere end playbooken og smallere end `FUTURE_PATCHES.md`.
+This roadmap tracks active work and next natural steps.
+It is deliberately narrower than the playbook and narrower than `FUTURE_PATCHES.md`.
 
-## Regler
+## Rules
 
-- Brug statusfelterne `todo`, `doing`, `blocked`, `done`, `deferred`.
-- Hver opgave skal vaere lille nok til en almindelig arbejdssession.
-- `ROADMAP.md` beskriver aktivt eller naer-aktivt arbejde.
-- `CHANGELOG.md` beskriver det der faktisk blev udfoert.
-- Ideer der ikke er aktive endnu, flyttes til `FUTURE_PATCHES.md`.
+- Use the status fields `todo`, `doing`, `blocked`, `done`, `deferred`.
+- Each task should be small enough for a normal working session.
+- `ROADMAP.md` describes active or near-active work.
+- `CHANGELOG.md` describes what was actually carried out.
+- Ideas that are not yet active are moved to `FUTURE_PATCHES.md`.
 
-## Milestone 0 - Docs og governance baseline
+## Milestone 0 - Docs and governance baseline
 Status: done
-Formaal: Goere dokumentlaget til projektets nuvaerende operative sandhed uden at fryse fremtidig arkitektur for tidligt.
+Purpose: Make the document layer the project's current operative truth without freezing future architecture too early.
 
-- [x] [DOCS] Opdatere `CLAUDE.md`
+- [x] [DOCS] Update `CLAUDE.md`
   - Status: done
-  - Hvorfor: den gamle fil beskrev en aeldre baseline og manglede de nye styringsregler
-  - Output: opdateret arbejdsfil for Claude
-  - Done naar: nuvaerende repo-tilstand, docs-roller og changelog-regel er tydelige
+  - Why: the old file described an older baseline and lacked the new governance rules
+  - Output: updated working file for Claude
+  - Done when: current repo state, doc roles and changelog rule are clear
 
-- [x] [DOCS] Oprette `AGENTS.md`
+- [x] [DOCS] Create `AGENTS.md`
   - Status: done
-  - Hvorfor: Codex og andre kodeagenter skal have en tilsvarende arbejdsfil
-  - Output: ny agent-guide
-  - Done naar: changelog-disciplin, roadmap-brug og projektets aktuelle tilstand er beskrevet
+  - Why: Codex and other code agents need a corresponding working file
+  - Output: new agent guide
+  - Done when: changelog discipline, roadmap use and the project's current state are described
 
-- [x] [DOCS] Oprette `ROADMAP.md`
+- [x] [DOCS] Create `ROADMAP.md`
   - Status: done
-  - Hvorfor: aktivt arbejde skal skilles fra vision og parkerede ideer
-  - Output: denne fil
-  - Done naar: milestones og naeste spor kan laeses uden at gaette
+  - Why: active work must be separated from vision and parked ideas
+  - Output: this file
+  - Done when: milestones and next tracks can be read without guessing
 
-- [x] [DOCS] Oprette `FUTURE_PATCHES.md`
+- [x] [DOCS] Create `FUTURE_PATCHES.md`
   - Status: done
-  - Hvorfor: gode ideer skal kunne parkeres uden at blive falske loefter
-  - Output: separat backlog for senere patches
-  - Done naar: deferred arbejde har et tydeligt hjem
+  - Why: good ideas must be parkable without becoming false promises
+  - Output: separate backlog for later patches
+  - Done when: deferred work has a clear home
 
-- [x] [DOCS] Indfoere changelog sign-off-regel
+- [x] [DOCS] Introduce changelog sign-off rule
   - Status: done
-  - Hvorfor: hver arbejdsession skal kunne spores til agent
-  - Output: regel i agentdocs og opdateret changelog-format
-  - Done naar: `CHANGELOG.md` og agentdocs bruger samme sign-off-kontrakt
+  - Why: every working session should be traceable to an agent
+  - Output: rule in agent docs and updated changelog format
+  - Done when: `CHANGELOG.md` and agent docs use the same sign-off contract
 
-- [x] [OPS] Etablere git-baseline for repoet
+- [x] [OPS] Establish git baseline for the repo
   - Status: done
-  - Hvorfor: repoet skal kunne versionsstyres uden runtime-stoej
-  - Output: `.gitignore` og initialisering paa `main`
-  - Done naar: kildekode og docs kan trackes uden at runtime-data fylder status
+  - Why: the repo must be version-controlled without runtime noise
+  - Output: `.gitignore` and initialisation on `main`
+  - Done when: source code and docs can be tracked without runtime data filling the status
 
-- [x] [OPS] Konfigurere remote og foerste push
+- [x] [OPS] Configure remote and first push
   - Status: done
-  - Hvorfor: baseline skal ikke kun findes lokalt, men ogsaa kunne synkes til GitHub
-  - Output: `origin` sat og `main` tracket mod `origin/main`
-  - Done naar: den lokale baseline-commit findes paa remote, og `main` tracker `origin/main`
+  - Why: the baseline should not only exist locally but also be syncable to GitHub
+  - Output: `origin` set and `main` tracked against `origin/main`
+  - Done when: the local baseline commit exists on remote and `main` tracks `origin/main`
 
-- [x] [OPS] Saette global git-default til `main`
+- [x] [OPS] Set global git default to `main`
   - Status: done
-  - Hvorfor: nye repos skal ikke falde tilbage til `master`
-  - Output: `init.defaultBranch=main` i brugerens git-config
-  - Done naar: nye lokale repos oprettes med `main` som default branch
+  - Why: new repos should not fall back to `master`
+  - Output: `init.defaultBranch=main` in the user's git config
+  - Done when: new local repos are created with `main` as default branch
 
-- [x] [DOCS] Oprette brugerens projektstyringsguide
+- [x] [DOCS] Create the user's project control guide
   - Status: done
-  - Hvorfor: styring af repo, branches, changelog og agents skal vaere samlet et sted
+  - Why: management of repo, branches, changelog and agents should be gathered in one place
   - Output: `.guides/project_control.md`
-  - Done naar: projektets git- og docs-rytme kan foelges uden at laese den lange referenceguide foerst
+  - Done when: the project's git and docs rhythm can be followed without reading the long reference guide first
 
-- [x] [DOCS] Etablere minimal agent-workflow baseline
+- [x] [DOCS] Establish minimal agent workflow baseline
   - Status: done
-  - Hvorfor: multi-agent arbejde skal vaere styret uden at blive overdesignet
-  - Output: `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` beskriver roller og single-writer baseline
-  - Done naar: `AGENTS.md` er global sandhed, og det er tydeligt hvem der skriver kode i en multi-agent session
+  - Why: multi-agent work should be governed without being over-designed
+  - Output: `AGENTS.md`, `CLAUDE.md` and `.guides/project_control.md` describe roles and single-writer baseline
+  - Done when: `AGENTS.md` is global truth and it is clear who writes code in a multi-agent session
 
-- [x] [OPS] Auditere `.gitignore` og engine/content-graense
+- [x] [OPS] Audit `.gitignore` and engine/content boundary
   - Status: done
-  - Hvorfor: variable filer skal ud af repoet, mens templates og eksempler forbliver tracked
-  - Output: smartere `.gitignore`, identity-struktur med `examples/` og `custom/`, opdaterede docs
-  - Done naar: runtime-data og lokale identities ignoreres, mens repoet stadig shipper templates og eksempler
+  - Why: variable files must be out of the repo while templates and examples remain tracked
+  - Output: smarter `.gitignore`, identity structure with `examples/` and `custom/`, updated docs
+  - Done when: runtime data and local identities are ignored while the repo still ships templates and examples
 
 ## Milestone 0.5 - English migration boundary
-Status: doing
-Formaal: Goere det klart hvad der kan oversaettes direkte, og hvad der foerst kraever compatibility, saa ingen eksisterende runtime-data gaar tabt.
+Status: done — all tasks complete
+Purpose: Make it clear what can be translated directly and what requires compatibility first, so no existing runtime data is lost.
 
-- [x] [ARCH] Definere English migration boundary og no-data-loss-regler
+- [x] [ARCH] Define English migration boundary and no-data-loss rules
   - Status: done
-  - Hvorfor: sprogrydning maa ikke blande UI-tekst, persisted state og content sammen
+  - Why: language cleanup must not mix UI text, persisted state and content
   - Output: `.guides/english_migration_scope.md`
-  - Done naar: engine, persisted values og content er skilt i tydelige migrationszoner
+  - Done when: engine, persisted values and content are separated into clear migration zones
 
-- [ ] [COMPAT] Indfoere normalisering for language, length og legacy identity-slugs
+- [x] [COMPAT] Introduce normalisation for language, length and legacy identity slugs
   - Status: done
-  - Hvorfor: gamle projekter bruger stadig danske enum-vaerdier og i nogle tilfalde udgaaede identity-slugs
-  - Output: kompatibilitetslag foer canonical engelske values indfoeres
-  - Done naar: gamle `settings.json` kan laeses korrekt samtidig med at nye engelske vaerdier accepteres
+  - Why: old projects still use Danish enum values and in some cases retired identity slugs
+  - Output: compatibility layer before English canonical values are introduced
+  - Done when: old `settings.json` can be read correctly while new English values are also accepted
 
-- [ ] [UI] Oversaette engine-UI til engelsk uden at bryde persisted values
+- [x] [UI] Translate engine UI to English without breaking persisted values
   - Status: done
-  - Hvorfor: labels og fejltekster kan skifte foer dataformatet goer det
-  - Output: engelske labels, knapper og beskeder i appen
-  - Done naar: UI er engelsk, men gamle settings loader stadig korrekt
+  - Why: labels and error text can switch before the data format does
+  - Output: English labels, buttons and messages in the app
+  - Done when: UI is English but old settings still load correctly
 
-- [ ] [DOCS] Oversaette engine-docs og kommentarer til engelsk
-  - Status: todo
-  - Hvorfor: operative docs og engine-kommentarer boer pege samme vej som UI og defaults
-  - Output: engelske repo-docs og engelske engine-kommentarer, mens fri brugerinput fortsat behandles som content
-  - Done naar: projektets operative engine-lag er engelsk uden at content eller chatinput tvinges med
+- [x] [DOCS] Translate engine docs and comments to English
+  - Status: done
+  - Why: operative docs and engine comments should point the same way as UI and defaults
+  - Output: English repo docs and English engine comments, while free user input continues to be treated as content
+  - Done when: the project's operative engine layer is English without content or chat input being forced along
 
-- [ ] [CONTENT] Beslutte separat strategi for example identities og template
-  - Status: todo
-  - Hvorfor: repo-shippet indhold er content, ikke bare engine-tekst
-  - Output: bevidst beslutning om examples/template skal forblive danske, blive engelske eller eksistere i begge versioner
-  - Done naar: content-sporet er afgjort eksplicit i stedet for at ride med engine-migrationen
+- [x] [CONTENT] Decide separate strategy for example identities and template
+  - Status: done
+  - Why: repo-shipped content is content, not just engine text
+  - Output: all six example identities and template translated to English; frontmatter values updated to canonical English forms
+  - Done when: the content track is resolved explicitly instead of riding along with the engine migration
 
 ## Milestone 1 - Session-aware base
 Status: doing
-Formaal: Loefte den nuvaerende projekt-aware runtime til en reel session-struktur uden at omskrive hele appen paa en gang.
+Purpose: Lift the current project-aware runtime to a real session structure without rewriting the whole app at once.
 
-- [x] [ARCH] Definere disk-layout for `projects/<project>/sessions/<session_id>/`
+- [x] [ARCH] Define disk layout for `projects/<project>/sessions/<session_id>/`
   - Status: done
-  - Hvorfor: session-data skal skilles fra projektets langlivede data
-  - Output: dokumenteret maallayout og mappeoprettelse
-  - Done naar:
-    - sessionmappe oprettes med unik id
-    - transcript, debug og metadata kan ligge i sessionen
-    - projektdata kan bevares uden at vaere bundet til en enkelt koersel
+  - Why: session data must be separated from the project's long-lived data
+  - Output: documented target layout and directory creation
+  - Done when:
+    - session directory is created with a unique id
+    - transcript, debug and metadata can live in the session
+    - project data can be preserved without being tied to a single run
 
-- [ ] [ARCH] Oprette `sessions.py` med foerste `SessionManager`
+- [ ] [ARCH] Create `sessions.py` with first `SessionManager`
   - Status: todo
-  - Hvorfor: runtime-state maa ikke kun leve som globale variabler i `app.py`
-  - Output: `sessions.py` plus integration i web-run flow
-  - Done naar:
-    - sessioner kan oprettes og markeres som running/done/error
-    - session paths kan laeses samlet fra manageren
+  - Why: runtime state must not only live as global variables in `app.py`
+  - Output: `sessions.py` plus integration in the web-run flow
+  - Done when:
+    - sessions can be created and marked as running/done/error
+    - session paths can be read collectively from the manager
 
-- [ ] [RUNTIME] Flytte output og status fra global queue til session-bundet struktur
+- [ ] [RUNTIME] Move output and status from global queue to session-bound structure
   - Status: todo
-  - Hvorfor: nuvaerende `run_queue` og `is_running` er for grove til naeste fase
+  - Why: current `run_queue` and `is_running` are too coarse for the next phase
   - Output: session-aware output/status flow
-  - Done naar:
-    - output er bundet til en session
-    - status kan laeses uden global sandhed alene
+  - Done when:
+    - output is bound to a session
+    - status can be read without global truth alone
 
-- [ ] [DOCS] Synke docs naar session-strukturen findes
+- [ ] [DOCS] Sync docs when session structure exists
   - Status: todo
-  - Hvorfor: docs maa ikke skrive session-arkitektur som sand foer den er bygget
-  - Output: opdaterede arbejdsdocs og evt. README-noter
-  - Done naar: den implementerede session-model er dokumenteret
+  - Why: docs must not write session architecture as true before it is built
+  - Output: updated working docs and possibly README notes
+  - Done when: the implemented session model is documented
 
-## Milestone 2 - Observability foerst
+## Milestone 2 - Observability first
 Status: todo
-Formaal: Goere det synligt hvad systemet injicerer, hvor output driver, og hvor modellerne bliver traette.
+Purpose: Make it visible what the system injects, where output drifts, and where models get tired.
 
-- [ ] [ARCH] Oprette `telemetry.py`
+- [ ] [ARCH] Create `telemetry.py`
   - Status: todo
-  - Hvorfor: debugbarhed skal vaere en kernefeature
-  - Output: samlet modul til simple runtime-metrics
-  - Done naar: prompt-, output- og timingdata kan registreres pr. agentkald
+  - Why: debuggability should be a core feature
+  - Output: unified module for simple runtime metrics
+  - Done when: prompt, output and timing data can be recorded per agent call
 
-- [ ] [RUNTIME] Logge prompt chars, memory lines, history turns og output chars
+- [ ] [RUNTIME] Log prompt chars, memory lines, history turns and output chars
   - Status: todo
-  - Hvorfor: vi skal kunne se konteksttryk og outputdrift
-  - Output: konkrete metrics i runtime og filoutput
-  - Done naar: minimumsmetrikker kan laeses uden manuel gaetning
+  - Why: we need to be able to see context pressure and output drift
+  - Output: concrete metrics in runtime and file output
+  - Done when: minimum metrics can be read without manual guessing
 
-- [ ] [UI] Vise et simpelt debug-panel i UI
+- [ ] [UI] Show a simple debug panel in the UI
   - Status: todo
-  - Hvorfor: observability er mest nyttig mens en session koerer
-  - Output: live debug-visning i browseren
-  - Done naar: noegletal og fejltilstande vises under koersel
+  - Why: observability is most useful while a session is running
+  - Output: live debug display in the browser
+  - Done when: key figures and error states are shown during a run
 
-## Milestone 3 - Contracts og validation
+## Milestone 3 - Contracts and validation
 Status: todo
-Formaal: Goere language, length og memory-output til haandhaevelige kontrakter i stedet for bloede labels.
+Purpose: Make language, length and memory output into enforceable contracts instead of soft labels.
 
-- [ ] [VALIDATION] Oprette `validators.py`
+- [ ] [VALIDATION] Create `validators.py`
   - Status: todo
-  - Hvorfor: output og identity-data skal kunne tjekkes systematisk
-  - Output: dedikeret valideringsmodul
-  - Done naar: tomme svar, manglende `[MEMORY]` og identitetsfejl kan detekteres
+  - Why: output and identity data must be checkable systematically
+  - Output: dedicated validation module
+  - Done when: empty responses, missing `[MEMORY]` and identity errors can be detected
 
-- [ ] [VALIDATION] Indfoere heuristisk language-check
+- [ ] [VALIDATION] Introduce heuristic language check
   - Status: todo
-  - Hvorfor: lokale modeller driver let mellem sprog
-  - Output: simpel sprogdetektion og afvigelsesmarkering
-  - Done naar: systemet kan markere sandsynlige sprogglidninger
+  - Why: local models easily drift between languages
+  - Output: simple language detection and deviation marking
+  - Done when: the system can flag probable language slips
 
-- [ ] [VALIDATION] Oversaette `kort/medium/lang` til eksplicitte runtimegraenser
+- [ ] [VALIDATION] Translate `kort/medium/lang` to explicit runtime limits
   - Status: todo
-  - Hvorfor: laengdevalg skal kunne maales bagefter
-  - Output: tydelig preset-til-kontrakt mapping
-  - Done naar: length checks kan sammenholdes med faktisk output
+  - Why: length choices should be measurable afterwards
+  - Output: clear preset-to-contract mapping
+  - Done when: length checks can be compared with actual output
 
-## Milestone 4 - Memory flow og promotion
+## Milestone 4 - Memory flow and promotion
 Status: todo
-Formaal: Adskille session-memory, projekt-memory og senere promotion, saa memory bliver simpel og sporbar.
+Purpose: Separate session memory, project memory and later promotion so memory becomes simple and traceable.
 
-- [ ] [MEMORY] Splitte projekt-memory og session-memory fysisk
+- [ ] [MEMORY] Split project memory and session memory physically
   - Status: todo
-  - Hvorfor: nuvaerende struktur er for flad til laengere forloeb
-  - Output: separat lagring for midlertidig og langlivet memory
-  - Done naar: session-sletning ikke oedelaegger projektets langtidshukommelse
+  - Why: current structure is too flat for longer runs
+  - Output: separate storage for temporary and long-lived memory
+  - Done when: deleting a session does not destroy the project's long-term memory
 
-- [ ] [MEMORY] Definere foerste promotion-regel
+- [ ] [MEMORY] Define first promotion rule
   - Status: todo
-  - Hvorfor: ikke alt skal automatisk blive permanent memory
-  - Output: enkel promotion-strategi
-  - Done naar: det er tydeligt hvad der flyttes op og hvorfor
+  - Why: not everything should automatically become permanent memory
+  - Output: simple promotion strategy
+  - Done when: it is clear what gets promoted and why
 
-- [ ] [DOCS] Beskrive memory-levels og promotionflow
+- [ ] [DOCS] Describe memory levels and promotion flow
   - Status: todo
-  - Hvorfor: memory-arkitektur maa ikke blive semi-magisk
-  - Output: opdaterede docs
-  - Done naar: en ny laeser kan foelge memory-flowet uden at laese kode foerst
+  - Why: memory architecture must not become semi-magical
+  - Output: updated docs
+  - Done when: a new reader can follow the memory flow without reading code first
 
-## Milestone 5 - Streaming og UI-hardening
+## Milestone 5 - Streaming and UI hardening
 Status: todo
-Formaal: Goere koerslen mere levende og robust uden at miste den simple base.
+Purpose: Make runs more live and robust without losing the simple base.
 
-- [ ] [UI] Goere streaming mere session-aware
+- [ ] [UI] Make streaming more session-aware
   - Status: todo
-  - Hvorfor: output skal kunne vises loebende pr. koersel
-  - Output: forbedret streamingflow
-  - Done naar: klienten kan foelge en konkret session uden global forvirring
+  - Why: output should be displayable continuously per run
+  - Output: improved streaming flow
+  - Done when: the client can follow a specific session without global confusion
 
-- [ ] [RUNTIME] Rydde op i cleanup ved success, stop og fejl
+- [ ] [RUNTIME] Clean up cleanup on success, stop and error
   - Status: todo
-  - Hvorfor: sessionafslutning skal vaere tydelig og robust
-  - Output: mere eksplicit cleanup-flow
-  - Done naar: state og filer efterlades konsistent efter alle udgange
+  - Why: session termination should be clear and robust
+  - Output: more explicit cleanup flow
+  - Done when: state and files are left consistent after all exit paths
 
-- [ ] [TEST] Verificere at live output ikke kraever faerdigt helsvar foerst
+- [ ] [TEST] Verify that live output does not require a complete full response first
   - Status: todo
-  - Hvorfor: streaming skal opleves som streaming
-  - Output: enkel verifikation eller smoke-test
-  - Done naar: streamingadfaerd kan dokumenteres og gentages
+  - Why: streaming should feel like streaming
+  - Output: simple verification or smoke test
+  - Done when: streaming behaviour can be documented and reproduced

@@ -1,15 +1,15 @@
 # Identities
 
-`identities/` er delt i tre lag:
+`identities/` is split into three layers:
 
-- `template.md`: kanonisk skabelon til nye identiteter
-- `examples/`: tracked eksempel-identiteter, som repoet shipper med
-- `custom/`: lokale identiteter, som appen loader men git ignorerer
+- `template.md`: canonical template for new identities
+- `examples/`: tracked example identities shipped with the repo
+- `custom/`: local identities that the app loads but git ignores
 
-Praktisk regel:
+Practical rule:
 
-- vil du have en delt baseline-identitet i repoet, saa laeg den i `examples/`
-- vil du have en lokal eller projekt-specifik identitet, saa laeg den i `custom/`
-- vil du bare starte fra bunden, saa kopier `template.md`
+- if you want a shared baseline identity in the repo, put it in `examples/`
+- if you want a local or project-specific identity, put it in `custom/`
+- if you just want to start from scratch, copy `template.md`
 
-Loaderen understotter ogsaa root-level legacy-filer i `identities/`, men nye filer boer laegges i `custom/` eller `examples/`.
+The loader also supports root-level legacy files in `identities/`, but new files should go in `custom/` or `examples/`.

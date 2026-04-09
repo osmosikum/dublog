@@ -43,4 +43,4 @@ def log_conversation(speaker: str, content: str, round_num: int, session_dir) ->
     path = Path(session_dir) / "conversation.md"
     timestamp = datetime.now().strftime("%H:%M:%S")
     with open(path, "a", encoding="utf-8") as f:
-        f.write(f"\n---\n**Runde {round_num} | {speaker}** _{timestamp}_\n\n{content}\n")
+        f.write(f"\n---\n**Round {round_num} | {speaker}** _{timestamp}_\n\n{content}\n")

@@ -1,125 +1,150 @@
-﻿# Changelog
+# Changelog
 
-Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer `[Unreleased]` og afsluttes med `Sign-off: Claude` eller `Sign-off: Codex`.
+Convention: every session that changes code, structure or working docs updates `[Unreleased]` and ends with `Sign-off: Claude` or `Sign-off: Codex`.
 
 ## [Unreleased]
-### Added
-- Stop-knap: kør-knappen skifter til rød "⏹ Stop" under kørsel og sender stop-signal til serveren
-- Session-system: hver samtale-kørsel opretter en unik session (`YYYYMMDD-HHMMSS`) under projektet
-- Session-selector i UI: vis og skift mellem tidligere sessioner, klik for at genlæse log
-- Slet-knap per session og slet-knap per projekt (med confirm-dialog)
-- `/api/stop` — POST-endpoint der sætter `stop_event` og afbryder kørende samtale rent
-- `/api/sessions` — GET-endpoint der lister sessioner for et projekt (nyeste først)
-- `/api/session/log` — GET-endpoint der returnerer `conversation.md` for en given session
-- `/api/delete/project` og `/api/delete/session` — POST-endpoints til sletning
-- `identities/README.md` og `identities/custom/.gitkeep` som skiller tracked examples fra lokale identities
-
 ### Changed
-- Disk-layout: samtale-log flyttes fra `projects/{proj}/shared/` til `projects/{proj}/sessions/{id}/`
-- Memory forbliver på projektniveau (`agent_a/memory.md`, `agent_b/memory.md`) — deles på tværs af sessioner
-- `projects.py` udvidet med: `create_session`, `list_sessions`, `delete_session`, `delete_project`, `get_session_log`, `new_session_id`
-- `main.py`: `run_conversation` accepterer nu `stop_event` og opretter session automatisk
-- `memory.py`: `log_conversation` tager `session_dir` i stedet for `project_dir`
-- Legacy v1-mapper (`agent_a/`, `agent_b/`, `shared/` i rodmappen) slettet fra disk
-- `.gitignore` dækker nu `agent_a/` og `agent_b/` mappeniveau (ikke kun enkeltfiler)
-- `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` bruger nu en minimal agent-workflow baseline med single-writer-regel og klar rollefordeling
-- `.gitignore` skelner nu mellem engine og content, saa lokale identities og runtime-data ignoreres som standard
-- `identities.py` loader nu repo-eksempler, lokale custom identities og root-level legacy identities uden at vise template-filer i UI
-- `normalization.py` indfoerer read-compatibility for legacy `language`, `length` og identity-slugs, saa gamle og nye values kan bruges side om side
-- `projects.py` normaliserer gamle identity-slugs ved settings-load, saa eksisterende projekter stadig loader ind i den nuvaerende UI
-- `main.py`, `prompts.py` og `identities.py` accepterer nu baade gamle danske enum-vaerdier og nye engelske canonical values i runtime
-- `app.py`, `main.py` og `ui/index.html` viser nu engelske UI- og runtimebeskeder, mens de eksisterende persisted option-values stadig kan laeses uaendret
+- `identities/examples/*.md`: all six example identities translated to English; frontmatter `language` and `length` values updated to canonical English forms (`danish`, `short` etc.)
+- `identities/template.md`: translated to English
+- `model.py`: unknown backend error message translated to English
+- `config.py`: all Danish comments and default values translated to English; default identity slugs updated to canonical (`ent_kasper`, `ent_leon`); default languages updated to `"danish"`
+- `normalization.py`: `PROMPT_LANGUAGE_LABELS` now returns English language names (`"Danish"`, `"English"`, etc.) instead of Danish words
+- `prompts.py`: all Danish prompt strings translated to English — `_LENGTH_HINTS`, section headers (`## Language requirements`, `## What you remember`) and task instructions
+- `memory.py`: conversation log header translated (`"Round"` replaces `"Runde"`)
+- `main.py`: history injection messages translated (`"said:"` replaces `"sagde:"`)
+- `identities.py`: docstring field descriptions, `_DEFAULTS["language"]` and fallback identity content translated to English
+- `projects.py`: `DEFAULT_SETTINGS` topic and language defaults translated to English; empty-name fallback changed from `"projekt"` to `"project"`
 
 ### Docs
-- `CLAUDE.md` strukturtræ opdateret til at matche nuværende kodebase
-- `README.md` dokumenterer nu `identities/examples/`, `identities/custom/` og korrekt session-layout under `projects/`
-- `CHANGELOG.md` ryddet: baseline-sektionen har eget navn
-- `ROADMAP.md` markerer nu den minimale agent-workflow baseline som afsluttet
-- `FUTURE_PATCHES.md` parkerer agent-ledger, diff gate, normalizer-spor og context isolation som senere workflow-forbedringer
-- `.guides/english_migration_scope.md` afgraenser English-migrationen i engine, compatibility og content-zoner, saa persisted data ikke blandes med tekstoprydning
-- `ROADMAP.md`, `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` beskriver nu English-pass som et compatibility-spor og retter session-docs til den faktiske kodebase
-- `ROADMAP.md` markerer compatibility-laget som landet, mens UI-oversaettelse og write-migration stadig staar tilbage
-- `ROADMAP.md` markerer nu UI-oversaettelsen som landet, mens write-migration og docs/content-pass stadig staar tilbage
-- `AGENTS.md`, `CLAUDE.md`, `.guides/english_migration_scope.md` og `.guides/project_control.md` pin'er nu reglen om engelsk systemlag og frit brugerinput som content
-- `CLAUDE.md` og `AGENTS.md` er nu fuldt oversat til engelsk, saa Claude og Codex kan laese deres arbejdsdocs uden blandet systemsprog
+- `identities/README.md` fully translated to English (also listed under Changed above)
+- `README.md` fully translated to English
+- `ROADMAP.md` fully translated to English; Milestone 0.5 docs task marked `done`
+- `FUTURE_PATCHES.md` fully translated to English
+- `.guides/project_control.md` fully translated to English
+- `.guides/english_migration_scope.md` fully translated to English
+- `identities/README.md` fully translated to English
+- `CHANGELOG.md` fully translated to English
+
+Sign-off: Claude
+
+## [Unreleased — prior session]
+### Added
+- Stop button: run button switches to red "⏹ Stop" during a run and sends a stop signal to the server
+- Session system: each conversation run creates a unique session (`YYYYMMDD-HHMMSS`) under the project
+- Session selector in UI: view and switch between earlier sessions, click to reload log
+- Delete button per session and delete button per project (with confirm dialog)
+- `/api/stop` — POST endpoint that sets `stop_event` and cleanly aborts a running conversation
+- `/api/sessions` — GET endpoint that lists sessions for a project (newest first)
+- `/api/session/log` — GET endpoint that returns `conversation.md` for a given session
+- `/api/delete/project` and `/api/delete/session` — POST endpoints for deletion
+- `identities/README.md` and `identities/custom/.gitkeep` separating tracked examples from local identities
+
+### Changed
+- Disk layout: conversation log moved from `projects/{proj}/shared/` to `projects/{proj}/sessions/{id}/`
+- Memory remains at project level (`agent_a/memory.md`, `agent_b/memory.md`) — shared across sessions
+- `projects.py` extended with: `create_session`, `list_sessions`, `delete_session`, `delete_project`, `get_session_log`, `new_session_id`
+- `main.py`: `run_conversation` now accepts `stop_event` and creates a session automatically
+- `memory.py`: `log_conversation` takes `session_dir` instead of `project_dir`
+- Legacy v1 directories (`agent_a/`, `agent_b/`, `shared/` in the root) deleted from disk
+- `.gitignore` now covers `agent_a/` and `agent_b/` directory level (not just individual files)
+- `AGENTS.md`, `CLAUDE.md` and `.guides/project_control.md` now use a minimal agent-workflow baseline with single-writer rule and clear role separation
+- `.gitignore` now distinguishes between engine and content, so local identities and runtime data are ignored by default
+- `identities.py` now loads repo examples, local custom identities and root-level legacy identities without showing template files in the UI
+- `normalization.py` introduces read-compatibility for legacy `language`, `length` and identity slugs so old and new values can be used side by side
+- `projects.py` normalises old identity slugs on settings load so existing projects still load into the current UI
+- `main.py`, `prompts.py` and `identities.py` now accept both old Danish enum values and new English canonical values at runtime
+- `app.py`, `main.py` and `ui/index.html` now show English UI and runtime messages while existing persisted option values can still be read unchanged
+
+### Docs
+- `CLAUDE.md` structure tree updated to match current codebase
+- `README.md` now documents `identities/examples/`, `identities/custom/` and correct session layout under `projects/`
+- `CHANGELOG.md` cleaned up: baseline section has its own name
+- `ROADMAP.md` now marks the minimal agent-workflow baseline as completed
+- `FUTURE_PATCHES.md` parks agent ledger, diff gate, normaliser track and context isolation as later workflow improvements
+- `.guides/english_migration_scope.md` defines the English migration in engine, compatibility and content zones so persisted data is not mixed with text cleanup
+- `ROADMAP.md`, `AGENTS.md`, `CLAUDE.md` and `.guides/project_control.md` now describe the English pass as a compatibility track and correct session docs to the actual codebase
+- `ROADMAP.md` marks the compatibility layer as landed while UI translation and write migration still remain
+- `ROADMAP.md` now marks the UI translation as landed while write migration and docs/content pass still remain
+- `AGENTS.md`, `CLAUDE.md`, `.guides/english_migration_scope.md` and `.guides/project_control.md` pin the rule about English system layer and free user input as content
+- `CLAUDE.md` and `AGENTS.md` are now fully translated to English so Claude and Codex can read their working docs without mixed system language
 
 Sign-off: Codex
 
-## [baseline] — governance og git-setup
+## [baseline] — governance and git setup
 ### Added
-- `AGENTS.md` som parallel arbejdsfil for Codex og andre kodeagenter.
-- `ROADMAP.md` som aktiv milestone-fil for naeste arbejde.
-- `FUTURE_PATCHES.md` som parkeringsplads for senere patch-ideer og aabne designspoergsmaal.
-- `.gitignore` til at holde runtime-data, caches og lokal stoej ude af repoet.
-- `.guides/project_control.md` som projektets korte operative guide til git, docs og arbejdsrytme.
+- `AGENTS.md` as a parallel working file for Codex and other code agents.
+- `ROADMAP.md` as the active milestone file for next work.
+- `FUTURE_PATCHES.md` as a parking lot for later patch ideas and open design questions.
+- `.gitignore` to keep runtime data, caches and local noise out of the repo.
+- `.guides/project_control.md` as the project's short operative guide for git, docs and work rhythm.
 
 ### Changed
-- `CLAUDE.md` er skrevet om, saa den afspejler den nuvaerende projekt-aware arkitektur og de nye arbejdsregler.
-- Changelog-flowet kraever nu en tydelig agent-sign-off for hver reel sessionopdatering.
-- `CLAUDE.md`, `AGENTS.md`, `README.md` og `ROADMAP.md` er synket med en fast git-baseline og always-on dokumentationsregel.
-- Repoet er initialiseret som git-repository paa den lokale `main`-branch.
-- Global Git default branch er sat til `main` for fremtidige repos.
-- `origin` er sat til `https://github.com/osmosikum/dublog.git`, og baseline-commit er pushet til `origin/main`.
+- `CLAUDE.md` rewritten to reflect the current project-aware architecture and new working rules.
+- The changelog flow now requires a clear agent sign-off for every real session update.
+- `CLAUDE.md`, `AGENTS.md`, `README.md` and `ROADMAP.md` synced with a fixed git baseline and always-on documentation rule.
+- The repo is initialised as a git repository on the local `main` branch.
+- Global Git default branch set to `main` for future repos.
+- `origin` set to `https://github.com/osmosikum/dublog.git` and baseline commit pushed to `origin/main`.
 
 ### Docs
-- Dokumentlaget skelner nu mellem nuvaerende sandhed, aktiv roadmap og parkerede fremtidsideer, saa repoet ikke laases fast for tidligt.
-- `.guides/project_control.md` og `ROADMAP.md` afspejler nu at git-setup og foerste push faktisk er gennemfoert.
-- `ROADMAP.md` markerer nu hele git-sporet som afsluttet, inklusive global default branch paa `main`.
+- The document layer now distinguishes between current truth, active roadmap and parked future ideas so the repo is not locked down too early.
+- `.guides/project_control.md` and `ROADMAP.md` now reflect that git setup and first push have actually been completed.
+- `ROADMAP.md` now marks the entire git track as completed, including global default branch on `main`.
 
 Sign-off: Codex
 
 ## [v1.2.0] - 2026-04-08
 ### Added
-- `identities/` mappe - modulaere persona-filer med YAML-lignende frontmatter (`name`, `language`, `length`)
-- Praeinstallerede identiteter: Skeptikeren, Optimisten, Moderatoren, Djaevlens Advokat
-- `identities.py` - parser og lister identity-filer (ingen externe deps)
-- `projects.py` - project management: opret, list, load/save settings, sanitize navne
-- `projects/default/` - default projekt oprettes automatisk ved boot
-- UI: projekt-selector med "+" knap til at oprette nye projekter
-- UI: identity-dropdown per agent - auto-udfylder navn, sprog og laengde ved valg
-- UI: sprog-dropdown per agent (dansk, engelsk, norsk, svensk, tysk)
-- UI: laengde-dropdown per agent (kort / medium / lang)
-- `/api/projects` GET+POST - list og opret projekter
-- `/api/project/settings` GET+POST - hent og gem projekt-settings
-- `/api/identities` GET - list tilgaengelige identiteter med metadata
-- Projekt-settings gemmes til `settings.json` ved hvert run (fuld restore ved skift)
+- `identities/` directory — modular persona files with YAML-like frontmatter (`name`, `language`, `length`)
+- Pre-installed identities: Skeptikeren, Optimisten, Moderatoren, Djaevlens Advokat
+- `identities.py` — parser and lister for identity files (no external deps)
+- `projects.py` — project management: create, list, load/save settings, sanitize names
+- `projects/default/` — default project created automatically on boot
+- UI: project selector with "+" button to create new projects
+- UI: identity dropdown per agent — auto-fills name, language and length on selection
+- UI: language dropdown per agent (Danish, English, Norwegian, Swedish, German)
+- UI: length dropdown per agent (short / medium / long)
+- `/api/projects` GET+POST — list and create projects
+- `/api/project/settings` GET+POST — get and save project settings
+- `/api/identities` GET — list available identities with metadata
+- Project settings saved to `settings.json` on every run (full restore on switch)
 
 ### Changed
-- `main.py` omskrevet: `run_conversation(output_fn, project, session_cfg)` - ingen global config-mutation, traadsikkert
-- `prompts.py` omskrevet: `build_system_prompt(identity_content, memory, language, length)` - identity er nu en string, ikke en filsti
-- `memory.py`: `log_conversation` tager nu et `project_dir`-argument i stedet for hardkodet `shared/`
-- `config.py` ryddet op - kun statiske konstanter, ingen runtime-state
-- `/api/memory/a` og `/api/memory/b` er nu projekt-opmaerksomme via `?project=` query param
-- Backend-skift i UI genindlaeser korrekt modeller fra den valgte backend
+- `main.py` rewritten: `run_conversation(output_fn, project, session_cfg)` — no global config mutation, thread-safe
+- `prompts.py` rewritten: `build_system_prompt(identity_content, memory, language, length)` — identity is now a string, not a file path
+- `memory.py`: `log_conversation` now takes a `project_dir` argument instead of a hardcoded `shared/`
+- `config.py` cleaned up — static constants only, no runtime state
+- `/api/memory/a` and `/api/memory/b` are now project-aware via `?project=` query param
+- Backend switch in UI correctly reloads models from the selected backend
 
 ## [v1.1.0] - 2026-04-08
 ### Added
-- `app.py` - web-server (stdlib `http.server` + `ThreadingMixIn`) paa port 7842
-- `ui/index.html` - enkeltfils frontend med moerkt tema, live SSE-output og memory-panel
-- Model-discovery endpoints: henter tilgaengelige modeller fra Ollama og LM Studio
-- `/api/memory/a` og `/api/memory/b` - serverer agent-memory til frontend
-- Memory-panel i bunden af UI der poller og viser begge agenters hukommelse live
+- `app.py` — web server (stdlib `http.server` + `ThreadingMixIn`) on port 7842
+- `ui/index.html` — single-file frontend with dark theme, live SSE output and memory panel
+- Model discovery endpoints: fetches available models from Ollama and LM Studio
+- `/api/memory/a` and `/api/memory/b` — serves agent memory to the frontend
+- Memory panel at the bottom of the UI that polls and shows both agents' memory live
 
 ### Changed
-- `main.py` refaktoreret: al logik samlet i `run_conversation(output_fn=print)` saa UI og CLI deler samme kode
-- `main.py` bruger nu `import config` direkte (frem for `from config import`) saa runtime-aendringer fra UI slaar igennem
+- `main.py` refactored: all logic gathered in `run_conversation(output_fn=print)` so UI and CLI share the same code
+- `main.py` now uses `import config` directly (rather than `from config import`) so runtime changes from the UI take effect
 
 ## [v1.0.0] - 2026-04-08
 ### Added
-- Fuld initial implementering af multi-agent sandbox
-- `config.py` - central konfiguration (topic, agenter, backend, budgets, konvergens)
-- `model.py` - model-adapter med support for Ollama, LM Studio og Claude API
-- `memory.py` - fil-baseret memory med tags, budget, konvergens-detection og samtale-log
-- `prompts.py` - struktureret prompt-builder (identity -> memory -> history -> task)
-- `main.py` - orchestrator med hoved-loop, live output og tidlig stop ved konvergens
-- `agent_a/identity.md` og `agent_b/identity.md` - agent-personas
-- `agent_a/memory.md` og `agent_b/memory.md` - tomme startfiler
-- `shared/` mappe til conversation-log og run-config
-- `README.md` med how-to sektioner
-- `CHANGELOG.md` (denne fil)
+- Full initial implementation of multi-agent sandbox
+- `config.py` — central configuration (topic, agents, backend, budgets, convergence)
+- `model.py` — model adapter with support for Ollama, LM Studio and Claude API
+- `memory.py` — file-based memory with tags, budget, convergence detection and conversation log
+- `prompts.py` — structured prompt builder (identity -> memory -> history -> task)
+- `main.py` — orchestrator with main loop, live output and early stop on convergence
+- `agent_a/identity.md` and `agent_b/identity.md` — agent personas
+- `agent_a/memory.md` and `agent_b/memory.md` — empty starting files
+- `shared/` directory for conversation log and run config
+- `README.md` with how-to sections
+- `CHANGELOG.md` (this file)
 
 ### Changed
-- (intet)
+- (none)
 
 ### Fixed
-- (intet)
+- (none)

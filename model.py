@@ -11,7 +11,7 @@ def call_model(model: str, system_prompt: str, messages: list[dict]) -> str:
     elif BACKEND == "claude":
         return _call_claude(model, system_prompt, messages)
     else:
-        raise ValueError(f"Ukendt backend: {BACKEND}")
+        raise ValueError(f"Unknown backend: {BACKEND}")
 
 
 def _call_ollama(model, system_prompt, messages):

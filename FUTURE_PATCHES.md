@@ -1,78 +1,78 @@
-﻿# Future Patches
+# Future Patches
 
-Denne fil er parkeringspladsen for gode ideer, senere patches og aabne designspoergsmaal.
-Indhold her er bevidst ikke aktivt roadmap-arbejde endnu.
+This file is the parking lot for good ideas, later patches and open design questions.
+Content here is deliberately not active roadmap work yet.
 
-## Regler
+## Rules
 
-- Brug denne fil til ideer der er lovende, men ikke aktive nu.
-- Flyt foerst noget til `ROADMAP.md` naar det er naeste eller naer-naeste reelle arbejde.
-- Tilfoej kort hvorfor noget er parkeret, saa vi ikke skal gaette senere.
+- Use this file for ideas that are promising but not active now.
+- Only move something to `ROADMAP.md` when it is the next or near-next real piece of work.
+- Add a short note on why something is parked so we do not have to guess later.
 
-## Parkerede patch-kandidater
+## Parked patch candidates
 
-- [ ] [CLI] CLI-flags for topic, rounds, models og project
+- [ ] [CLI] CLI flags for topic, rounds, models and project
   - Status: deferred
-  - Hvorfor senere: nyttigt, men mindre vigtigt end session-arkitektur og observability
+  - Why later: useful, but less important than session architecture and observability
 
-- [ ] [UI] Mere visuel debug-konsol og metrics-panel
+- [ ] [UI] More visual debug console and metrics panel
   - Status: deferred
-  - Hvorfor senere: boer bygge oven paa rigtig telemetry, ikke foer
+  - Why later: should build on real telemetry, not before
 
-- [ ] [RUNTIME] Flere samtidige sessioner i samme app-instans
+- [ ] [RUNTIME] Multiple concurrent sessions in the same app instance
   - Status: deferred
-  - Hvorfor senere: kraever at enkelt-session flow er rent foerst
+  - Why later: requires the single-session flow to be clean first
 
-- [ ] [MEMORY] Mere avanceret promotion med manuel eller semiautomatisk approval
+- [ ] [MEMORY] More advanced promotion with manual or semi-automatic approval
   - Status: deferred
-  - Hvorfor senere: promotion-reglen skal vaere enkel foer den bliver smart
+  - Why later: the promotion rule should be simple before it gets smart
 
-- [ ] [MEMORY] Event-log som `jsonl` ved siden af laesbare markdown-filer
+- [ ] [MEMORY] Event log as `jsonl` alongside readable markdown files
   - Status: deferred
-  - Hvorfor senere: god ide, men boer landes sammen med sessions og telemetry
+  - Why later: good idea, but should land together with sessions and telemetry
 
-- [ ] [VALIDATION] Staerkere sprogdetektion end simpel heuristik
+- [ ] [VALIDATION] Stronger language detection than a simple heuristic
   - Status: deferred
-  - Hvorfor senere: foerste version skal bare kunne markere tydelige afvigelser
+  - Why later: the first version just needs to be able to flag obvious deviations
 
-- [ ] [IDENTITY] Model-specifikke overrides i identity-frontmatter
+- [ ] [IDENTITY] Model-specific overrides in identity frontmatter
   - Status: deferred
-  - Hvorfor senere: nyttigt for lokale modeller, men ikke noedvendigt for at faa basen sand
+  - Why later: useful for local models, but not necessary to get the base right
 
-- [ ] [SUMMARY] Tredje agent eller moderator til eftersummering
+- [ ] [SUMMARY] Third agent or moderator for post-summary
   - Status: deferred
-  - Hvorfor senere: persona-lag er ikke hovedsporet foer runtime og observability er renere
+  - Why later: the persona layer is not the main track before runtime and observability are cleaner
 
-- [ ] [EXPORT] Analyse- eller snapshot-eksporter pr. session
+- [ ] [EXPORT] Analysis or snapshot exports per session
   - Status: deferred
-  - Hvorfor senere: giver mest mening naar sessions er foerste-klasses objekter
+  - Why later: makes most sense when sessions are first-class objects
 
-- [ ] [TEST] Mere systematiske smoke-tests for backends og kontrakter
+- [ ] [TEST] More systematic smoke tests for backends and contracts
   - Status: deferred
-  - Hvorfor senere: validation og telemetry boer lande foer teststrategien udvides
+  - Why later: validation and telemetry should land before the test strategy expands
 
-- [ ] [OPS] Agent Ledger for model, task, varighed og filer aendret
+- [ ] [OPS] Agent Ledger for model, task, duration and files changed
   - Status: deferred
-  - Hvorfor senere: godt til cost/traceability, men ikke kritisk foer runtime og docs er mere stabile
+  - Why later: good for cost/traceability, but not critical before runtime and docs are more stable
 
-- [ ] [WORKFLOW] Diff gate med eksplicit reviewer-pass foer merge
+- [ ] [WORKFLOW] Diff gate with explicit reviewer pass before merge
   - Status: deferred
-  - Hvorfor senere: god disciplin, men boer bygge paa en enklere review-rytme foerst
+  - Why later: good discipline, but should build on a simpler review rhythm first
 
-- [ ] [WORKFLOW] GEMINI.md og normalizer-pipeline for research/import
+- [ ] [WORKFLOW] GEMINI.md and normalizer pipeline for research/import
   - Status: deferred
-  - Hvorfor senere: nyttigt til lange inputspor, men ikke noedvendigt for dagens kerneflow
+  - Why later: useful for long input tracks, but not necessary for today's core flow
 
-- [ ] [WORKFLOW] Strammere context isolation per agent
+- [ ] [WORKFLOW] Tighter context isolation per agent
   - Status: deferred
-  - Hvorfor senere: vigtigt paa sigt, men boer indfoeres sammen med mere moden delegation
+  - Why later: important in the long run, but should be introduced alongside more mature delegation
 
-## Aabne designspoergsmaal
+## Open design questions
 
-1. Skal foerste stabile version kun koere en session ad gangen, eller skal fler-session support med tidligt?
-2. Skal dansk vaere haardt krav i foerste version, eller skal engelsk vaere eksplicit fallback?
-3. Skal project-memory promotion vaere manuel, semiautomatisk eller automatisk i den foerste stabile base?
-4. Skal event-log primaert vaere markdown, `jsonl`, eller begge dele?
-5. Skal identity-filer senere kunne have backend- eller model-specifikke overrides?
+1. Should the first stable version only run one session at a time, or should multi-session support come in early?
+2. Should Danish be a hard requirement in the first version, or should English be an explicit fallback?
+3. Should project-memory promotion be manual, semi-automatic or automatic in the first stable base?
+4. Should the event log primarily be markdown, `jsonl`, or both?
+5. Should identity files later be able to have backend- or model-specific overrides?
 
-Indtil de spoergsmaal bliver aktive, bliver de her og ikke i den operative roadmap.
+Until those questions become active, they stay here and not in the operative roadmap.

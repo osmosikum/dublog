@@ -1,28 +1,28 @@
 # Multi-Agent Sandbox
 
-To lokale AI-agenter diskuterer et emne og husker i lag.
-Designet til at hjælpe små lokale modeller holde kursen.
+Two local AI agents discuss a topic and build memory in layers.
+Designed to help small local models stay on track.
 
-Hvis du styrer repoet aktivt, så læs også `.guides/project_control.md`.
+If you are actively managing the repo, also read `.guides/project_control.md`.
 
 ---
 
 ## 1. How to run
 
-**Med UI (anbefalet):**
+**With UI (recommended):**
 ```bash
 pip install requests
 python app.py
-# → åbn http://localhost:7842
+# → open http://localhost:7842
 ```
 
-**CLI kun:**
+**CLI only:**
 ```bash
 pip install requests
 python main.py
 ```
 
-Kræver [Ollama](https://ollama.com) installeret og en model pullet:
+Requires [Ollama](https://ollama.com) installed and a model pulled:
 ```bash
 ollama pull gemma3:4b
 ```
@@ -31,68 +31,68 @@ ollama pull gemma3:4b
 
 ## 2. How to change topic and agents
 
-Åbn `http://localhost:7842` — alt konfigureres i UI:
-- Emne og antal runder
-- Identitet, sprog og svarlængde per agent
+Open `http://localhost:7842` — everything is configured in the UI:
+- Topic and number of rounds
+- Identity, language and response length per agent
 - Model per agent
-- Projekt (eget mapperum med memory og log)
+- Project (separate directory with memory and log)
 
-For CLI: åbn `config.py` og skift `TOPIC`, `ROUNDS`, `AGENT_A["model"]` etc.
+For CLI: open `config.py` and change `TOPIC`, `ROUNDS`, `AGENT_A["model"]` etc.
 
 ---
 
 ## 3. How to add an identity
 
-Nye identiteter boer normalt ligge i `identities/custom/`:
+New identities should normally go in `identities/custom/`:
 
 ```markdown
 ---
-name: Mit Navn
-language: dansk
+name: My Name
+language: danish
 length: medium
 ---
 
-# Mit Navn
+# My Name
 
-[Beskriv personligheden...]
+[Describe the personality...]
 
-Tal altid i første person.
-Slut altid dit svar med: [MEMORY]: <din vigtigste pointe fra denne runde>
+Always speak in the first person.
+End your answer with: [MEMORY]: <your most important point from this round>
 ```
 
-Brug `identities/template.md` som udgangspunkt.
+Use `identities/template.md` as a starting point.
 
-Identity-struktur:
+Identity structure:
 
-- `identities/template.md` — tracked skabelon
-- `identities/examples/*.md` — tracked eksempel-identiteter
-- `identities/custom/*.md` — lokale identiteter, gitignored men automatisk loadet
+- `identities/template.md` — tracked template
+- `identities/examples/*.md` — tracked example identities
+- `identities/custom/*.md` — local identities, gitignored but automatically loaded
 
-Filen dukker automatisk op i identity-dropdowns ved næste sideopdatering.
+The file will automatically appear in the identity dropdowns on the next page refresh.
 
 ---
 
 ## 4. How to switch backend
 
-Vælg backend i UI-dropdownen (Ollama / LM Studio / Claude API).
+Select the backend in the UI dropdown (Ollama / LM Studio / Claude API).
 
-For CLI: åbn `config.py` og skift `BACKEND`:
+For CLI: open `config.py` and change `BACKEND`:
 ```python
-BACKEND = "ollama"      # lokal Ollama (default)
-BACKEND = "lmstudio"   # lokal LM Studio
+BACKEND = "ollama"      # local Ollama (default)
+BACKEND = "lmstudio"   # local LM Studio
 BACKEND = "claude"     # Anthropic Claude API
 ```
 
-For Claude-backend: sæt miljøvariablen `ANTHROPIC_API_KEY`.
+For the Claude backend: set the environment variable `ANTHROPIC_API_KEY`.
 
 ---
 
 ## 5. Projects
 
-Hvert projekt har sit eget mapperum under `projects/`:
+Each project has its own directory under `projects/`:
 
 ```
-projects/mit-projekt/
+projects/my-project/
     agent_a/memory.md
     agent_b/memory.md
     settings.json
@@ -102,35 +102,35 @@ projects/mit-projekt/
             run_config.md
 ```
 
-Opret nye projekter med **＋**-knappen i UI. Settings gemmes automatisk ved hvert run og restores ved projektwitch.
+Create new projects with the **＋** button in the UI. Settings are saved automatically on every run and restored on project switch.
 
-`projects/` er gitignored — runtime-data ryger ikke i repoet.
+`projects/` is gitignored — runtime data does not end up in the repo.
 
 ---
 
 ## 6. Memory format
 
-Agenter gemmer pointer løbende i `projects/<projekt>/agent_x/memory.md` via `[MEMORY]:`-tagget i svarene.
+Agents store notes continuously in `projects/<project>/agent_x/memory.md` via the `[MEMORY]:` tag in their responses.
 
-Memory re-injiceres i hvert prompt (budgetbegrænset til `MAX_MEMORY_LINES` i `config.py`).
+Memory is re-injected into every prompt (budget-limited to `MAX_MEMORY_LINES` in `config.py`).
 
 ---
 
 ## 7. File overview
 
-| Fil | Formål |
-|-----|--------|
-| `app.py` | Web-server og SSE-streaming (port 7842) |
-| `main.py` | Samtale-orchestrator — `run_conversation(session_cfg)` |
-| `config.py` | Statiske defaults til CLI-kørsel |
-| `model.py` | Model-adapter: Ollama, LM Studio, Claude API |
-| `prompts.py` | Prompt-builder: identity + instruktioner + memory |
-| `memory.py` | Memory-IO: load, append, extract, konvergens-check |
-| `identities.py` | Parser og lister identity-filer fra `identities/` |
-| `projects.py` | Projekt-management: opret, list, load/save settings |
-| `identities/README.md` | Forklarer forskellen på template, examples og custom |
-| `identities/examples/*.md` | Repo-shippede eksempel-identiteter |
-| `identities/custom/*.md` | Lokale identiteter (gitignored) |
-| `identities/template.md` | Skabelon til nye identiteter |
-| `ui/index.html` | Enkeltfils frontend |
-| `projects/<navn>/` | Runtime-data per projekt (gitignored) |
+| File | Purpose |
+|------|---------|
+| `app.py` | Web server and SSE streaming (port 7842) |
+| `main.py` | Conversation orchestrator — `run_conversation(session_cfg)` |
+| `config.py` | Static defaults for CLI runs |
+| `model.py` | Model adapter: Ollama, LM Studio, Claude API |
+| `prompts.py` | Prompt builder: identity + instructions + memory |
+| `memory.py` | Memory IO: load, append, extract, convergence check |
+| `identities.py` | Parser and lister for identity files from `identities/` |
+| `projects.py` | Project management: create, list, load/save settings |
+| `identities/README.md` | Explains the difference between template, examples and custom |
+| `identities/examples/*.md` | Repo-shipped example identities |
+| `identities/custom/*.md` | Local identities (gitignored) |
+| `identities/template.md` | Template for new identities |
+| `ui/index.html` | Single-file frontend |
+| `projects/<name>/` | Runtime data per project (gitignored) |
