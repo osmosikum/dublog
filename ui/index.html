@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -190,7 +190,7 @@
   <div class="topbar">
     <div class="dot" id="status-dot"></div>
     <span class="topbar-title">Multi-Agent Sandbox</span>
-    <span class="topbar-status" id="status-text">Klar</span>
+    <span class="topbar-status" id="status-text">Ready</span>
   </div>
 
   <div class="body">
@@ -198,11 +198,11 @@
 
       <!-- Project -->
       <div>
-        <div class="section-label">Projekt</div>
+        <div class="section-label">Project</div>
         <div class="ctx-row">
           <select id="project-select" onchange="onProjectChange()"></select>
-          <button class="ctx-btn add" onclick="newProject()" title="Nyt projekt">＋</button>
-          <button class="ctx-btn del" onclick="deleteProject()" title="Slet projekt">🗑</button>
+          <button class="ctx-btn add" onclick="newProject()" title="New project">＋</button>
+          <button class="ctx-btn del" onclick="deleteProject()" title="Delete project">🗑</button>
         </div>
       </div>
 
@@ -214,9 +214,9 @@
         </div>
         <div class="ctx-row">
           <select id="session-select" onchange="onSessionChange()">
-            <option value="new">● Ny session</option>
+            <option value="new">● New session</option>
           </select>
-          <button class="ctx-btn del" id="session-del-btn" onclick="deleteSession()" title="Slet session" disabled>🗑</button>
+          <button class="ctx-btn del" id="session-del-btn" onclick="deleteSession()" title="Delete session" disabled>🗑</button>
         </div>
       </div>
 
@@ -232,10 +232,10 @@
 
       <!-- Conversation -->
       <div>
-        <div class="section-label">Samtale</div>
-        <label>Emne</label>
+        <div class="section-label">Conversation</div>
+        <label>Topic</label>
         <textarea id="topic" rows="3"></textarea>
-        <label>Runder</label>
+        <label>Rounds</label>
         <div class="rounds-row">
           <input type="range" id="rounds-range" min="1" max="20" value="6">
           <span class="rounds-num" id="rounds-val">6</span>
@@ -245,8 +245,8 @@
       <!-- Agents -->
       <div>
         <div class="section-label">
-          Agenter
-          <button class="label-action" onclick="loadModels()">↻ modeller</button>
+          Agents
+          <button class="label-action" onclick="loadModels()">↻ models</button>
         </div>
 
         <div class="agent-card">
@@ -254,28 +254,28 @@
             <div class="pip pip-a"></div>
             <span class="agent-name-lbl color-a" id="display-name-a">Agent A</span>
           </div>
-          <label>Navn</label>
+          <label>Name</label>
           <input type="text" id="name-a"
             oninput="document.getElementById('display-name-a').textContent=this.value||'Agent A'">
-          <label>Identitet</label>
+          <label>Identity</label>
           <select id="identity-a" onchange="onIdentityChange('a')"></select>
           <div class="row2">
-            <div><label>Sprog</label>
+            <div><label>Language</label>
               <select id="language-a">
-                <option value="dansk">Dansk</option><option value="engelsk">Engelsk</option>
-                <option value="norsk">Norsk</option><option value="svensk">Svensk</option>
+                <option value="dansk">Danish</option><option value="engelsk">English</option>
+                <option value="norsk">Norwegian</option><option value="svensk">Swedish</option>
               </select>
             </div>
-            <div><label>Længde</label>
+            <div><label>Length</label>
               <select id="length-a">
-                <option value="kort">Kort</option>
+                <option value="kort">Short</option>
                 <option value="medium" selected>Medium</option>
-                <option value="lang">Lang</option>
+                <option value="lang">Long</option>
               </select>
             </div>
           </div>
           <label>Model</label>
-          <select id="model-a"><option value="">Indlæser…</option></select>
+          <select id="model-a"><option value="">Loading...</option></select>
         </div>
 
         <div class="agent-card" style="margin-top:8px">
@@ -283,35 +283,35 @@
             <div class="pip pip-b"></div>
             <span class="agent-name-lbl color-b" id="display-name-b">Agent B</span>
           </div>
-          <label>Navn</label>
+          <label>Name</label>
           <input type="text" id="name-b"
             oninput="document.getElementById('display-name-b').textContent=this.value||'Agent B'">
-          <label>Identitet</label>
+          <label>Identity</label>
           <select id="identity-b" onchange="onIdentityChange('b')"></select>
           <div class="row2">
-            <div><label>Sprog</label>
+            <div><label>Language</label>
               <select id="language-b">
-                <option value="dansk">Dansk</option><option value="engelsk">Engelsk</option>
-                <option value="norsk">Norsk</option><option value="svensk">Svensk</option>
+                <option value="dansk">Danish</option><option value="engelsk">English</option>
+                <option value="norsk">Norwegian</option><option value="svensk">Swedish</option>
               </select>
             </div>
-            <div><label>Længde</label>
+            <div><label>Length</label>
               <select id="length-b">
-                <option value="kort">Kort</option>
+                <option value="kort">Short</option>
                 <option value="medium" selected>Medium</option>
-                <option value="lang">Lang</option>
+                <option value="lang">Long</option>
               </select>
             </div>
           </div>
           <label>Model</label>
-          <select id="model-b"><option value="">Indlæser…</option></select>
+          <select id="model-b"><option value="">Loading...</option></select>
         </div>
       </div>
 
       <!-- Actions -->
       <div>
-        <button class="btn btn-run" id="run-btn" onclick="handleRunStop()">▶ Kør samtale</button>
-        <button class="btn btn-clear" onclick="clearConsole()">Ryd output</button>
+        <button class="btn btn-run" id="run-btn" onclick="handleRunStop()">▶ Run conversation</button>
+        <button class="btn btn-clear" onclick="clearConsole()">Clear output</button>
       </div>
 
     </aside>
@@ -320,18 +320,18 @@
     <div class="console-wrap">
       <div class="console" id="console">
         <div class="empty-hint" id="empty-hint">
-          Vælg projekt og agenter — tryk <strong>Kør samtale</strong>.<br>
-          Klik en tidligere session for at genläse dens log.
+          Choose a project and agents - press <strong>Run conversation</strong>.<br>
+          Click an earlier session to reload its log.
         </div>
       </div>
       <div class="memory-bar">
         <div class="mem-col">
-          <div class="mem-title mem-a" id="mem-title-a">Agent A — Hukommelse</div>
-          <div class="mem-content mem-empty" id="mem-a">(ingen entries endnu)</div>
+          <div class="mem-title mem-a" id="mem-title-a">Agent A — Memory</div>
+          <div class="mem-content mem-empty" id="mem-a">(no entries yet)</div>
         </div>
         <div class="mem-col">
-          <div class="mem-title mem-b" id="mem-title-b">Agent B — Hukommelse</div>
-          <div class="mem-content mem-empty" id="mem-b">(ingen entries endnu)</div>
+          <div class="mem-title mem-b" id="mem-title-b">Agent B — Memory</div>
+          <div class="mem-content mem-empty" id="mem-b">(no entries yet)</div>
         </div>
       </div>
     </div>
@@ -397,15 +397,15 @@
       document.getElementById("language-b").value = s.language_b ?? "dansk";
       document.getElementById("length-a").value   = s.length_a   ?? "medium";
       document.getElementById("length-b").value   = s.length_b   ?? "medium";
-      document.getElementById("mem-title-a").textContent = `${na} — Hukommelse`;
-      document.getElementById("mem-title-b").textContent = `${nb} — Hukommelse`;
+      document.getElementById("mem-title-a").textContent = `${na} — Memory`;
+      document.getElementById("mem-title-b").textContent = `${nb} — Memory`;
       savedModelA = s.model_a ?? "";
       savedModelB = s.model_b ?? "";
     } catch (e) { console.warn("loadProjectSettings:", e); }
   }
 
   async function newProject() {
-    const name = prompt("Navn på nyt projekt:");
+    const name = prompt("Name for the new project:");
     if (!name?.trim()) return;
     const r   = await fetch("/api/projects", {
       method: "POST", headers: { "Content-Type": "application/json" },
@@ -422,8 +422,8 @@
   }
 
   async function deleteProject() {
-    if (currentProject === "default") { alert("Default-projektet kan ikke slettes."); return; }
-    if (!confirm(`Slet projektet "${currentProject}" og ALT dets data?`)) return;
+    if (currentProject === "default") { alert("The default project cannot be deleted."); return; }
+    if (!confirm(`Delete project "${currentProject}" and ALL of its data?`)) return;
     await fetch("/api/delete/project", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ project: currentProject })
@@ -441,7 +441,7 @@
     const sel     = document.getElementById("session-select");
     const delBtn  = document.getElementById("session-del-btn");
 
-    sel.innerHTML = "<option value='new'>● Ny session</option>";
+    sel.innerHTML = "<option value='new'>● New session</option>";
     list.forEach(id => {
       const label = formatSessionId(id);
       sel.add(new Option(label, id));
@@ -477,7 +477,7 @@
     const r    = await fetch(`/api/session/log?project=${enc(currentProject)}&session=${enc(id)}`);
     const text = await r.text();
     clearConsole();
-    if (!text.trim()) { appendLine("(tom session)", "l-muted"); return; }
+    if (!text.trim()) { appendLine("(empty session)", "l-muted"); return; }
     appendLine(`— Session ${formatSessionId(id)} —`, "l-meta");
     text.split("\n").forEach(line => appendLine(line, "l-log"));
   }
@@ -486,7 +486,7 @@
     const sel = document.getElementById("session-select");
     const id  = sel.value;
     if (id === "new") return;
-    if (!confirm(`Slet session "${formatSessionId(id)}"?`)) return;
+    if (!confirm(`Delete session "${formatSessionId(id)}"?`)) return;
     await fetch("/api/delete/session", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ project: currentProject, session: id })
@@ -522,8 +522,8 @@
     const backend = document.getElementById("backend").value;
     const selA = document.getElementById("model-a");
     const selB = document.getElementById("model-b");
-    selA.innerHTML = "<option value=''>Henter…</option>";
-    selB.innerHTML = "<option value=''>Henter…</option>";
+    selA.innerHTML = "<option value=''>Loading...</option>";
+    selB.innerHTML = "<option value=''>Loading...</option>";
     try {
       const r    = await fetch("/api/models");
       const data = await r.json();
@@ -532,7 +532,7 @@
       selA.innerHTML = "";
       selB.innerHTML = "";
       if (!models?.length) {
-        const msg = "⚠ " + (err || "Ingen modeller");
+        const msg = "⚠ " + (err || "No models");
         selA.add(new Option(msg, "")); selB.add(new Option(msg, ""));
       } else {
         models.forEach(m => { selA.add(new Option(m, m)); selB.add(new Option(m, m)); });
@@ -540,8 +540,8 @@
         if (savedModelB && models.includes(savedModelB)) selB.value = savedModelB;
       }
     } catch (e) {
-      selA.innerHTML = "<option value=''>(fejl)</option>";
-      selB.innerHTML = "<option value=''>(fejl)</option>";
+      selA.innerHTML = "<option value=''>(error)</option>";
+      selB.innerHTML = "<option value=''>(error)</option>";
     }
   }
 
@@ -574,9 +574,9 @@
       length_b:   document.getElementById("length-b").value,
     };
 
-    if (!payload.topic)   { appendLine("[FEJL] Emne må ikke være tomt.", "l-error"); return; }
-    if (!payload.model_a) { appendLine("[FEJL] Vælg en model til Agent A.", "l-error"); return; }
-    if (!payload.model_b) { appendLine("[FEJL] Vælg en model til Agent B.", "l-error"); return; }
+    if (!payload.topic)   { appendLine("[ERROR] Topic must not be empty.", "l-error"); return; }
+    if (!payload.model_a) { appendLine("[ERROR] Choose a model for Agent A.", "l-error"); return; }
+    if (!payload.model_b) { appendLine("[ERROR] Choose a model for Agent B.", "l-error"); return; }
 
     // Reset to "Ny session" so we're ready for the new run's output
     document.getElementById("session-select").value = "new";
@@ -584,8 +584,8 @@
     clearConsole();
     setRunning(true);
 
-    document.getElementById("mem-title-a").textContent = (payload.name_a || "Agent A") + " — Hukommelse";
-    document.getElementById("mem-title-b").textContent = (payload.name_b || "Agent B") + " — Hukommelse";
+    document.getElementById("mem-title-a").textContent = (payload.name_a || "Agent A") + " — Memory";
+    document.getElementById("mem-title-b").textContent = (payload.name_b || "Agent B") + " — Memory";
 
     try {
       const r      = await fetch("/api/run", {
@@ -593,9 +593,9 @@
         body: JSON.stringify(payload)
       });
       const result = await r.json();
-      if (result.error) { appendLine("[FEJL] " + result.error, "l-error"); setRunning(false); return; }
+      if (result.error) { appendLine("[ERROR] " + result.error, "l-error"); setRunning(false); return; }
     } catch (e) {
-      appendLine("[FEJL] Kunne ikke nå serveren: " + e, "l-error"); setRunning(false); return;
+      appendLine("[ERROR] Could not reach the server: " + e, "l-error"); setRunning(false); return;
     }
 
     const es = new EventSource("/api/stream");
@@ -630,12 +630,12 @@
       btn.className   = "btn btn-stop";
       btn.disabled    = false;
     } else {
-      btn.textContent = "▶ Kør samtale";
+      btn.textContent = "▶ Run conversation";
       btn.className   = "btn btn-run";
       btn.disabled    = false;
     }
     dot.className   = "dot" + (state ? " running" : "");
-    txt.textContent = state ? "Kører…" : "Klar";
+    txt.textContent = state ? "Running..." : "Ready";
     txt.className   = "topbar-status" + (state ? " running" : "");
     if (!state) { clearInterval(memPollInterval); memPollInterval = null; }
   }
@@ -655,17 +655,17 @@
   function classifyLine(t) {
     if (!t || !t.trim())              return "l-empty";
     if (/^={3,}/.test(t))            return "l-sep";
-    if (/^\s+Runde \d+\s+—/.test(t)) return "l-head";
-    if (/^\s+(Samtale afsluttet|Session:)/.test(t)) return "l-done";
+    if (/^\s+Round \d+\s+-/.test(t)) return "l-head";
+    if (/^\s+(Conversation finished|Session:)/.test(t)) return "l-done";
     if (t.startsWith(">>>"))         return "l-meta";
-    if (/\[Konvergens|Konvergens nået/.test(t)) return "l-conv";
-    if (/\[FEJL\]/.test(t))          return "l-error";
+    if (/\[Convergence|Convergence reached/.test(t)) return "l-conv";
+    if (/\[ERROR\]/.test(t))         return "l-error";
     return "l-normal";
   }
 
   function clearConsole() {
     document.getElementById("console").innerHTML =
-      '<div class="empty-hint" id="empty-hint">Vælg projekt og agenter — tryk <strong>Kør samtale</strong>.<br>Klik en tidligere session for at genlæse dens log.</div>';
+      '<div class="empty-hint" id="empty-hint">Choose a project and agents - press <strong>Run conversation</strong>.<br>Click an earlier session to reload its log.</div>';
   }
 
   // ── Memory ─────────────────────────────────────────────────────────────────
@@ -682,7 +682,7 @@
   function setMemPanel(id, text) {
     const el = document.getElementById(id);
     if (!text?.trim()) {
-      el.textContent = "(ingen entries endnu)"; el.classList.add("mem-empty");
+      el.textContent = "(no entries yet)"; el.classList.add("mem-empty");
     } else {
       el.textContent = text.trim(); el.classList.remove("mem-empty");
       el.scrollTop = el.scrollHeight;

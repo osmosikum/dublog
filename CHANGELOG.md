@@ -28,6 +28,7 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - `normalization.py` indfoerer read-compatibility for legacy `language`, `length` og identity-slugs, saa gamle og nye values kan bruges side om side
 - `projects.py` normaliserer gamle identity-slugs ved settings-load, saa eksisterende projekter stadig loader ind i den nuvaerende UI
 - `main.py`, `prompts.py` og `identities.py` accepterer nu baade gamle danske enum-vaerdier og nye engelske canonical values i runtime
+- `app.py`, `main.py` og `ui/index.html` viser nu engelske UI- og runtimebeskeder, mens de eksisterende persisted option-values stadig kan laeses uaendret
 
 ### Docs
 - `CLAUDE.md` strukturtræ opdateret til at matche nuværende kodebase
@@ -38,6 +39,7 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - `.guides/english_migration_scope.md` afgraenser English-migrationen i engine, compatibility og content-zoner, saa persisted data ikke blandes med tekstoprydning
 - `ROADMAP.md`, `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` beskriver nu English-pass som et compatibility-spor og retter session-docs til den faktiske kodebase
 - `ROADMAP.md` markerer compatibility-laget som landet, mens UI-oversaettelse og write-migration stadig staar tilbage
+- `ROADMAP.md` markerer nu UI-oversaettelsen som landet, mens write-migration og docs/content-pass stadig staar tilbage
 
 Sign-off: Codex
 

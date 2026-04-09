@@ -98,7 +98,7 @@ Formaal: Goere det klart hvad der kan oversaettes direkte, og hvad der foerst kr
   - Done naar: gamle `settings.json` kan laeses korrekt samtidig med at nye engelske vaerdier accepteres
 
 - [ ] [UI] Oversaette engine-UI til engelsk uden at bryde persisted values
-  - Status: todo
+  - Status: done
   - Hvorfor: labels og fejltekster kan skifte foer dataformatet goer det
   - Output: engelske labels, knapper og beskeder i appen
   - Done naar: UI er engelsk, men gamle settings loader stadig korrekt
