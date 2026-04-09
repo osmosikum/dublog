@@ -1,64 +1,64 @@
-﻿# CLAUDE.md - Arbejdskontrakt for Multi-Agent Sandbox
+# CLAUDE.md - Working Contract for Multi-Agent Sandbox
 
-Denne fil er den operative guide for Claude Code i dette repo.
-Den skal afspejle den nuvaerende sandhed og den naermeste retning, uden at laase projektet fast i arkitektur der endnu ikke er bygget.
+This file is the operative guide for Claude Code in this repo.
+It must reflect the current truth and the nearest direction without locking the project into architecture that has not been built yet.
 
-## Formaal
+## Purpose
 
-- holde kode, docs og changelog i sync
-- skelne mellem nuvaerende struktur, aktivt arbejde og senere ideer
-- gore det tydeligt hvad der er implementeret nu, og hvad der kun er planlagt
+- keep code, docs, and changelog in sync
+- separate current structure, active work, and later ideas
+- make it clear what is implemented now and what is only planned
 
-## Nuværende sandhed
+## Current Truth
 
-- Projektet er en lokal multi-agent sandbox i Python med stdlib plus `requests`.
-- `app.py` serverer web-UI og SSE-output.
-- `main.py` koerer samtaler ud fra en `session_cfg`, men runtime er endnu ikke fuldt session-isoleret.
-- `projects.py` haandterer projektmapper og `settings.json`.
-- `identities.py` loader persona-filer fra `identities/`.
-- Memory ligger paa projektniveau under `projects/<project>/agent_x/memory.md` og deles paa tvaers af sessioner.
-- Samtale-log ligger per session under `projects/<project>/sessions/<session_id>/conversation.md`.
-- `app.py` har global runtime-state (`run_queue`, `run_lock`, `stop_event`, `is_running`) — et kendt naeste arkitekturtrin er at flytte dette til `sessions.py`.
-- Engine-laget er stadig blandet dansk/engelsk, og eksisterende `settings.json` bruger danske values som kraever compatibility foer en fuld English-pass.
-- Brugeren maa stadig skrive fritekst til agenten paa dansk eller et andet frit valgt sprog; det er content, ikke engine-state.
-- Der findes endnu ikke dedikerede moduler som `sessions.py`, `telemetry.py` eller `validators.py`.
+- The project is a local multi-agent sandbox in Python with stdlib plus `requests`.
+- `app.py` serves the web UI and SSE output.
+- `main.py` runs conversations from a per-run `session_cfg`, but runtime state is not yet fully session-isolated.
+- `projects.py` manages project directories and `settings.json`.
+- `identities.py` loads persona files from `identities/`.
+- Memory lives at the project level under `projects/<project>/agent_x/memory.md` and is shared across sessions.
+- Conversation logs live per session under `projects/<project>/sessions/<session_id>/conversation.md`.
+- `app.py` still holds global runtime state (`run_queue`, `run_lock`, `stop_event`, `is_running`); a known next architecture step is moving that into `sessions.py`.
+- The engine layer is still being migrated to English, and existing `settings.json` files still contain Danish values that require compatibility handling.
+- The user may still write free-form input to the agent in Danish or any other chosen language; that is content, not engine state.
+- Dedicated modules such as `sessions.py`, `telemetry.py`, and `validators.py` do not exist yet.
 
-## Dokumenternes roller
+## Document Roles
 
-- `README.md`: brugerrettet introduktion og koersel.
-- `AGENTS.md`: global agent-sandhed for repoet.
-- `CLAUDE.md`: Claude-specifik arbejdsfil der supplerer `AGENTS.md`.
-- `.guides/project_control.md`: brugerens operative guide til git og projektstyring.
-- `ROADMAP.md`: aktive milestones og konkrete naeste opgaver.
-- `FUTURE_PATCHES.md`: bevidst parkerede ideer og senere patches.
-- `CHANGELOG.md`: det der faktisk blev aendret.
+- `README.md`: user-facing introduction and run instructions.
+- `AGENTS.md`: global agent truth for the repo.
+- `CLAUDE.md`: Claude-specific working file that complements `AGENTS.md`.
+- `.guides/project_control.md`: the user's operative guide for git and project control.
+- `ROADMAP.md`: active milestones and concrete next tasks.
+- `FUTURE_PATCHES.md`: intentionally parked ideas and later patches.
+- `CHANGELOG.md`: what actually changed.
 
-## Aktuel struktur
+## Current Structure
 
 ```text
 dublog/
-|-- app.py               # web-server og SSE-streaming (port 7842)
-|-- main.py              # samtale-orchestrator, run_conversation(session_cfg)
-|-- config.py            # statiske defaults til CLI-koersel
-|-- model.py             # model-adapter: Ollama, LM Studio, Claude API
-|-- prompts.py           # prompt-builder: identity + instruktioner + memory
-|-- memory.py            # memory-IO: load, append, extract, konvergens
-|-- identities.py        # parser og lister identity-filer
-|-- projects.py          # projekt-management: opret, list, settings
+|-- app.py               # web server and SSE streaming (port 7842)
+|-- main.py              # conversation orchestrator, run_conversation(session_cfg)
+|-- config.py            # static defaults for CLI runs
+|-- model.py             # model adapter: Ollama, LM Studio, Claude API
+|-- prompts.py           # prompt builder: identity + instructions + memory
+|-- memory.py            # memory IO: load, append, extract, convergence
+|-- identities.py        # parser and lister for identity files
+|-- projects.py          # project management: create, list, settings
 |-- CLAUDE.md
 |-- AGENTS.md
 |-- ROADMAP.md
 |-- FUTURE_PATCHES.md
 |-- CHANGELOG.md
 |-- README.md
-|-- identities/          # templates, examples og lokale custom identities
+|-- identities/          # templates, examples, and local custom identities
 |   |-- README.md
 |   |-- template.md
 |   |-- examples/
 |   |   `-- *.md
 |   `-- custom/
-|       `-- *.md         # lokale identities, gitignored
-|-- projects/            # runtime-data, gitignored
+|       `-- *.md         # local identities, gitignored
+|-- projects/            # runtime data, gitignored
 |   `-- <project>/
 |       |-- settings.json
 |       |-- agent_a/
@@ -70,85 +70,85 @@ dublog/
 |               |-- conversation.md
 |               `-- run_config.md
 `-- ui/
-    `-- index.html       # enkeltfils frontend
+    `-- index.html       # single-file frontend
 ```
 
-## Arbejdsregler for Claude Code
+## Working Rules for Claude Code
 
-1. Laes `CLAUDE.md`, `ROADMAP.md` og `CHANGELOG.md` foer stoerre arbejde.
-2. Hvis du aendrer kode, struktur eller arbejdsdocs, saa opdater `CHANGELOG.md` i samme session.
-3. Hver changelog-opdatering skal slutte med `Sign-off: Claude` eller `Sign-off: Codex`.
-4. Brug `ROADMAP.md` til aktivt arbejde. Brug `FUTURE_PATCHES.md` til alt der er godt, men ikke aktivt endnu.
-5. Skriv ikke fremtidig arkitektur som om den allerede er sand i kodebasen.
-6. Hold dependencies minimale og foretraek smaae, verificerbare skridt.
-7. Hvis kode og docs peger i hver sin retning, bring dem i sync i samme arbejdsflow.
-8. Hvis en opgave ikke bliver faerdig, saa marker den som `blocked` eller `deferred` i roadmap i stedet for at lade status vaere implicit.
-9. Skriv usikre antagelser tydeligt.
-10. Faerdig > perfekt, men aldrig paa bekostning af strukturel sandhed.
-11. Antag at dokumentation er always-on: relevante docs opdateres i samme session som aendringen.
-12. Hold English-pass'en skarp: systemlag og docs bliver engelske, men brugerens fritekst maa ikke auto-oversaettes eller normaliseres som om den var engine-data.
+1. Read `CLAUDE.md`, `ROADMAP.md`, and `CHANGELOG.md` before larger work.
+2. If you change code, structure, or working docs, update `CHANGELOG.md` in the same session.
+3. Every changelog update must end with `Sign-off: Claude` or `Sign-off: Codex`.
+4. Use `ROADMAP.md` for active work. Use `FUTURE_PATCHES.md` for ideas that are good but not active yet.
+5. Do not write future architecture as if it already exists in the codebase.
+6. Keep dependencies minimal and prefer small, verifiable steps.
+7. If code and docs point in different directions, bring them into sync in the same workflow.
+8. If a task does not get finished, mark it as `blocked` or `deferred` in the roadmap instead of leaving status implicit.
+9. State uncertain assumptions clearly.
+10. Done beats perfect, but never at the cost of structural truth.
+11. Treat documentation as always-on: relevant docs are updated in the same session as the change.
+12. Keep the English pass sharp: system layers and docs become English, but the user's free-form text must not be auto-translated or normalized as if it were engine data.
 
-## Claude-rolle i multi-agent mode
+## Claude Role in Multi-Agent Mode
 
-Som standard er Claude Code:
+By default, Claude Code is:
 
 - orchestrator
 - reviewer
 - scribe
 
-Claude maa godt lave mindre glue-aendringer, men hvis et stoerre runtime-spor kan delegeres rent, saa boer Builder-rollen holdes separat.
-Hvis flere agenter bruges samtidigt, gaelder Single Writer Rule fra `AGENTS.md`.
+Claude may still make smaller glue changes, but if a larger runtime track can be delegated cleanly, the Builder role should stay separate.
+If multiple agents are used at the same time, the Single Writer Rule from `AGENTS.md` applies.
 
-## Changelog-kontrakt
+## Changelog Contract
 
-Brug `CHANGELOG.md` som faktisk historik, ikke som oenskeliste.
+Use `CHANGELOG.md` as actual history, not as a wishlist.
 
-- `Added` for nye filer, flows eller features
-- `Changed` for aendret adfaerd eller struktur
-- `Fixed` for fejlrettelser
-- `Docs` for dokumentation eller arbejdsregler
+- `Added` for new files, flows, or features
+- `Changed` for changed behavior or structure
+- `Fixed` for bug fixes
+- `Docs` for documentation or workflow rules
 
-Ved hver reel aendring skal `[Unreleased]` opdateres, og sessionens noter skal afsluttes med en tydelig sign-off-linje.
+For every real change, `[Unreleased]` must be updated, and the session notes must end with a clear sign-off line.
 
-Eksempel:
+Example:
 
 ```md
 ## [Unreleased]
 ### Changed
-- Runtime blev gjort projekt-aware i `main.py`.
+- Runtime became project-aware in `main.py`.
 ### Docs
-- `ROADMAP.md` blev opdateret til ny milepaelsstruktur.
+- `ROADMAP.md` was updated to the new milestone structure.
 Sign-off: Claude
 ```
 
-## Arbejdsflow pr. session
+## Workflow Per Session
 
-### Foer arbejdet
+### Before Work
 
-- laes relevante arbejdsdocs
-- vaelg den milestone eller delopgave der arbejdes paa
-- marker store aktive opgaver som `doing`
+- read relevant working docs
+- choose the milestone or subtask being worked on
+- mark large active tasks as `doing`
 
-### Under arbejdet
+### During Work
 
-- implementer i smaae sammenhaengende bidder
-- opdater docs samme session hvis adfaerd eller struktur flytter sig
-- hold forskellen tydelig mellem nuvaerende sandhed og naeste retning
+- implement in small coherent batches
+- update docs in the same session if behavior or structure moves
+- keep the line clear between current truth and next direction
 
-### Efter arbejdet
+### After Work
 
-- koer eller beskriv relevant verifikation
-- saet faerdige roadmap-opgaver til `done`
-- opdater `CHANGELOG.md`
-- skriv naeste naturlige skridt kort og konkret
+- run or describe relevant verification
+- set finished roadmap tasks to `done`
+- update `CHANGELOG.md`
+- state the next natural step briefly and concretely
 
-## Naeste retning
+## Next Direction
 
-Den aktive retning ligger i `ROADMAP.md`, men de stoerste spor er:
+The active direction lives in `ROADMAP.md`, but the largest tracks are:
 
-- reel session-struktur frem for kun projekt-aware runtime
-- observability og debug-data som kernefeature
-- tydelige contracts for language, length og memory-output
-- skarpere split mellem session-memory, projekt-memory og senere promotion
+- real session structure instead of only project-aware runtime
+- observability and debug data as a core feature
+- clearer contracts for language, length, and memory output
+- a sharper split between session memory, project memory, and later promotion
 
-Hvis en ide ikke er aktiv endnu, skal den blive i `FUTURE_PATCHES.md` i stedet for at brede sig ind i hele dokumentlaget.
+If an idea is not active yet, it should stay in `FUTURE_PATCHES.md` instead of spreading through the document layer.

@@ -1,86 +1,86 @@
-﻿# AGENTS.md - Arbejdskontrakt for Codex og andre kodeagenter
+# AGENTS.md - Working Contract for Codex and Other Code Agents
 
-Denne fil giver Codex og andre kodeagenter samme projektkontekst som `CLAUDE.md`.
-Maalet er, at agentarbejde i repoet foelger den samme sandhed, den samme roadmap og den samme changelog-disciplin.
+This file gives Codex and other code agents the same project context as `CLAUDE.md`.
+The goal is for agent work in this repo to follow the same truth, the same roadmap, and the same changelog discipline.
 
-## Formaal
+## Purpose
 
-- holde agentarbejde konsistent paa tvaers af Claude, Codex og senere tooling
-- undgaa at docs driver vaek fra koden
-- sikre at aendringer bliver spoerbare i changeloggen
+- keep agent work consistent across Claude, Codex, and later tooling
+- prevent docs from drifting away from the code
+- ensure changes stay traceable in the changelog
 
-## Projektets aktuelle tilstand
+## Current Project State
 
-- Repoet er projekt-aware med sessionmapper til samtalelogs, men endnu ikke fuldt session-isoleret i runtime-state.
-- `app.py` koerer UI, status og SSE-streaming.
-- `main.py` driver samtalen med per-run `session_cfg`.
-- `projects.py` opretter og persisterer projektdata under `projects/`.
-- `identities/` indeholder persona-filer med simpel frontmatter.
-- Samtalelog ligger per session under `projects/<project>/sessions/<session_id>/`, mens memory stadig ligger paa projektniveau.
-- Engine-laget er stadig blandet dansk/engelsk, og eksisterende `settings.json` bruger danske values som kraever compatibility foer en fuld English-pass.
-- Fremtidige moduler som `sessions.py`, `telemetry.py` og `validators.py` er planlagte, ikke implementerede.
+- The repo is project-aware with session folders for conversation logs, but runtime state is not yet fully session-isolated.
+- `app.py` runs the UI, status, and SSE streaming.
+- `main.py` drives the conversation with per-run `session_cfg`.
+- `projects.py` creates and persists project data under `projects/`.
+- `identities/` contains persona files with simple frontmatter.
+- Conversation logs live per session under `projects/<project>/sessions/<session_id>/`, while memory still lives at project level.
+- The engine layer is still mixed Danish/English, and existing `settings.json` files still contain Danish values that need compatibility before a full English pass is complete.
+- Future modules such as `sessions.py`, `telemetry.py`, and `validators.py` are planned but not implemented.
 
-## Hvilke docs der styrer hvad
+## Which Docs Govern What
 
-- `AGENTS.md` er den globale agent-sandhed for repoet.
-- `CLAUDE.md` og `AGENTS.md` skal pege samme vej. Hvis de divergerer, saa synk dem i samme session.
-- `.guides/project_control.md` er brugerens operative guide og maa ikke modsige agentdocs.
-- `ROADMAP.md` er den aktive arbejdsliste.
-- `FUTURE_PATCHES.md` er den bevidste parkeringsplads.
-- `CHANGELOG.md` er den faktiske historik.
-- `README.md` er til brugeren, ikke til intern projektsandhed alene.
+- `AGENTS.md` is the global agent truth for the repo.
+- `CLAUDE.md` and `AGENTS.md` must point in the same direction. If they diverge, sync them in the same session.
+- `.guides/project_control.md` is the user's operative guide and must not contradict the agent docs.
+- `ROADMAP.md` is the active worklist.
+- `FUTURE_PATCHES.md` is the deliberate parking lot.
+- `CHANGELOG.md` is the actual history.
+- `README.md` is for the user, not only for internal project truth.
 
-## Minimal agent-workflow baseline
+## Minimal Agent Workflow Baseline
 
-Disse regler gaelder nu:
+These rules apply now:
 
-- Single Writer Rule: kun en agent maa skrive runtime-kode ad gangen.
-- Rolleadskillelse: builder, reviewer og scribe maa ikke vaere samme ansvar i samme arbejdspas.
-- Canonical truth > model output: struktur, filer og validatorer vinder over AI-tekst.
-- Repo = engine, brugerdata = content: kode, templates og docs tracks; `projects/` og runtime-data goer ikke.
-- English boundary: engine, UI, docs og strukturerede systemvaerdier skal konvergere mod engelsk; brugerens fritekst er content og maa blive paa det sprog brugeren skriver i.
+- Single Writer Rule: only one agent may write runtime code at a time.
+- Role separation: builder, reviewer, and scribe must not be the same responsibility in the same work session.
+- Canonical truth > model output: structure, files, and validators win over AI text.
+- Repo = engine, user data = content: code, templates, and docs are tracked; `projects/` and runtime data are not.
+- English boundary: engine, UI, docs, and structured system values should converge to English; the user's free-form text is content and may remain in the language the user writes in.
 
-## Aktuel rollefordeling
+## Current Role Split
 
-- Human: scope, prioritet, release og stop.
-- Claude Code: orkestrering, review og docs som standard.
-- Codex: builder/refactor som standard.
-- Andre agenter eller modeller: bruges kun med et afgraenset ansvar, fx review, normalisering eller test.
+- Human: scope, priority, release, and stop.
+- Claude Code: orchestration, review, and docs by default.
+- Codex: builder/refactor by default.
+- Other agents or models: only used with a bounded responsibility, for example review, normalization, or testing.
 
-## Arbejdsregler for kodeagenter
+## Working Rules for Code Agents
 
-1. Laes `AGENTS.md`, `CLAUDE.md`, `ROADMAP.md` og `CHANGELOG.md` foer stoerre aendringer.
-2. Beskriv nuvaerende arkitektur som den er, ikke som vi haaber den bliver.
-3. Brug `ROADMAP.md` til det aktive scope. Flyt ikke parkerede ideer ind i aktivt arbejde uden at opdatere roadmap.
-4. Opdater `CHANGELOG.md` ved hver reel kode-, struktur- eller docs-aendring.
-5. Afslut hver changelog-opdatering med `Sign-off: Codex` eller `Sign-off: Claude`.
-6. Hold dependencies minimale og vaelg de mindste meningsfulde skridt.
-7. Hvis en opgave ikke kan afsluttes, saa marker den som `blocked` eller `deferred` i stedet for at efterlade uklar status.
-8. Hvis du indfoerer en ny regel for arbejdsflowet, skal den afspejles baade i relevant agentdoc og i changeloggen.
-9. Behandl dokumentation som en fast del af leverancen, ikke som oprydning til sidst.
-10. Hvis flere agenter bruges i samme session, skal det vaere eksplicit hvem der er writer.
-11. Oversaet ikke brugerens fritekst eller andre content-felter bare fordi engine-laget bliver engelsk.
+1. Read `AGENTS.md`, `CLAUDE.md`, `ROADMAP.md`, and `CHANGELOG.md` before larger changes.
+2. Describe the current architecture as it is, not as we hope it becomes.
+3. Use `ROADMAP.md` for active scope. Do not pull parked ideas into active work without updating the roadmap.
+4. Update `CHANGELOG.md` for every real code, structure, or docs change.
+5. End every changelog update with `Sign-off: Codex` or `Sign-off: Claude`.
+6. Keep dependencies minimal and choose the smallest meaningful steps.
+7. If a task cannot be completed, mark it as `blocked` or `deferred` instead of leaving unclear status.
+8. If you introduce a new workflow rule, it must be reflected in both the relevant agent doc and the changelog.
+9. Treat documentation as part of the deliverable, not cleanup at the end.
+10. If multiple agents are used in the same session, it must be explicit who the writer is.
+11. Do not translate the user's free-form text or other content fields just because the engine layer is becoming English.
 
-## Changelog-regel
+## Changelog Rule
 
-Naar en session flytter noget vigtigt for en fremtidig laeser, skal det skrives i `[Unreleased]`.
-Sign-off-linjen er obligatorisk, saa det altid er tydeligt hvilken agent der sidst opdaterede historikken.
+When a session moves something important for a future reader, it must be written into `[Unreleased]`.
+The sign-off line is mandatory so it is always clear which agent last updated the history.
 
-Eksempel:
+Example:
 
 ```md
 ## [Unreleased]
 ### Added
-- `FUTURE_PATCHES.md` til senere patch-ideer.
+- `FUTURE_PATCHES.md` for later patch ideas.
 ### Docs
-- `AGENTS.md` og `CLAUDE.md` blev synket.
+- `AGENTS.md` and `CLAUDE.md` were synced.
 Sign-off: Codex
 ```
 
-## Praktisk tommelfingerregel
+## Practical Rule of Thumb
 
-- Aktivt nu: `ROADMAP.md`
-- Senere maaske: `FUTURE_PATCHES.md`
-- Skete faktisk: `CHANGELOG.md`
+- Active now: `ROADMAP.md`
+- Maybe later: `FUTURE_PATCHES.md`
+- Actually happened: `CHANGELOG.md`
 
-Det er vigtigere at holde den opdeling skarp end at skrive den perfekte fremtidsplan for tidligt.
+Keeping that split sharp matters more than writing the perfect future plan too early.

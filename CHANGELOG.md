@@ -41,6 +41,7 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - `ROADMAP.md` markerer compatibility-laget som landet, mens UI-oversaettelse og write-migration stadig staar tilbage
 - `ROADMAP.md` markerer nu UI-oversaettelsen som landet, mens write-migration og docs/content-pass stadig staar tilbage
 - `AGENTS.md`, `CLAUDE.md`, `.guides/english_migration_scope.md` og `.guides/project_control.md` pin'er nu reglen om engelsk systemlag og frit brugerinput som content
+- `CLAUDE.md` og `AGENTS.md` er nu fuldt oversat til engelsk, saa Claude og Codex kan laese deres arbejdsdocs uden blandet systemsprog
 
 Sign-off: Codex
 
