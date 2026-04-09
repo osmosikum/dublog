@@ -106,8 +106,8 @@ Formaal: Goere det klart hvad der kan oversaettes direkte, og hvad der foerst kr
 - [ ] [DOCS] Oversaette engine-docs og kommentarer til engelsk
   - Status: todo
   - Hvorfor: operative docs og engine-kommentarer boer pege samme vej som UI og defaults
-  - Output: engelske repo-docs og engelske engine-kommentarer
-  - Done naar: projektets operative engine-lag er engelsk uden at content tvinges med
+  - Output: engelske repo-docs og engelske engine-kommentarer, mens fri brugerinput fortsat behandles som content
+  - Done naar: projektets operative engine-lag er engelsk uden at content eller chatinput tvinges med
 
 - [ ] [CONTENT] Beslutte separat strategi for example identities og template
   - Status: todo

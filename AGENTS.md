@@ -38,6 +38,7 @@ Disse regler gaelder nu:
 - Rolleadskillelse: builder, reviewer og scribe maa ikke vaere samme ansvar i samme arbejdspas.
 - Canonical truth > model output: struktur, filer og validatorer vinder over AI-tekst.
 - Repo = engine, brugerdata = content: kode, templates og docs tracks; `projects/` og runtime-data goer ikke.
+- English boundary: engine, UI, docs og strukturerede systemvaerdier skal konvergere mod engelsk; brugerens fritekst er content og maa blive paa det sprog brugeren skriver i.
 
 ## Aktuel rollefordeling
 
@@ -58,6 +59,7 @@ Disse regler gaelder nu:
 8. Hvis du indfoerer en ny regel for arbejdsflowet, skal den afspejles baade i relevant agentdoc og i changeloggen.
 9. Behandl dokumentation som en fast del af leverancen, ikke som oprydning til sidst.
 10. Hvis flere agenter bruges i samme session, skal det vaere eksplicit hvem der er writer.
+11. Oversaet ikke brugerens fritekst eller andre content-felter bare fordi engine-laget bliver engelsk.
 
 ## Changelog-regel
 

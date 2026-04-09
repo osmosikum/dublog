@@ -8,6 +8,20 @@ Denne guide afgraenser hvordan repoet goeres engelsk uden at miste eksisterende 
 - undgaa at eksisterende `projects/`-data gaar tabt eller skifter betydning
 - skille tekstoversaettelse fra reel data- og kontraktmigration
 
+## Sproggraense
+
+Dette repo skal foelge denne hovedregel:
+
+- structured system stuff = English
+- human free text = brugerens valgte sprog
+
+Det betyder:
+
+- UI-labels, docs, kodekommentarer, serverbeskeder, enums og canonical save-format skal vaere engelske
+- chatinput, topics, projekt-navne, lokale notespor og andet fri brugerindhold maa godt forblive paa dansk eller et andet sprog
+- brugerens fritekst maa ikke auto-oversaettes bare for at faa repoet til at se renere ud
+- content-felter maa ikke behandles som systemkontrakter
+
 ## Zone A - oversaettes direkte
 
 Disse dele er engine eller operative docs og kan oversaettes bevidst:
@@ -42,6 +56,7 @@ Disse dele er runtimehistorik eller brugerindhold:
 - `identities/custom/**`
 - tracked eksempelindhold i `identities/examples/**`, indtil vi tager en separat content-pass
 - `identities/template.md`, hvis vi ikke samtidig beslutter hvilken sprogbaseline nye identities skal have
+- fri brugerinput som topics, chatbeskeder, projekt-navne og ad hoc instruktioner
 
 Regel: ingen blind masseoversaettelse af content eller historik.
 
@@ -89,3 +104,4 @@ Uden et af de to spor vil nogle gamle projekter falde tilbage til generisk ident
 
 Hvis en streng kun er tekst for en laeser, kan den oversaettes.
 Hvis en streng bruges som lagret state, option value, slug eller kontrakt, skal der foerst laves compatibility.
+Hvis en streng kommer fra brugeren som fri tekst, skal den behandles som content og maa beholde brugerens sprog.

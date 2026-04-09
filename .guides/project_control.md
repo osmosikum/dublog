@@ -72,6 +72,8 @@ Sprogrydning i dette repo maa ikke behandles som ren tekstudskiftning.
 - persisted runtime-values maa ikke omdoebes uden compatibility
 - `projects/**`, memory og session-logs maa ikke masseoversaettes
 - example identities og template er content-spor og skal afgoeres eksplicit
+- brugerens fritekst maa gerne forblive paa dansk eller et andet sprog
+- chatinput, topics og andre frie content-felter maa ikke auto-oversaettes som sideeffekt af English-pass'en
 
 Den konkrete afgraensning ligger i `.guides/english_migration_scope.md`.
 

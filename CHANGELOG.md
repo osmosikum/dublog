@@ -40,6 +40,7 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - `ROADMAP.md`, `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` beskriver nu English-pass som et compatibility-spor og retter session-docs til den faktiske kodebase
 - `ROADMAP.md` markerer compatibility-laget som landet, mens UI-oversaettelse og write-migration stadig staar tilbage
 - `ROADMAP.md` markerer nu UI-oversaettelsen som landet, mens write-migration og docs/content-pass stadig staar tilbage
+- `AGENTS.md`, `CLAUDE.md`, `.guides/english_migration_scope.md` og `.guides/project_control.md` pin'er nu reglen om engelsk systemlag og frit brugerinput som content
 
 Sign-off: Codex
 

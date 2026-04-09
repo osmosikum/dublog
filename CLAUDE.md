@@ -20,6 +20,7 @@ Den skal afspejle den nuvaerende sandhed og den naermeste retning, uden at laase
 - Samtale-log ligger per session under `projects/<project>/sessions/<session_id>/conversation.md`.
 - `app.py` har global runtime-state (`run_queue`, `run_lock`, `stop_event`, `is_running`) — et kendt naeste arkitekturtrin er at flytte dette til `sessions.py`.
 - Engine-laget er stadig blandet dansk/engelsk, og eksisterende `settings.json` bruger danske values som kraever compatibility foer en fuld English-pass.
+- Brugeren maa stadig skrive fritekst til agenten paa dansk eller et andet frit valgt sprog; det er content, ikke engine-state.
 - Der findes endnu ikke dedikerede moduler som `sessions.py`, `telemetry.py` eller `validators.py`.
 
 ## Dokumenternes roller
@@ -85,6 +86,7 @@ dublog/
 9. Skriv usikre antagelser tydeligt.
 10. Faerdig > perfekt, men aldrig paa bekostning af strukturel sandhed.
 11. Antag at dokumentation er always-on: relevante docs opdateres i samme session som aendringen.
+12. Hold English-pass'en skarp: systemlag og docs bliver engelske, men brugerens fritekst maa ikke auto-oversaettes eller normaliseres som om den var engine-data.
 
 ## Claude-rolle i multi-agent mode
 
