@@ -20,6 +20,8 @@ Fields:
 
 from pathlib import Path
 
+from normalization import resolve_identity_slug
+
 _IDENTITIES_DIR = Path("identities")
 _EXAMPLES_DIR = _IDENTITIES_DIR / "examples"
 _CUSTOM_DIR = _IDENTITIES_DIR / "custom"
@@ -69,7 +71,10 @@ def load_identity(slug: str) -> dict:
     Returns dict with keys: slug, name, language, length, content.
     Falls back gracefully if file is missing.
     """
-    path = _identity_paths().get(slug)
+    paths = _identity_paths()
+    path = paths.get(slug)
+    if path is None:
+        path = paths.get(resolve_identity_slug(slug))
     name_fallback = slug.replace("-", " ").title()
 
     if path is None or not path.exists():

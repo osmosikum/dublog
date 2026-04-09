@@ -92,7 +92,7 @@ Formaal: Goere det klart hvad der kan oversaettes direkte, og hvad der foerst kr
   - Done naar: engine, persisted values og content er skilt i tydelige migrationszoner
 
 - [ ] [COMPAT] Indfoere normalisering for language, length og legacy identity-slugs
-  - Status: todo
+  - Status: done
   - Hvorfor: gamle projekter bruger stadig danske enum-vaerdier og i nogle tilfalde udgaaede identity-slugs
   - Output: kompatibilitetslag foer canonical engelske values indfoeres
   - Done naar: gamle `settings.json` kan laeses korrekt samtidig med at nye engelske vaerdier accepteres

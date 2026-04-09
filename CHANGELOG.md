@@ -25,6 +25,9 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` bruger nu en minimal agent-workflow baseline med single-writer-regel og klar rollefordeling
 - `.gitignore` skelner nu mellem engine og content, saa lokale identities og runtime-data ignoreres som standard
 - `identities.py` loader nu repo-eksempler, lokale custom identities og root-level legacy identities uden at vise template-filer i UI
+- `normalization.py` indfoerer read-compatibility for legacy `language`, `length` og identity-slugs, saa gamle og nye values kan bruges side om side
+- `projects.py` normaliserer gamle identity-slugs ved settings-load, saa eksisterende projekter stadig loader ind i den nuvaerende UI
+- `main.py`, `prompts.py` og `identities.py` accepterer nu baade gamle danske enum-vaerdier og nye engelske canonical values i runtime
 
 ### Docs
 - `CLAUDE.md` strukturtræ opdateret til at matche nuværende kodebase
@@ -34,6 +37,7 @@ Convention: Hver session der aendrer kode, struktur eller arbejdsdocs opdaterer 
 - `FUTURE_PATCHES.md` parkerer agent-ledger, diff gate, normalizer-spor og context isolation som senere workflow-forbedringer
 - `.guides/english_migration_scope.md` afgraenser English-migrationen i engine, compatibility og content-zoner, saa persisted data ikke blandes med tekstoprydning
 - `ROADMAP.md`, `AGENTS.md`, `CLAUDE.md` og `.guides/project_control.md` beskriver nu English-pass som et compatibility-spor og retter session-docs til den faktiske kodebase
+- `ROADMAP.md` markerer compatibility-laget som landet, mens UI-oversaettelse og write-migration stadig staar tilbage
 
 Sign-off: Codex
 

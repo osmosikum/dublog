@@ -8,6 +8,7 @@ from memory import (
     load_memory, extract_memory_tag, append_memory,
     check_convergence, log_conversation,
 )
+from normalization import normalize_session_cfg
 from prompts import build_system_prompt, build_user_message
 from identities import load_identity
 from projects import ensure_default, create_session
@@ -101,18 +102,33 @@ def run_conversation(
     if session_cfg is None:
         session_cfg = {}
 
-    topic      = session_cfg.get("topic",      config.TOPIC)
-    rounds     = int(session_cfg.get("rounds", config.ROUNDS))
-    name_a     = session_cfg.get("name_a",     config.AGENT_A["name"])
-    model_a    = session_cfg.get("model_a",    config.AGENT_A["model"])
-    identity_a = session_cfg.get("identity_a", config.IDENTITY_A)
-    language_a = session_cfg.get("language_a", config.LANGUAGE_A)
-    length_a   = session_cfg.get("length_a",   config.LENGTH_A)
-    name_b     = session_cfg.get("name_b",     config.AGENT_B["name"])
-    model_b    = session_cfg.get("model_b",    config.AGENT_B["model"])
-    identity_b = session_cfg.get("identity_b", config.IDENTITY_B)
-    language_b = session_cfg.get("language_b", config.LANGUAGE_B)
-    length_b   = session_cfg.get("length_b",   config.LENGTH_B)
+    runtime_cfg = normalize_session_cfg({
+        "topic":      session_cfg.get("topic",      config.TOPIC),
+        "rounds":     session_cfg.get("rounds",     config.ROUNDS),
+        "name_a":     session_cfg.get("name_a",     config.AGENT_A["name"]),
+        "model_a":    session_cfg.get("model_a",    config.AGENT_A["model"]),
+        "identity_a": session_cfg.get("identity_a", config.IDENTITY_A),
+        "language_a": session_cfg.get("language_a", config.LANGUAGE_A),
+        "length_a":   session_cfg.get("length_a",   config.LENGTH_A),
+        "name_b":     session_cfg.get("name_b",     config.AGENT_B["name"]),
+        "model_b":    session_cfg.get("model_b",    config.AGENT_B["model"]),
+        "identity_b": session_cfg.get("identity_b", config.IDENTITY_B),
+        "language_b": session_cfg.get("language_b", config.LANGUAGE_B),
+        "length_b":   session_cfg.get("length_b",   config.LENGTH_B),
+    })
+
+    topic      = runtime_cfg["topic"]
+    rounds     = int(runtime_cfg["rounds"])
+    name_a     = runtime_cfg["name_a"]
+    model_a    = runtime_cfg["model_a"]
+    identity_a = runtime_cfg["identity_a"]
+    language_a = runtime_cfg["language_a"]
+    length_a   = runtime_cfg["length_a"]
+    name_b     = runtime_cfg["name_b"]
+    model_b    = runtime_cfg["model_b"]
+    identity_b = runtime_cfg["identity_b"]
+    language_b = runtime_cfg["language_b"]
+    length_b   = runtime_cfg["length_b"]
 
     project_dir = Path("projects") / project
     session_id, session_dir = create_session(project)

@@ -21,6 +21,8 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
+from normalization import normalize_settings_for_ui
+
 PROJECTS_DIR = Path("projects")
 
 DEFAULT_SETTINGS: dict = {
@@ -63,12 +65,12 @@ def list_projects() -> list[str]:
 def load_settings(project: str) -> dict:
     path = PROJECTS_DIR / project / "settings.json"
     if not path.exists():
-        return dict(DEFAULT_SETTINGS)
+        return normalize_settings_for_ui(dict(DEFAULT_SETTINGS))
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
-        return {**DEFAULT_SETTINGS, **data}
+        return normalize_settings_for_ui({**DEFAULT_SETTINGS, **data})
     except Exception:
-        return dict(DEFAULT_SETTINGS)
+        return normalize_settings_for_ui(dict(DEFAULT_SETTINGS))
 
 
 def save_settings(project: str, settings: dict) -> None:

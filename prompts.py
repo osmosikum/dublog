@@ -1,20 +1,23 @@
 """
 Prompt builder.
 
-build_system_prompt — combines identity body + language/length instructions + memory.
-build_user_message  — builds the conversation turn as a messages list.
+build_system_prompt combines identity body, language/length instructions,
+and recent memory.
+build_user_message builds the conversation turn as a messages list.
 
 Prompt layer order (fixed):
-  1. Identity       — who the agent is (re-injected every round)
-  2. Instructions   — language + response length constraints
-  3. Memory         — budget-capped recent entries
-  4. Task           — what to do this round (appended as user message)
+  1. Identity
+  2. Instructions
+  3. Memory
+  4. Task
 """
 
+from normalization import normalize_language, normalize_length, prompt_language_label
+
 _LENGTH_HINTS = {
-    "kort":   "Svar kortfattet — maksimalt 3 sætninger.",
-    "medium": "Svar i passende længde — 4-6 sætninger.",
-    "lang":   "Svar uddybende og detaljeret — 7-10 sætninger.",
+    "short": "Svar kortfattet - maksimalt 3 saetninger.",
+    "medium": "Svar i passende laengde - 4-6 saetninger.",
+    "long": "Svar uddybende og detaljeret - 7-10 saetninger.",
 }
 
 
@@ -25,15 +28,19 @@ def build_system_prompt(
     length: str = "medium",
 ) -> str:
     parts = [identity_content]
+    normalized_language = normalize_language(language)
+    normalized_length = normalize_length(length)
 
     instructions: list[str] = []
-    if language:
-        instructions.append(f"Svar altid på {language}.")
-    hint = _LENGTH_HINTS.get(length)
+    if normalized_language:
+        instructions.append(f"Svar altid paa {prompt_language_label(normalized_language)}.")
+
+    hint = _LENGTH_HINTS.get(normalized_length)
     if hint:
         instructions.append(hint)
+
     if instructions:
-        parts.append("## Sproglige krav\n" + "\n".join(f"- {i}" for i in instructions))
+        parts.append("## Sproglige krav\n" + "\n".join(f"- {item}" for item in instructions))
 
     if memory:
         parts.append(f"## Hvad du husker\n{memory}")
@@ -58,7 +65,7 @@ def build_user_message(
             f"## {other_name} sagde\n{other_response}\n\n"
             f"## Din opgave\n"
             f"Runde {round_num} af {total_rounds}. "
-            f"Svar direkte og konkret på det {other_name} sagde.\n"
+            f"Svar direkte og konkret paa det {other_name} sagde.\n"
             f"Slut dit svar med: [MEMORY]: <din vigtigste pointe fra denne runde>"
         )
     else:
@@ -66,7 +73,7 @@ def build_user_message(
             f"## Emne\n{topic}\n\n"
             f"## Din opgave\n"
             f"Runde {round_num} af {total_rounds}. "
-            f"Åbn diskussionen med dit perspektiv. Vær præcis og konkret.\n"
+            f"Aabn diskussionen med dit perspektiv. Vaer praecis og konkret.\n"
             f"Slut dit svar med: [MEMORY]: <din vigtigste pointe fra denne runde>"
         )
 
