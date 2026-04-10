@@ -12,6 +12,7 @@ It is deliberately narrower than the playbook and narrower than `FUTURE_PATCHES.
 - Ideas that are not yet active are moved to `FUTURE_PATCHES.md`.
 
 ## Milestone 0 - Docs and governance baseline
+
 Status: done
 Purpose: Make the document layer the project's current operative truth without freezing future architecture too early.
 
@@ -82,6 +83,7 @@ Purpose: Make the document layer the project's current operative truth without f
   - Done when: runtime data and local identities are ignored while the repo still ships templates and examples
 
 ## Milestone 0.5 - English migration boundary
+
 Status: done — all tasks complete
 Purpose: Make it clear what can be translated directly and what requires compatibility first, so no existing runtime data is lost.
 
@@ -116,6 +118,7 @@ Purpose: Make it clear what can be translated directly and what requires compati
   - Done when: the content track is resolved explicitly instead of riding along with the engine migration
 
 ## Milestone 1 - Session-aware base
+
 Status: done
 Purpose: Lift the current project-aware runtime to a real session structure without rewriting the whole app at once.
 
@@ -151,6 +154,7 @@ Purpose: Lift the current project-aware runtime to a real session structure with
   - Done when: the implemented session model is documented ✓
 
 ## Milestone 2 - Observability first
+
 Status: done
 Purpose: Make it visible what the system injects, where output drifts, and where models get tired.
 
@@ -173,6 +177,7 @@ Purpose: Make it visible what the system injects, where output drifts, and where
   - Done when: key figures are shown during a run ✓
 
 ## Milestone 3 - Contracts and validation
+
 Status: done
 Purpose: Make language, length and memory output into enforceable contracts instead of soft labels.
 
@@ -195,6 +200,7 @@ Purpose: Make language, length and memory output into enforceable contracts inst
   - Done when: length checks can be compared with actual output ✓
 
 ## Milestone 4 - Memory layers and promotion
+
 Status: done
 Purpose: Separate session memory from project memory so the two can evolve independently. Introduce a first explicit promotion rule. Keep storage simple — markdown files, no new dependencies.
 
@@ -230,6 +236,7 @@ Design reference: `.guides/scaling_architecture.md` — L1/L2/L3 model; promotio
   - Done when: a new reader can follow the memory flow without reading code first ✓
 
 ## Milestone 5 - Session lifecycle hardening
+
 Status: done
 Purpose: Make session start, stop and error paths consistent and clean. Verify that streaming output is live during a run, not buffered. Optionally add a simple circuit breaker to the convergence loop.
 
@@ -250,3 +257,26 @@ Purpose: Make session start, stop and error paths consistent and clean. Verify t
   - Why: the convergence check detects agreement but not repetition — an agent repeating the same response should be flagged
   - Output: `check_loop(response, recent_hashes)` in `memory.py` — MD5 of normalised response text checked against a rolling window of 3; `[LOOP DETECTED]` echoed to run output when triggered; per-agent hash lists initialised in `run_conversation`
   - Done when: the system can detect and log a response loop without semantic similarity ✓
+
+## Milestone 5.5 - Agent routing baseline
+
+Status: done
+Purpose: Turn the current role split into concrete entry-point docs for top-level agents and bounded sub-agents without changing runtime behavior.
+
+- [x] [DOCS] Rewrite `tri_agent_setup` as a repo-specific routing guide
+  - Status: done
+  - Why: the draft guide described the idea but not the actual repo, file names, or current boundaries
+  - Output: `.guides/tri_agent_setup.md` documents the implemented routing layer, the safe current baseline, and what remains deliberately manual
+  - Done when: a new reader can see the difference between top-level agents, bounded sub-agents, and later automation
+
+- [x] [DOCS] Add `.agents/` role entry points
+  - Status: done
+  - Why: the routing guide should point to real files, not placeholders
+  - Output: `.agents/` with top-level role files and bounded sub-agent entry points
+  - Done when: top-level agents and delegated workers have concrete entry points in the repo
+
+- [x] [DOCS] Sync routing rules across operative docs
+  - Status: done
+  - Why: new workflow rules must not live in one file only
+  - Output: `AGENTS.md`, `CLAUDE.md`, `.guides/project_control.md`, and `README.md` updated to reflect routing and scribe ownership
+  - Done when: the same routing rules can be read from the global contract, Claude's entry point, the short project guide, and the user-facing intro

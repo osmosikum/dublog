@@ -1,7 +1,8 @@
 # CLAUDE.md - Working Contract for Multi-Agent Sandbox
 
-This file is the operative guide for Claude Code in this repo.
-It must reflect the current truth and the nearest direction without locking the project into architecture that has not been built yet.
+This file is the operative guide for Claude Code in this repo. It must reflect
+the current truth and the nearest direction without writing future architecture
+as if it already exists.
 
 ## Purpose
 
@@ -9,33 +10,66 @@ It must reflect the current truth and the nearest direction without locking the 
 - separate current structure, active work, and later ideas
 - make it clear what is implemented now and what is only planned
 
+## Routing
+
+- Claude Code uses this file as its tool-native entry point.
+- For top-level work, treat `AGENTS.md` as the shared contract and
+  `.agents/claude_orchestrator.md` as Claude's repo-specific role file.
+- If Claude is started as a bounded sub-agent, do not load the full repo stack
+  by default; use only the assigned `.agents/sub-agents/*.md` entry point
+  unless the parent task explicitly expands scope.
+
 ## Current Truth
 
-- The project is a local multi-agent sandbox in Python with stdlib plus `requests`.
-- `app.py` serves the web UI and SSE output.
-- `main.py` runs conversations from a per-run `session_cfg`, but runtime state is not yet fully session-isolated.
+- The project is a local multi-agent sandbox in Python with stdlib plus
+  `requests`.
+- `app.py` serves the web UI and SSE output on port 7842.
+- `main.py` runs conversations from a per-run `session_cfg`.
 - `projects.py` manages project directories and `settings.json`.
 - `identities.py` loads persona files from `identities/`.
-- Memory is split into two layers per agent under `projects/<project>/agent_x/`:
-  - `session_memory.md` (L1) — written during a run; cleared and promoted at session end.
-  - `archive.md` (L2) — cross-session knowledge; grows via `archive_session_memory()` on session end.
-  - `permanent.md` (L3) — permanent facts; manual promotion only; not yet read by the engine.
-  - Existing projects with `memory.md` are auto-migrated to `archive.md` on first load.
-- Conversation logs live per session under `projects/<project>/sessions/<session_id>/conversation.md`.
-- `sessions.py` holds the `SessionManager` singleton with the active session's `queue`, `stop_event` and `state`; `app.py` no longer holds global runtime state for these.
-- Existing `settings.json` files may still contain legacy Danish values; `normalization.py` handles read-compatibility transparently.
-- The user may still write free-form input to the agent in Danish or any other chosen language; that is content, not engine state.
-- `telemetry.py` records per-call metrics to `session_dir/telemetry.jsonl`; the debug panel in `ui/index.html` polls `/api/telemetry` live during runs.
-- `validators.py` runs contract checks (empty response, `[MEMORY]` tag, heuristic language, heuristic length, memory entry length with layer awareness) after each agent call; results go to `session_dir/validation.jsonl` and failures echo to the run output. `validate_memory_entry(entry, layer)` is the designated extension point for memory work.
-- `SessionManager.finish()` resolves three terminal states: `done` (clean exit), `stopped` (user-initiated), `error` (exception); `/api/status` returns both `running` and `state`.
-- `check_loop()` in `memory.py` detects repeated responses via MD5 hash over a rolling window; flagged as `[LOOP DETECTED]` in run output.
+- `sessions.py` holds the `SessionManager` singleton with the active session's
+  queue, `stop_event`, and state; `app.py` no longer owns that runtime state.
+- Memory is split into three layers per agent under `projects/<project>/agent_x/`:
+  - `session_memory.md` (L1) - written during a run; archived and cleared on
+    session end
+  - `archive.md` (L2) - cross-session knowledge; grows via
+    `archive_session_memory()`
+  - `permanent.md` (L3) - permanent facts; manual promotion only; not yet read
+    by the engine
+  - existing projects with `memory.md` are auto-migrated to `archive.md` on
+    first load
+- Conversation logs live per session under
+  `projects/<project>/sessions/<session_id>/conversation.md`.
+- Existing `settings.json` files may still contain legacy Danish values;
+  `normalization.py` handles read compatibility transparently.
+- The user may still write free-form input to the agent in Danish or any other
+  chosen language; that is content, not engine state.
+- `telemetry.py` records per-call metrics to `session_dir/telemetry.jsonl`; the
+  debug panel in `ui/index.html` polls `/api/telemetry` live during runs.
+- `validators.py` runs contract checks after each agent call; results go to
+  `session_dir/validation.jsonl` and failures echo to the run output.
+- `SessionManager.finish()` resolves three terminal states: `done`,
+  `stopped`, and `error`; `/api/status` returns both `running` and `state`.
+- `check_loop()` in `memory.py` detects repeated responses via MD5 hash over a
+  rolling window and flags them as `[LOOP DETECTED]`.
+- `.agents/` provides role entry points for top-level agents and bounded
+  sub-agents. This is a documentation routing layer only; runtime orchestration
+  is unchanged.
 
 ## Document Roles
 
 - `README.md`: user-facing introduction and run instructions.
 - `AGENTS.md`: global agent truth for the repo.
 - `CLAUDE.md`: Claude-specific working file that complements `AGENTS.md`.
-- `.guides/project_control.md`: the user's operative guide for git and project control.
+- `.guides/project_control.md`: the user's operative guide for git and project
+  control.
+- `.guides/tri_agent_setup.md`: repo-specific routing baseline for top-level
+  agents and bounded sub-agents.
+- `.guides/scaling_architecture.md`: memory model, convergence upgrade path,
+  and infrastructure decision points.
+- `.agents/*.md`: role files for top-level agents.
+- `.agents/sub-agents/*.md`: bounded entry points for spawned or task-specific
+  workers.
 - `ROADMAP.md`: active milestones and concrete next tasks.
 - `FUTURE_PATCHES.md`: intentionally parked ideas and later patches.
 - `CHANGELOG.md`: what actually changed.
@@ -47,9 +81,9 @@ dublog/
 |-- app.py               # web server and SSE streaming (port 7842)
 |-- main.py              # conversation orchestrator, run_conversation(session_cfg)
 |-- sessions.py          # SessionManager: runtime lifecycle (queue, stop_event, state)
-|-- telemetry.py         # per-call metrics: record_call → telemetry.jsonl, load_telemetry
-|-- normalization.py     # read-compatibility for legacy Danish enum values
-|-- validators.py        # contract checks: response, memory entry, identity; → validation.jsonl
+|-- telemetry.py         # per-call metrics -> telemetry.jsonl
+|-- normalization.py     # read compatibility for legacy Danish enum values
+|-- validators.py        # contract checks -> validation.jsonl
 |-- config.py            # static defaults for CLI runs
 |-- model.py             # model adapter: Ollama, LM Studio, Claude API
 |-- prompts.py           # prompt builder: identity + instructions + memory
@@ -62,24 +96,32 @@ dublog/
 |-- FUTURE_PATCHES.md
 |-- CHANGELOG.md
 |-- README.md
-|-- identities/          # templates, examples, and local custom identities
+|-- .agents/
+|   |-- claude_orchestrator.md
+|   |-- codex_builder.md
+|   |-- external_reviewer.md
+|   `-- sub-agents/
+|       |-- bounded_worker.md
+|       `-- qa_reviewer.md
+|-- .guides/
+|   |-- project_control.md
+|   |-- english_migration_scope.md
+|   |-- scaling_architecture.md
+|   `-- tri_agent_setup.md
+|-- identities/
 |   |-- README.md
 |   |-- template.md
 |   |-- examples/
 |   |   `-- *.md
 |   `-- custom/
 |       `-- *.md         # local identities, gitignored
-|-- .guides/
-|   |-- project_control.md         # operative guide for git and project rhythm
-|   |-- english_migration_scope.md # engine vs content boundary for the English pass
-|   `-- scaling_architecture.md    # memory layers, promotion, convergence and infra target
 |-- projects/            # runtime data, gitignored
 |   `-- <project>/
 |       |-- settings.json
 |       |-- agent_a/
-|       |   |-- session_memory.md  # L1: written during run, cleared on archive
-|       |   |-- archive.md         # L2: cross-session, grows via promotion
-|       |   `-- permanent.md        # L3: permanent, manual promotion only
+|       |   |-- session_memory.md
+|       |   |-- archive.md
+|       |   `-- permanent.md
 |       |-- agent_b/
 |       |   |-- session_memory.md
 |       |   |-- archive.md
@@ -87,25 +129,38 @@ dublog/
 |       `-- sessions/
 |           `-- <session_id>/
 |               |-- conversation.md
-|               `-- run_config.md
+|               |-- run_config.md
+|               |-- telemetry.jsonl
+|               `-- validation.jsonl
 `-- ui/
     `-- index.html       # single-file frontend
 ```
 
 ## Working Rules for Claude Code
 
-1. Read `CLAUDE.md`, `ROADMAP.md`, and `CHANGELOG.md` before larger work.
-2. If you change code, structure, or working docs, update `CHANGELOG.md` in the same session.
-3. Every changelog update must end with `Sign-off: Claude` or `Sign-off: Codex`.
-4. Use `ROADMAP.md` for active work. Use `FUTURE_PATCHES.md` for ideas that are good but not active yet.
+1. Read `CLAUDE.md`, `AGENTS.md`, `ROADMAP.md`, and `CHANGELOG.md` before
+   larger work.
+2. If you change code, structure, or working docs, update `CHANGELOG.md` in the
+   same session.
+3. Every changelog update must end with `Sign-off: Claude` or
+   `Sign-off: Codex`.
+4. Use `ROADMAP.md` for active work. Use `FUTURE_PATCHES.md` for ideas that are
+   good but not active yet.
 5. Do not write future architecture as if it already exists in the codebase.
 6. Keep dependencies minimal and prefer small, verifiable steps.
-7. If code and docs point in different directions, bring them into sync in the same workflow.
-8. If a task does not get finished, mark it as `blocked` or `deferred` in the roadmap instead of leaving status implicit.
+7. If code and docs point in different directions, bring them into sync in the
+   same workflow.
+8. If a task does not get finished, mark it as `blocked` or `deferred` in the
+   roadmap instead of leaving status implicit.
 9. State uncertain assumptions clearly.
 10. Done beats perfect, but never at the cost of structural truth.
-11. Treat documentation as always-on: relevant docs are updated in the same session as the change.
-12. Keep the English pass sharp: system layers and docs become English, but the user's free-form text must not be auto-translated or normalized as if it were engine data.
+11. Treat documentation as always-on: relevant docs are updated in the same
+    session as the change.
+12. Keep the English pass sharp: system layers and docs become English, but the
+    user's free-form text must not be auto-translated or normalized as if it
+    were engine data.
+13. Route bounded workers only to `.agents/sub-agents/*.md` unless the task
+    truly requires wider repo context.
 
 ## Claude Role in Multi-Agent Mode
 
@@ -115,8 +170,15 @@ By default, Claude Code is:
 - reviewer
 - scribe
 
-Claude may still make smaller glue changes, but if a larger runtime track can be delegated cleanly, the Builder role should stay separate.
-If multiple agents are used at the same time, the Single Writer Rule from `AGENTS.md` applies.
+Claude may still make smaller glue changes, but if a larger runtime track can
+be delegated cleanly, the builder role should stay separate. If Codex is the
+designated runtime writer, Claude should not compete for the same code path.
+
+When Claude delegates:
+
+- make the writer explicit
+- keep bounded tasks narrow
+- keep shared docs with the scribe unless deliberately delegated
 
 ## Changelog Contract
 
@@ -127,7 +189,8 @@ Use `CHANGELOG.md` as actual history, not as a wishlist.
 - `Fixed` for bug fixes
 - `Docs` for documentation or workflow rules
 
-For every real change, `[Unreleased]` must be updated, and the session notes must end with a clear sign-off line.
+For every real change, `[Unreleased]` must be updated, and the session notes
+must end with a clear sign-off line.
 
 Example:
 
@@ -163,17 +226,14 @@ Sign-off: Claude
 
 ## Next Direction
 
-The active direction lives in `ROADMAP.md`. The scaling target is described in `.guides/scaling_architecture.md`.
+The active direction lives in `ROADMAP.md`. The scaling target is described in
+`.guides/scaling_architecture.md`.
 
-Active tracks:
-- MS4: split session memory (L1) from project archive (L2); archive on session end; define L2→L3 promotion rule; extend `validate_memory_entry()` for layer context
-- MS5: clean session lifecycle exit paths; verify live streaming; optional circuit breaker for response loops
+The current routing baseline is documentation-first:
 
-Architecture direction (not active yet):
-- memory capture will eventually grow from explicit `[MEMORY]` tags to a background harvester
-- retrieval will eventually grow from full-file loading to RAG over SQLite
-- convergence scoring will eventually upgrade from word-overlap to LLM-scored semantic agreement
+- role entry points live under `.agents/`
+- top-level agents use the global contract plus their role file
+- bounded sub-agents stay isolated from the global governance stack
 
-Each upgrade is gated on the previous layer showing the strain that makes the next layer necessary.
-
-If an idea is not active yet, it should stay in `FUTURE_PATCHES.md` instead of spreading through the document layer.
+Runtime automation for agent routing is deliberately deferred until the repo
+shows strain that justifies it.

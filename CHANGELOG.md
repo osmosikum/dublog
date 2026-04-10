@@ -4,8 +4,22 @@ Convention: every session that changes code, structure or working docs updates
 `[Unreleased]` and ends with `Sign-off: Claude` or `Sign-off: Codex`.
 
 ## [Unreleased]
+### Added
+- `.agents/` role entry points for Claude, Codex, an external reviewer, and
+  bounded sub-agents so routing now points to real repo files.
 
-_(nothing yet)_
+### Changed
+- `AGENTS.md`, `CLAUDE.md`, and `.guides/project_control.md` now distinguish
+  top-level agents from bounded sub-agents and keep shared docs with the
+  designated scribe by default.
+- `README.md` now describes the current layered memory model, session artifacts,
+  and agent-routing docs instead of the old flat `memory.md` layout.
+
+### Docs
+- `.guides/tri_agent_setup.md` was rewritten as a repo-specific routing baseline
+  for `dublog`.
+- `ROADMAP.md` now records the agent-routing baseline as completed work.
+Sign-off: Codex
 
 ---
 
