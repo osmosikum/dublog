@@ -1,8 +1,7 @@
 # CLAUDE.md - Working Contract for Multi-Agent Sandbox
 
-This file is the operative guide for Claude Code in this repo. It must reflect
-the current truth and the nearest direction without writing future architecture
-as if it already exists.
+> This file is the operative guide for Claude Code in this repo. It must reflect
+the current truth and the nearest direction without writing future architecture as if it already exists.
 
 ## Purpose
 
